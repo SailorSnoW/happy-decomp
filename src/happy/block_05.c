@@ -1,7 +1,7 @@
 /* Gameplay: happy block_05 (0x00403450-0x0040639F).
  * notes/layout-happy.md §8. Particles, objects and the player, events of a
- * level, pause, end of a level, the game loop (0x00404C50, not decompiled
- * yet: one of the largest functions) and the bonus room. happy only. */
+ * level, pause, end of a level, the game loop (play_level) and the bonus
+ * room. happy only. */
 #include <stdlib.h>
 #include <allegro.h>
 #include "happy.h"
@@ -693,6 +693,245 @@ void pause_game(void)
     time_left = t;
 }
 
+/* [hypothesis] Plays the current level until it ends [verified: the
+ * loop runs until done is set]: returns 1 when the player reaches the exit
+ * (map_t4_at == 1 under him), 2 when he dies (player.f44, the energy,
+ * reaches 0: kill_player), 3 when Escape is confirmed ("Quit?"). Each
+ * frame: copies key[] to keys, "HURRY UP!" at 30 seconds left and a tick
+ * (sample 33) each second below, draws the frame (draw_level), moves the
+ * objects, then the player: acceleration fixmul(player.f18, f) up to the
+ * top speed player.f18 (2.0), with f = 1.0, 0.04 on a slide (bit 3 of
+ * MAP.f79 and the slide key) or 0.01 on ice (map_t4_at == 5); slopes
+ * (collision types 7-10) push by DAT_0042f59c; walls (types 4-6) and
+ * ceilings stop him; jump player.f10 = -5.0, cut by half when the key is
+ * released; gravity DAT_00414024 (DAT_004404c0 with the low-G shoes,
+ * player.f4c bit 0), at most 7.0 per frame; the landing snaps him to the
+ * ground and calls FUN_004036c0 on tile type 7. Then the trail of saved
+ * positions (DAT_00414cc0/DAT_004154c0), the countdowns f14, f4d, f4e,
+ * the items (take_item), the snow switches (types 8 and 9), deadly tiles
+ * (type 4, unless DAT_00413b30), the time limit, Pause and F12
+ * (happy.pcx). Callers bonus_room and play_game. */
+// FUNCTION: HAPPY 0x00404c50
+int play_level(void)
+{
+    fixed f;
+    int done = 0;
+    int last = time_left;
+    int py;
+    int t4;
+    int px;
+    int c;
+    int i;
+
+    player.f0c = 0;
+    player.f18 = DAT_00440044 * 2;
+    player.f20 = map_collision_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y) + 5) ? FALSE : TRUE;
+    do {
+        timer_ticks = 0;
+        for (i = 0; i < KEY_MAX; i++)
+            keys[i] = key[i];
+        if (time_left == 30 && !DAT_0044004c) {
+            DAT_0044004c = 1;
+            // STRING: HAPPY 0x00412690
+            start_scroll_message("HURRY UP!");
+        }
+        if (last != time_left && time_left < 30 && !DAT_00442080)
+            play_sample(misc_datafile[33].dat, DAT_00442088, 128, 1000, 0);
+        last = time_left;
+        draw_level(1, 1, time_left);
+        FUN_00403f60();
+        update_objects();
+        read_joystick();
+        px = fixtoi(player.x);
+        py = fixtoi(player.y);
+        t4 = map_t4_at(DAT_00414130, px, py + 5);
+        c = map_collision_at(DAT_00414130, px, py + 10);
+        f = DAT_00414028;
+        if (keys[controls[6]] && (DAT_00414130->f79 & 8))
+            f = DAT_00414c98 * 4;
+        if (t4 == 5)
+            f = DAT_00414c98;
+        if (!player.f4e) {
+            if (keys[controls[0]] && !keys[controls[6]]) {
+                if (player.f0c < player.f18)
+                    player.f0c = MIN(player.f18, player.f0c + fixmul(player.f18, f));
+                player.f08 = 0;
+                FUN_00403a40();
+            }
+            if (keys[controls[1]] && !keys[controls[6]]) {
+                if (player.f0c > -player.f18)
+                    player.f0c = MAX(-player.f18, player.f0c - fixmul(player.f18, f));
+                player.f08 = 1;
+                FUN_00403a40();
+            }
+            if ((!keys[controls[0]] && !keys[controls[1]]) || keys[controls[6]]) {
+                if (player.f0c > 0)
+                    player.f0c = MAX(0, player.f0c - fixmul(player.f18, f));
+                if (player.f0c < 0)
+                    player.f0c = MIN(0, player.f0c + fixmul(player.f18, f));
+                player.f2c = 0;
+            }
+            if (keys[controls[6]] && player.f0c && (DAT_00414130->f79 & 8))
+                player.f2c = 8;
+            if (t4 == 5) {
+                if (c == 7 || c == 8)
+                    player.f0c -= DAT_0042f59c;
+                if (c == 9 || c == 10)
+                    player.f0c += DAT_0042f59c;
+            } else {
+                if (c == 7 || c == 8) {
+                    if (player.f0c > 0)
+                        player.f0c -= DAT_0042f59c * 10;
+                    else
+                        player.f0c -= DAT_0042f59c;
+                }
+                if (c == 9 || c == 10) {
+                    if (player.f0c < 0)
+                        player.f0c += DAT_0042f59c * 10;
+                    else
+                        player.f0c += DAT_0042f59c;
+                }
+            }
+            player.x += player.f0c;
+        } else {
+            player.x += itofix(player.f4f);
+        }
+        player.f34 = map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 2);
+        player.f38 = map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 2);
+        if (player.f34 > 3 && player.f34 < 7) {
+            player.f0c = 0;
+            player.x = itofix(px);
+        }
+        if (player.f38 > 3 && player.f38 < 7) {
+            player.f0c = 0;
+            player.x = itofix(px);
+        }
+        player.f34 = map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 16);
+        player.f38 = map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 16);
+        if (player.f34 > 3 || player.f38 > 3) {
+            player.x = itofix(px);
+            player.f0c = 0;
+        }
+        if (!keys[controls[4]])
+            player.f28 = 0;
+        if (!player.f4e && keys[controls[4]] && !player.f20 && !player.f28) {
+            player.f10 = itofix(-5);
+            player.f28 = 1;
+            player.f20 = 1;
+            player.f2c = 2;
+        }
+        if (!keys[controls[4]] && player.f10 < 0)
+            player.f10 >>= 1;
+        player.f34 = map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) + 5);
+        player.f38 = map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) + 5);
+        if (player.f34 == 0 && player.f38 == 0) {
+            player.f20 = 1;
+            if (!player.f4d)
+                player.f2c = 2;
+        }
+        if (player.f20) {
+            if (player.f4c & 1)
+                player.f10 += DAT_004404c0;
+            else
+                player.f10 += DAT_00414024;
+        } else if (player.f34 > 6 || player.f38 > 6) {
+            while (!map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y)))
+                player.y += DAT_00440044;
+            while (!map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y)))
+                player.y += DAT_00440044;
+        }
+        if (player.f20 && abs(player.f10) < itofix(3))
+            player.f2c = 1;
+        player.y += MIN(player.f10, itofix(7));
+        player.f34 = map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 16);
+        player.f38 = map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 16);
+        if (player.f34 > 3 || player.f38 > 3) {
+            player.y = itofix(py);
+            player.f10 = 0;
+            player.f20 = 1;
+        }
+        player.f34 = map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 2);
+        player.f38 = map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 2);
+        if (player.f34 == 0 && player.f38 == 0)
+            player.f24 = 0;
+        if (player.f10 > 0) {
+            if ((player.f34 || player.f38) && !player.f24) {
+                if (map_t4_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y - 8)) == 7 ||
+                    map_t4_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y + 7)) == 7)
+                    FUN_004036c0();
+                player.f20 = 0;
+                player.f10 = 0;
+                while (map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 2))
+                    player.y -= DAT_00440044;
+                while (map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 2))
+                    player.y -= DAT_00440044;
+                if (DAT_00414130->f79 & 8) {
+                    for (i = 0; i < 20; i++)
+                        spawn_particle(fixtoi(player.x), fixtoi(player.y) - 2, 175, -1);
+                }
+            }
+        } else {
+            if (player.f34 > 3 || player.f38 > 3) {
+                player.f20 = 0;
+                player.f10 = 0;
+                while (map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 2) > 3)
+                    player.y -= DAT_00440044;
+                while (map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 2) > 3)
+                    player.y -= DAT_00440044;
+            }
+            player.f34 = map_collision_at(DAT_00414130, fixtoi(player.x) - 8, fixtoi(player.y) - 2);
+            player.f38 = map_collision_at(DAT_00414130, fixtoi(player.x) + 7, fixtoi(player.y) - 2);
+            if ((player.f34 < 4 && player.f34) || (player.f38 && player.f38 < 4))
+                player.f24 = 1;
+        }
+        DAT_00414cc0[player.f54] = fixtoi(player.x) - 8;
+        DAT_004154c0[player.f54] = fixtoi(player.y) - 17;
+        if (++player.f54 == 512)
+            player.f54 = 0;
+        if (player.f14)
+            player.f14--;
+        if (player.f4d)
+            player.f4d--;
+        if (player.f4e)
+            player.f4e--;
+        take_item(fixtoi(player.x), fixtoi(player.y) - 14);
+        take_item(fixtoi(player.x), fixtoi(player.y) - 6);
+        if (map_t4_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y) - 4) == 1)
+            done = 1;
+        if (map_t4_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y) - 4) == 8)
+            DAT_00414130->f79 |= 2;
+        if (map_t4_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y) - 4) == 9)
+            DAT_00414130->f79 &= ~2;
+        if (map_t4_at(DAT_00414130, fixtoi(player.x), fixtoi(player.y) - 11) == 4 && !DAT_00413b30) {
+            player.f44 = 0;
+            play_sample(misc_datafile[34].dat, DAT_00442088, 128, 1000, 0);
+        }
+        if (time_left <= -1) {
+            if (!DAT_00442080)
+                player.f44 = 0;
+            else if (rand() % 30 < 1 && DAT_0043f5a0 < 50)
+                drop_item();
+        }
+        if (player.f16)
+            spawn_particle(fixtoi(player.x), fixtoi(player.y) - 8, rand() % 256, -1);
+        // STRING: HAPPY 0x00412688
+        if (keys[KEY_ESC] && yes_no_box("Quit?"))
+            done = 3;
+        while (!timer_ticks)
+            ;
+        if (!player.f44) {
+            kill_player();
+            done = 2;
+        }
+        if (keys[KEY_PAUSE])
+            pause_game();
+        if (keys[KEY_F12])
+            // STRING: HAPPY 0x0041267c
+            save_screenshot(buffer, "happy.pcx");
+    } while (!done);
+    return done;
+}
+
 /* [hypothesis] The bonus room [verified]: the player (sprite 64 + frame)
  * walks in from the left, sprites 67 and 64 alternate five times, then the
  * objects that follow him (f1b == 2, bit 0 of f19; at most 5 [hypothesis:
@@ -831,5 +1070,5 @@ int bonus_room(void)
     player.f08 = 0;
     DAT_00442080 = 1;
     time_left = DAT_00414130->f7a;
-    return FUN_00404c50();
+    return play_level();
 }

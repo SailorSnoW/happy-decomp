@@ -1,5 +1,21 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 13: game loop (happy fully decompiled)
+
+Note: `notes/matching.md` §3a, §5; `notes/block05-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] `play_level` (`0x00404C50`, 4,443 bytes, the game loop): 99.84%, "100% effective match" for reccmp; one `add` has its operands swapped (`block05-diffs.md`). `play_game` now at 100%; `bonus_room` 99.56% (end-of-array pointer and the swapped loads already noted).
+- [verified] **happy: 84/84 GAME functions annotated, 66 at 100% (66.8% of the bytes), no stub left.** The final link (`build.py --final`, `/OPT:REF`) succeeds: 81,977 bytes (original 86,016; not compared further).
+- [verified] What the loop does: returns 1 (exit tile, `map_t4_at` == 1), 2 (energy `player.f44` at 0, `kill_player`) or 3 (Escape and "Quit?"); "HURRY UP!" at 30 s; the player's physics (`player.f0c`/`f10` speeds, top speed `f18` = 2.0, ice and slides, slopes, walls, jump -5.0 cut by half when released, gravity with or without the low-G shoes, at most 7.0 per frame); the trail of positions; items, snow switches, deadly tiles, Pause, F12 (`happy.pcx`). Types: `PLAYER.f4f` is `signed char`.
+- Matching findings (`matching.md` §3a): initialisers, argument order of `MIN`/`MAX`, `abs()` vs `ABS`, `x <= -1`, Allegro's `TRUE` = -1.
+- No regression: maped 9/50, 9 at 100%; `reccmp-datacmp` 72 + 4 variables, 0 issues.
+- Ghidra: `play_level` renamed with its prototype, saved.
+
+### Remaining
+- happy below 100%: end-of-array pointers (§3, 14 functions), `draw_level` 90.32% (`block03-diffs.md`), `main` 83.81% (`block08-diffs.md`), `play_level` 99.84%, `bonus_room` 99.56%, `enter_hiscore` 99.55%.
+- Next: maped (reusing `src/common/`), then loader.
+
 ## 2026-10-27 — Matching, step 12: level frame (happy block_03 complete)
 
 Note: `notes/matching.md` §3, §3a, §5; `notes/block03-diffs.md`. Branch `decomp/happy`.

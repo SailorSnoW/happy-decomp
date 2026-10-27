@@ -96,7 +96,8 @@ typedef struct PLAYER {
     /* [hypothesis] invulnerability frames after a hit (150, FUN_00403da0) */
     unsigned char f4d;
     unsigned char f4e;
-    unsigned char f4f;
+    /* knock-back speed in pixels, signed [verified: movsx at 0x004051DB] */
+    signed char f4f;
     /* [hypothesis] bonus items taken, compared with DAT_00440048
      * (take_item) */
     unsigned char f50;
@@ -222,7 +223,7 @@ void FUN_00404770(void);
 void FUN_00404920(void);
 void drop_item(void);
 void pause_game(void);
-int FUN_00404c50(void);
+int play_level(void);
 int bonus_room(void);
 
 /* block_06.c */

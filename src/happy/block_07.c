@@ -859,7 +859,7 @@ void play_game(void)
                 }
             }
             if (DAT_00440038 <= DAT_004450a8 || secret) {
-                i = FUN_00404c50();
+                i = play_level();
                 if (i == 1) {
                     if (!DAT_00442080) {
                         FUN_00404920();

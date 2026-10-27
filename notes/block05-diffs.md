@@ -39,3 +39,9 @@ Original:
 Recompiled: `mov ebp, [esp + 0x18]` then `mov esi, [esp + 0x1c]`. The slots, registers and the rest of the code are the same.
 
 Variants tried without effect: every declaration order of `x` and `y`, `y` replaced by `n` (the original reuses the stack slot of `n` for `y`), `while` and `for` instead of `do`/`while`, `x -= 4` before `y++`, another loop variable for the inner loop.
+
+## `play_level` (`0x00404C50`, 4,443 bytes), 99.84% ("100% effective match")
+
+One instruction differs [verified 2026-10-27]: in the deceleration towards 0 from the left (`player.f0c = MIN(0, player.f0c + fixmul(player.f18, f))`), the original adds into the register that holds the `fixmul` result (`add eax, ecx` / `test eax, eax`, `0x004050DA`), the recompiled code into the one that holds `player.f0c` (`add ecx, eax`). reccmp counts it as an effective match. Tried without effect: the operands in either order, `MIN(a, 0)` (2 instructions fewer), an `if`/`else`, `a - -b`.
+
+Found on the way [verified, scratch comparator]: `int done = 0; int last = time_left;` as initialisers (99.14% instead of 93.89%: the order of the first loads and stores); `MIN(player.f18, ...)` and `MAX(-player.f18, ...)` with the limit first; `abs()` (inlined as `cdq` / `xor` / `sub`) instead of Allegro's `ABS`; `(f34 < 4 && f34) || (f38 && f38 < 4)`; `time_left <= -1` instead of `< 0` (`cmp eax, -1` / `jg`), which also lets VC6 keep 0 in `esi` for the rest of the loop; `FALSE`/`TRUE` of Allegro (`TRUE` is -1) for `player.f20` (`neg` / `sbb` / `neg` / `dec`); `PLAYER.f4f` is signed (`movsx`).
