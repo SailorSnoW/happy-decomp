@@ -101,6 +101,10 @@ Code-generation clues met so far, to try first when a function is close:
   - `x + y` versus `y + x` decides which global is loaded first (`editor_loop`, F5);
   - `object_message` is inline in Allegro 4.0.3 (`allegro/inline/gui.inl`): `acquire_screen` / `proc(MSG_DRAW)` / `release_screen` / `D_REDRAWME` in a dialog procedure is that call (`FUN_004015d0`);
   - a loop over `int` bounds written `i <= 15` gives `jle`, `i < 16` gives `jl` (`select_help_text`, `pick_tile`).
+  - a coordinate kept as a row counter and multiplied in the call (`row = -1; ... row++; ... row * 18`) rather than a coordinate variable (`y = -18; ... y += 18`): VC6 strength-reduces `row * 18` and puts its start value (-18) in the loop preheader, after the guard, as the original does; an assignment `y = -18`, wherever it is written, stays before the guard (`pick_tile` 97.83% -> 100%, 2026-10-28);
+  - `m = MAX(m, old); t->t2 = m;` rather than `t->t2 = MAX(m, old);`: the maximum is computed in the mask's register and stored from it (`cmp ebx, ecx` / `jg` / `mov ebx, ecx` / `mov [t + 2], bl`); a variable zeroed at the top of the function (`old = 0;` next to `m = 0;`) is what puts `xor edx, edx` before the `imul` of the index (`auto_mask` 80.54% -> 96.86%, 2026-10-28);
+  - VC6 merges identical instruction sequences at the start (and the end) of the two branches of an `if`/`else` **after** register allocation: when both branches give a pointer the same register, its computation moves above the `je` (and the stores share one tail); the original keeps them apart only because the registers differ (`auto_mask`);
+  - a global loaded in a branch and again after a merge whose other paths go through a call is kept in a callee-saved register on the path without the call and reloaded right after the call (partial redundancy elimination): `set_screen_mode`, where the original reloads it after the merge; an unrelated store through a pointer between the two (a kill) gives the original registers, no natural shape found yet.
 - the shapes found in loader (2026-10-27):
   - `num_bonus = num_normal = 0;` rather than two assignments: the stores keep the order of the assignments (`num_normal` first), but the order in which VC6 reloads the cached `num_bonus` and the import pointer of `pack_fgets` at the exit of the first loop follows the first variable written in the source; two assignments gave 99.44% in either order (`main` `0x00401000`);
   - `""` is emitted by cl 12 as a 1-byte COMDAT in `.bss` (all zero), so the linker places it at the start of `.bss`, before `errno` (loader `0x00406708`), away from the other strings of the function.
@@ -144,6 +148,7 @@ Named = annotated in `src/crt/<exe>.h` (aliases included): 152 + 163 + 66 = 381 
 
 ## 5. State on 2026-10-27
 
+- [verified] 2026-10-28: maped `pick_tile` 100% (row counter, §3a) and `auto_mask` 80.54% -> 96.86% (`old` zeroed at the top, `m = MAX(m, old)`, the tile indexed in each access, §3a). **maped 48/50 at 100% (92.4% of the bytes)**; left: `set_screen_mode` 85.94%, `auto_mask` 96.86% (`notes/maped-diffs.md`).
 - [verified] 2026-10-28: `bonus_room` at 100% (one variable for the first walk and the fall, §3a). **happy 83/84 at 100% (88.8% of the bytes)**; the last one is `play_level` 99.84% ("effective match": one `add` with its operands swapped, `notes/block05-diffs.md`).
 
 - [verified] **End-of-array operands compared by offset** (`scripts/reccmp_run.py`, §3): **happy 82/84 at 100% (85.0% of the bytes)**, maped 47/50 (91.0%), loader 2/2. Left: happy `play_level` 99.84% and `bonus_room` 99.78%, both "effective match" (one swapped `add`, two swapped reloads, `notes/block05-diffs.md`); maped `set_screen_mode`, `auto_mask`, `pick_tile` (`notes/maped-diffs.md`).

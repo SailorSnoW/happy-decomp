@@ -161,25 +161,24 @@ char select_help_text(void)
  * base and cover tiles [verified]: tables of tile numbers for the winter
  * tile set (bit 3 of MAP.f79) and the summer one; the larger of the two
  * masks is kept (draw_tile_mask shows the shapes). Only caller
- * 0x00404C10. Not at 100%: VC6 gives the masks other registers (esi
- * instead of ebx), and the original keeps the cover mask of the summer
- * branch in edx, zeroed at the start; none of the shapes tried (index
- * variable or not, tile pointer, parameters reused, initialisations
- * moved) reproduces both (notes/matching.md §5). */
+ * 0x00404C10. [verified] Shape: old zeroed at the start with m (the
+ * original zeroes edx there, the summer cover mask), m = MAX(m, old)
+ * before the store, the tile indexed in each access. Not at 100%: VC6
+ * gives the winter tile address esi instead of edx, then merges the
+ * identical heads of the two branches (notes/maped-diffs.md). */
 // FUNCTION: MAPED 0x00404500
 void auto_mask(int x, int y)
 {
     int i;
-    TILE *t;
     int n;
     int m;
     int old;
 
     i = DAT_00410110->w * y + x;
     m = 0;
+    old = 0;
     if (DAT_00410110->f79 & 8) {
-        t = &DAT_00410110->tiles[i];
-        n = t->t0 - 1;
+        n = DAT_00410110->tiles[i].t0 - 1;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 21)
@@ -213,7 +212,7 @@ void auto_mask(int x, int y)
         if (n == 129 || n == 89)
             m = 9;
         old = m;
-        n = t->t1 - 1;
+        n = DAT_00410110->tiles[i].t1 - 1;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 21)
@@ -246,10 +245,10 @@ void auto_mask(int x, int y)
             m = 10;
         if (n == 129 || n == 89)
             m = 9;
-        t->t2 = MAX(m, old);
+        m = MAX(m, old);
+        DAT_00410110->tiles[i].t2 = m;
     } else {
-        t = &DAT_00410110->tiles[i];
-        n = t->t0 - 1;
+        n = DAT_00410110->tiles[i].t0 - 1;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 19)
@@ -280,8 +279,7 @@ void auto_mask(int x, int y)
             m = 10;
         if (n == 129)
             m = 9;
-        old = 0;
-        n = t->t1 - 1;
+        n = DAT_00410110->tiles[i].t1 - 1;
         if (n >= 0 && n <= 6)
             old = 4;
         if (n >= 16 && n <= 19)
@@ -312,7 +310,8 @@ void auto_mask(int x, int y)
             old = 10;
         if (n == 129)
             old = 9;
-        t->t2 = MAX(m, old);
+        m = MAX(m, old);
+        DAT_00410110->tiles[i].t2 = m;
     }
 }
 
@@ -378,20 +377,22 @@ void check_masks(void)
 /* Tile picker [verified]: shows the tiles of map_datafile 16 per row on
  * the screen, waits for a click and selects the tile under the mouse
  * (DAT_00422400, 1-based) if it is within the count of the current mode.
- * Only caller 0x00404C10. */
+ * Only caller 0x00404C10. [verified] The row is a counter multiplied in
+ * the call: VC6 then puts its start value (-18) after the loop guard, as
+ * the original does; a coordinate y = -18 stays before it. */
 // FUNCTION: MAPED 0x00404b00
 void pick_tile(void)
 {
     int i;
-    int y;
+    int row;
     int mx;
     int my;
 
     clear_bitmap(screen);
-    for (i = 0, y = -18; i < DAT_004107a0[DAT_00422404]; i++) {
+    for (i = 0, row = -1; i < DAT_004107a0[DAT_00422404]; i++) {
         if (i % 16 == 0)
-            y += 18;
-        draw_rle_sprite(screen, (RLE_SPRITE *)map_datafile[i + 1].dat, i % 16 * 18, y);
+            row++;
+        draw_rle_sprite(screen, (RLE_SPRITE *)map_datafile[i + 1].dat, i % 16 * 18, row * 18);
     }
     show_mouse(screen);
     while (!mouse_b)

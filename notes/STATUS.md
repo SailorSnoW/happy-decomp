@@ -1,5 +1,24 @@
 # STATUS
 
+## 2026-10-28 — Matching, step 19: maped pick_tile at 100%, auto_mask 96.86%
+
+Note: `notes/maped-diffs.md`, `notes/matching.md` §3a, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `pick_tile` (`0x00404B00`) 97.83% -> 100%: the row is a counter multiplied in the call (`row = -1`, `row++`, `row * 18`); VC6 strength-reduces it and puts -18 after the loop guard, as the original does.
+- [verified] `auto_mask` (`0x00404500`) 80.54% -> 96.86%: `old` zeroed at the top next to `m` (the original's `xor edx, edx`), `m = MAX(m, old)` before the store, the tile indexed in each access. Left: the winter tile address gets `esi` instead of `edx`, after which VC6 merges the identical heads of the two branches (about 150 shapes tried, listed in `maped-diffs.md`).
+- `set_screen_mode` (`0x00401A20`) still 85.94%: about twenty more shapes tried. [verified] Mechanism found: VC6 treats the clamps' load of `DAT_00410110` as partially redundant with the 640x480 branch's load (kept in `ebp` on the path without the call, reloaded after the call); an artificial kill between the two gives the original registers. No natural shape found.
+- [verified] **maped: 48/50 GAME functions at 100% (92.4% of the bytes)**, up from 47. happy 83/84 unchanged; `reccmp-datacmp` maped 37 variables, 0 issues.
+- Scratch tools rebuilt in this session's scratchpad (object comparator with `--full`, variant runner accepting functions as edits); not versioned.
+
+### Remaining
+- maped: `set_screen_mode` 85.94%, `auto_mask` 96.86%.
+- happy: `play_level` 99.84% ("effective match").
+
+### Open questions
+- `set_screen_mode`: which source construct makes VC6 drop the partial redundancy between the branch's and the clamps' loads of `DAT_00410110` without emitting code?
+- `auto_mask`: which shape gives the winter tile pointer `edx` while the summer cover mask, zeroed at the top, also lives in `edx`?
+
 ## 2026-10-28 — Matching, step 18: bonus_room at 100%, play_level left
 
 Note: `notes/block05-diffs.md`, `notes/matching.md` §3a, §5. Branch `decomp/happy`.
