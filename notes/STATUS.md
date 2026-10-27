@@ -1,27 +1,43 @@
 # STATUS
 
-## 2026-10-27 — Matching, step 11: start menu and custom game (happy block_08 complete)
+## 2026-10-27 โ€” Matching, step 12: level frame (happy block_03 complete)
 
-Note: `notes/matching.md` ง3a, ง5; `notes/block08-diffs.md`. Branch `decomp/happy`.
+Note: `notes/matching.md` ยง3, ยง3a, ยง5; `notes/block03-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] `draw_level` (`0x00402620`, 2,166 bytes): 90.32%. Same control flow, calls and arguments (693 instructions on both sides); the stack slots and the test of the outer tile loops differ (`block03-diffs.md`). Its callers that only differed by the call are now at 100%: `show_instructions`, `main_menu`, `main_menu_password`, `ending_frames`, `play_ending`, `kill_player`, `FUN_00404920`.
+- [verified] What it draws: camera on the player when `MAP.f79` bit 0 is set, background `DAT_004274e4` scrolled by `(ox % 1280) >> 2`, flakes (`f79` bit 1), back tiles (`TILE.t0`: RLE sprite up to 130, a diagonal line from 131 on, apparently an editor marker), items (`t3`), particles, objects, the player (sprites 64/70 + `player.f2c`), front tiles (`t1`), then the HUD (score, lives, spheres, bonus items, time, Happylanders left) and the scrolling message.
+- Matching findings (`matching.md` ยง3a): an inner loop controlled by `j` with `y = j * 16` (VC6 tests `y` and keeps `j`); the `ebp` frame comes from the inline asm of `fixtoi`.
+- Scratch tool (not versioned): a comparator that compiles a variant to .obj and compares it with the original, instruction by instruction, relocations masked, and runs 8 variants in parallel. It found the loop shape above.
+- No regression: happy 83/84 annotated, 65 at 100% (65.4% of the bytes); maped 9/50, 9 at 100%; `reccmp-datacmp` 72 + 4 variables, 0 issues.
+- Ghidra: `draw_level` renamed with its prototype, saved.
+- Fixed: the two previous STATUS entries had been written in cp1252 by a script (dashes and `ยง`); converted back to UTF-8. The header comment of `block_08.c` is updated (an edit of step 11 had missed it for the same reason).
+
+### Remaining
+- Next: `0x00404C50` (game loop, 4,443 bytes), the last function of happy; then maped.
+
+## 2026-10-27 โ€” Matching, step 11: start menu and custom game (happy block_08 complete)
+
+Note: `notes/matching.md` ยง3a, ยง5; `notes/block08-diffs.md`. Branch `decomp/happy`.
 
 ### Done
 - [verified] `start_menu` (`0x00409870`, 1,476 bytes) and `custom_game` (`0x00409F30`, 2,296 bytes): 100%. block_08 complete: 4 of 5 at 100%, `main` 83.81% (loop rotation only, retried with both callees at 100%).
 - [verified] `start_menu`: the mouse band sets `DAT_00413b20` (0 "HAPPYLAND ADVENTURES" -> `data/xlevels.dat`, 1 "THE ORIGINAL GAME" -> `data/levels.dat`, 2 "CREATE CUSTOM GAME", 3 "EXIT" -> -1); W toggles `screen_mode` (320x200 / 640x480). `custom_game`: up to 18 level maps (`DAT_004404e0`, count `DAT_004450a8`) and 8 bonus maps (`DAT_0043f5c0`, count `DAT_0042f568`) picked with `file_select` under `./maps/`, saved in `happy.clv`; the counts are read and written as 2 bytes each, one byte more than the globals.
-- Matching findings (`matching.md` ง3a): two `?:` on `screen_mode` instead of an `if`/`else` (found by trying the shapes in a loop: declaration orders, variable reuse and loop variables changed nothing); `while (!done)` instead of `do`/`while`; nested "Play!" tests.
+- Matching findings (`matching.md` ยง3a): two `?:` on `screen_mode` instead of an `if`/`else` (found by trying the shapes in a loop: declaration orders, variable reuse and loop variables changed nothing); `while (!done)` instead of `do`/`while`; nested "Play!" tests.
 - No regression: happy 82/84 annotated, 58 at 100% (49.4% of the bytes); maped 9/50, 9 at 100%; `reccmp-datacmp` 72 + 4 variables, 0 issues.
 - Ghidra: `start_menu`, `custom_game` renamed with their prototypes, saved.
 
 ### Remaining
 - Next: `0x00402620` (level frame, 2,166 bytes), then `0x00404C50` (game loop, 4,443 bytes); then maped.
 
-## 2026-10-27 — Matching, step 10: main and the custom game panel (happy block_08, without the two large functions)
+## 2026-10-27 โ€” Matching, step 10: main and the custom game panel (happy block_08, without the two large functions)
 
-Note: `notes/matching.md` ง3, ง3a, ง5; `notes/block08-diffs.md`. Branch `decomp/happy`.
+Note: `notes/matching.md` ยง3, ยง3a, ยง5; `notes/block08-diffs.md`. Branch `decomp/happy`.
 
 ### Done
 - [verified] `src/happy/block_08.c`: 3 of 5. `draw_slot_panel` (`0x00409E40`, a box with light and dark edges and "RIGHT CLICK A SLOT" / "TO REMOVE IT", drawn twice by `0x00409F30`) 100%; `WinMain` (`0x0040A970`) 91.67% -> 100% now that `main` is annotated; `main` (`0x0040A830`) 81.90%: the calls to `0x00409870` / `0x00409F30`, and a loop rotation that no C shape tried avoids (`block08-diffs.md`).
 - [verified] `main`: options `-widescreen` (`screen_mode` = 1) and `-fps` (`DAT_00413b10` = 1), compared with `strcmpi`. Neither has an effect: `init_game`, called next, always rewrites `screen_mode` (`load_settings` or `default_settings`), and `0x00413B10` has no other reference in the exe (byte scan). `0x00409870` returns -1 (EXIT, `DAT_00413b20` = 3) or 0 after loading `data/levels.dat` / `data/xlevels.dat`; `DAT_00413b20` = 2 runs the custom game screen `0x00409F30` (0 = back to the start menu). `DAT_004450b0` = first level (1, or the password level + 1).
-- Matching findings (`matching.md` ง3a): an expression repeated in two calls rather than a local decides the parameter registers (`draw_slot_panel`); loop rotation of `/O2`. `main` shows as `_mangled_main` (`allegro.h`).
+- Matching findings (`matching.md` ยง3a): an expression repeated in two calls rather than a local decides the parameter registers (`draw_slot_panel`); loop rotation of `/O2`. `main` shows as `_mangled_main` (`allegro.h`).
 - No regression: happy 80/84 annotated, 56 at 100%; maped 9/50, 9 at 100%; `reccmp-datacmp` 72 + 4 variables, 0 issues.
 - Ghidra: `draw_slot_panel` renamed with its prototype, `DAT_00413b10` typed, saved. `main` has no function in Ghidra (skipped); `passwords` and `player` still refused (`type_would_evict`).
 

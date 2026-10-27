@@ -1,8 +1,7 @@
 /* happy block_07: 0x00407500-0x0040986F, menus, passwords, scores, game over,
  * game flow (notes/layout-happy.md §8). Functions in address order.
- * The calls to 0x00402620 (level frame) and 0x00404C50 (game loop), not
- * decompiled yet, are the only differences of show_instructions, the two
- * menus, ending_frames, play_ending and play_game. */
+ * The call to 0x00404C50 (game loop), not decompiled yet, is the only
+ * difference of play_game. */
 #include <stdlib.h>
 #include <string.h>
 #include <allegro.h>
@@ -10,7 +9,7 @@
 
 /* [hypothesis] Instructions screen [verified: "HAPPYLAND INSTRUCTIONS"
  * and the captions]: the demonstration level DAT_00414c94 runs
- * (update_objects, FUN_00402620) under captions that point at its
+ * (update_objects, draw_level) under captions that point at its
  * objects; the player sprite (64 of DAT_00415cc0) stands on the start
  * tile. "Password x5" only when DAT_00413b20 is 0. Escape, Space or Enter
  * leaves. The loop waits for timer_ticks without resetting it [verified:
@@ -26,7 +25,7 @@ void show_instructions(void)
     player.x = itofix(400);
     player.y = 400;
     set_palette(black_palette);
-    FUN_00402620(1, 0, time_left);
+    draw_level(1, 0, time_left);
     if (screen_mode == 0) {
         rectfill(screen, 0, 0, 319, 7, 0);
         // STRING: HAPPY 0x00412b20
@@ -37,7 +36,7 @@ void show_instructions(void)
     clear_keybuf();
     while (!key[KEY_ESC] && !key[KEY_SPACE] && !key[KEY_ENTER]) {
         update_objects();
-        FUN_00402620(0, 0, time_left);
+        draw_level(0, 0, time_left);
         rectfill(buffer, 0, 0, 319, 7, 0);
         textout_centre(buffer, (FONT *)misc_datafile[4].dat, "HAPPYLAND INSTRUCTIONS", 160, 0, -1);
         // STRING: HAPPY 0x00412b10
@@ -93,7 +92,7 @@ void show_instructions(void)
 
 /* [hypothesis] Main menu [verified: "PLAY", "OPTIONS", "HELP ME", "EXIT"]
  * over the menu level DAT_00414ca0 (load_level(..., 0, 1), drawn once by
- * FUN_00402620) and the title (draw_title). Returns 1 (play), 3 (help) or
+ * draw_level) and the title (draw_title). Returns 1 (play), 3 (help) or
  * 2 (exit); "OPTIONS" opens options_menu. Up/down move the cursor (sprite
  * n + 81 or n + 82 of DAT_00415cc0, as in options_menu), Escape jumps to
  * "EXIT", H picks another cursor (n = 0 to 50, even). Frees the level
@@ -124,7 +123,7 @@ int main_menu(void)
     init_level_palette();
     DAT_00442080 = 1;
     set_palette(black_palette);
-    FUN_00402620(1, 0, time_left);
+    draw_level(1, 0, time_left);
     blit(buffer, DAT_004274e4, 0, 0, 0, 0, 320, 200);
     draw_title();
     fade_in(DAT_00441c80, 8);
@@ -214,7 +213,7 @@ int main_menu_password(void)
     init_level_palette();
     DAT_00442080 = 1;
     set_palette(black_palette);
-    FUN_00402620(1, 0, time_left);
+    draw_level(1, 0, time_left);
     blit(screen, DAT_004274e4, 0, 0, 0, 0, 320, 200);
     draw_title();
     fade_in(DAT_00441c80, 8);
@@ -588,7 +587,7 @@ void game_completed(void)
 }
 
 /* [hypothesis] Plays `frames` frames of the ending scene [verified]: the
- * objects move (update_objects), the level is drawn (FUN_00402620), then
+ * objects move (update_objects), the level is drawn (draw_level), then
  * the player (sprite 64 + player.f2c of DAT_00415cc0, unless `alt`) at
  * (x1, y) and the second character (sprite 153 + DAT_00413b28) at (x2, y),
  * each mirrored when its flag is set, and sprite 156 at (130, y3); with
@@ -602,7 +601,7 @@ void ending_frames(int x1, int x2, int y, int frames, int flip1, int flip2, int 
     for (i = 0; i < frames; i++) {
         timer_ticks = 0;
         update_objects();
-        FUN_00402620(0, 0, time_left);
+        draw_level(0, 0, time_left);
         if (!alt) {
             if (flip1)
                 draw_sprite_h_flip(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, x1, y);
@@ -690,7 +689,7 @@ void play_ending(void)
     player.x = itofix(400);
     player.y = 400;
     set_palette(black_palette);
-    FUN_00402620(1, 0, time_left);
+    draw_level(1, 0, time_left);
     x1 = DAT_00414130->f03 * 16;
     y = DAT_00414130->f04 * 16 - 4;
     x2 = 270;

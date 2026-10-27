@@ -1,14 +1,13 @@
 /* Level and HUD rendering, palette: happy block_03 (0x004021A0-0x0040302F).
  * notes/layout-happy.md §8. Particles, flakes, object sprites, the level
- * frame (0x00402620, not decompiled yet: one of the largest functions) and
- * the level palette. happy only. */
+ * frame (draw_level) and the level palette. happy only. */
 #include <stdlib.h>
 #include <allegro.h>
 #include "happy.h"
 
 /* Moves and draws the 256 particles on the back buffer, offset by the
  * camera (ox, oy) [verified]: velocity, vertical acceleration, lifetime.
- * Callers 0x00402620, 0x00408200, 0x00408B90. */
+ * Callers draw_level (0x00402620), 0x00408200, 0x00408B90. */
 // FUNCTION: HAPPY 0x004021a0
 void draw_particles(int ox, int oy)
 {
@@ -31,7 +30,7 @@ void draw_particles(int ox, int oy)
  * around the 320-pixel width, pushed by wind; a flake below the screen is
  * restarted at the top. When bit 2 of MAP.f79 is set, wind changes at
  * random within [-4, 4]. [hypothesis] Snow. oy is not used. Only caller
- * 0x00402620 (flakes 0-255, then 256-511). */
+ * draw_level (0x00402620: flakes 0-255, then 256-511). */
 // FUNCTION: HAPPY 0x00402260
 void draw_snow(int ox, int oy, int from, int to)
 {
@@ -68,7 +67,7 @@ void draw_snow(int ox, int oy, int from, int to)
 
 /* Draws the sprites of the active objects, offset by the camera [verified]:
  * sprite f13 + f14 of DAT_00415cc0, flipped horizontally if f10 is set,
- * vertically if DAT_00416d00[i].f10 is set. Only caller 0x00402620. */
+ * vertically if DAT_00416d00[i].f10 is set. Only caller draw_level (0x00402620). */
 // FUNCTION: HAPPY 0x004024e0
 void draw_objects(int ox, int oy)
 {
@@ -97,6 +96,126 @@ void draw_objects(int ox, int oy)
             }
         }
     }
+}
+
+/* [hypothesis] Draws one frame of the level on the back buffer
+ * [verified: tiles, particles, objects, player, HUD]. frame_count + 1.
+ * Camera (ox, oy) on the player when the level scrolls (f79 bit 0),
+ * clamped to the map, otherwise 0; tile (tx, ty) and offset (sx, sy) in
+ * the tile. Background image DAT_004274e4 scrolled by (ox % 1280) / 4;
+ * the flakes when f79 bit 1; the back tiles (t0: RLE sprite of
+ * map_datafile up to 130, a line from 131 on) and their items (t3, sprite
+ * t3 + 133 of DAT_00415cc0 below 20); particles and objects; the player
+ * (sprite 64 + player.f2c, 70 + player.f2c while player.f4d counts and
+ * the slide key is up, flipped when player.f08); the front tiles (t1).
+ * When hud: score (player.f48), player.f64, energy, lives, spheres, bonus
+ * items left, time (MAX(time, 0)) and Happylanders left, unless
+ * DAT_00442080 is set, then the scrolling message. show: copies the
+ * buffer to the screen (blit_to_screen). 12 callers.
+ * Below 100%: stack slots and the test of the outer tile loops
+ * (notes/block03-diffs.md). The inner loops are controlled by j (VC6 then
+ * tests y and keeps j, as the original does). */
+// FUNCTION: HAPPY 0x00402620
+void draw_level(int show, int hud, int time)
+{
+    int j;
+    int oy;
+    int ox;
+    int i;
+    int sy;
+    int sx;
+    int x;
+    int ty;
+    int tx;
+    int k;
+    char buf[20];
+    int y;
+
+    frame_count++;
+    if (DAT_00414130->f79 & 1) {
+        ox = MIN(MAX(fixtoi(player.x) - 159, 0), (DAT_00414130->w - 20) * 16);
+        tx = ox / 16;
+        sx = ox - tx * 16;
+        oy = MIN(MAX(fixtoi(player.y) - 100, 0), DAT_00414130->h * 16 - 216);
+        ty = oy / 16;
+        sy = oy - ty * 16;
+    } else {
+        ox = 0;
+        tx = 0;
+        sx = 0;
+        oy = 0;
+        ty = 0;
+        sy = 0;
+    }
+    blit(DAT_004274e4, buffer, (ox % 1280) >> 2, 0, 0, 0, 320, 200);
+    if (DAT_00414130->f79 & 2)
+        draw_snow(ox, oy, 0, 256);
+    if (DAT_00414130->f79 & 2)
+        draw_snow(ox, oy, 256, 512);
+    for (x = 0, i = 0; i < 21; x += 16, i++) {
+        for (j = 0; j < 14; j++) {
+            y = j * 16;
+            k = (ty + j) * DAT_00414130->w + i + tx;
+            if (DAT_00414130->tiles[k].t0 &&
+                DAT_00414130->tiles[k].t0 < 131)
+                draw_rle_sprite(buffer, (RLE_SPRITE *)map_datafile[DAT_00414130->tiles[k].t0].dat, x - sx, y - sy);
+            if (DAT_00414130->tiles[k].t0 >= 131)
+                line(buffer, x - sx, y - sy, x - sx + 15, y - sy + 15, 200);
+            if (DAT_00414130->tiles[k].t3 &&
+                DAT_00414130->tiles[k].t3 < 20)
+                draw_sprite(buffer, (BITMAP *)DAT_00415cc0[DAT_00414130->tiles[k].t3 + 133].dat, x - sx, y - sy);
+        }
+    }
+    draw_particles(ox, oy);
+    draw_objects(ox, oy);
+    if (player.f3c) {
+        if (player.f4d && !player.f20 && !keys[controls[6]]) {
+            if (player.f08)
+                draw_sprite_h_flip(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 70].dat, fixtoi(player.x) - ox - 8, fixtoi(player.y) - oy - 21);
+            else
+                draw_sprite(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 70].dat, fixtoi(player.x) - ox - 8, fixtoi(player.y) - oy - 21);
+        } else {
+            if (player.f08)
+                draw_sprite_h_flip(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, fixtoi(player.x) - ox - 8, fixtoi(player.y) - oy - 21);
+            else
+                draw_sprite(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, fixtoi(player.x) - ox - 8, fixtoi(player.y) - oy - 21);
+        }
+    }
+    for (x = 0, i = 0; i < 21; x += 16, i++) {
+        for (j = 0; j < 14; j++) {
+            y = j * 16;
+            if (DAT_00414130->tiles[(ty + j) * DAT_00414130->w + i + tx].t1 &&
+                DAT_00414130->tiles[(ty + j) * DAT_00414130->w + i + tx].t1 < 131)
+                draw_rle_sprite(buffer, (RLE_SPRITE *)map_datafile[DAT_00414130->tiles[(ty + j) * DAT_00414130->w + i + tx].t1].dat, x - sx, y - sy);
+        }
+    }
+    if (hud) {
+        // STRING: HAPPY 0x0041251c
+        textprintf(buffer, (FONT *)misc_datafile[4].dat, 2, 2, -1, "%d", player.f48);
+        textprintf_centre(buffer, (FONT *)misc_datafile[4].dat, 160, 2, -1, "%d", player.f64);
+        if (player.f44 > 1)
+            draw_sprite(buffer, (BITMAP *)DAT_00415cc0[147].dat, 2, 19);
+        if (player.f44 > 2)
+            draw_sprite(buffer, (BITMAP *)DAT_00415cc0[147].dat, 16, 19);
+        for (i = 0; i < player.f40; i++)
+            stretch_sprite(buffer, (BITMAP *)DAT_00415cc0[64].dat, 2 + i * 10, 34, 8, 10);
+        for (i = 0; i < player.f60; i++)
+            stretch_sprite(buffer, (BITMAP *)DAT_00415cc0[152].dat, 2 + i * 8, 44, 8, 8);
+        if (DAT_00440048) {
+            for (i = 0; i < DAT_00440048 - player.f50; i++)
+                stretch_sprite(buffer, (BITMAP *)DAT_00415cc0[151].dat, 2 + i * 9, 190, 8, 8);
+        }
+        if (!DAT_00442080) {
+            itoa(MAX(time, 0), buf, 10);
+            textout(buffer, (FONT *)misc_datafile[4].dat, buf, 318 - text_length((FONT *)misc_datafile[4].dat, buf), 2, -1);
+            itoa(MAX(DAT_00414130->f7b - player.f15, 0), buf, 10);
+            textout(buffer, (FONT *)misc_datafile[4].dat, buf, 318 - text_length((FONT *)misc_datafile[4].dat, buf), 22, -1);
+        }
+        if (scroll_active)
+            draw_scroll_message(buffer);
+    }
+    if (show)
+        blit_to_screen(buffer);
 }
 
 /* Palette of the level [verified]: the palette of the tiles datafile, with

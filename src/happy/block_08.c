@@ -1,8 +1,5 @@
 /* happy block_08: 0x00409870-0x0040A99F, start menu, custom game, main,
- * WinMain (notes/layout-happy.md §8). Functions in address order.
- * 0x00409870 (start menu) and 0x00409F30 (custom game), among the large
- * functions left for the end, are not decompiled yet: the calls to them
- * are one of the two differences of main. */
+ * WinMain (notes/layout-happy.md §8). Functions in address order. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

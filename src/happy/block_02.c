@@ -109,7 +109,7 @@ void start_scroll_message(char *text)
 
 /* Draws the scrolling message on bmp, on a dark band, and moves it one
  * pixel to the left [verified]. The band rises at the start and falls at
- * the end. Only caller 0x00402620. */
+ * the end. Only caller draw_level (0x00402620). */
 // FUNCTION: HAPPY 0x00401b20
 void draw_scroll_message(BITMAP *bmp)
 {

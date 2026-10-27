@@ -194,7 +194,7 @@ void shutdown_game(void);
 void draw_particles(int ox, int oy);
 void draw_snow(int ox, int oy, int from, int to);
 void draw_objects(int ox, int oy);
-void FUN_00402620(int a, int b, int c);
+void draw_level(int show, int hud, int time);
 void init_level_palette(void);
 
 /* block_04.c */

@@ -151,7 +151,7 @@ void start_level(int n, int keep, int custom)
         open_exit();
     set_palette(black_palette);
     vsync();
-    FUN_00402620(0, 0, time_left);
+    draw_level(0, 0, time_left);
     textout_centre(buffer, (FONT *)misc_datafile[4].dat, DAT_00414130->name, 160, 70, -1);
     blit_to_screen(buffer);
     for (i = 0; i < 256; i++) {
@@ -455,7 +455,7 @@ void kill_player(void)
         dir = 1;
     while (y < end) {
         timer_ticks = 0;
-        FUN_00402620(0, 0, time_left);
+        draw_level(0, 0, time_left);
         update_objects();
         draw_sprite_v_flip(buffer, (BITMAP *)DAT_00415cc0[65].dat, x - cx - 8, fixtoi(y) - cy - 21);
         if (time_left < 0)
@@ -524,7 +524,7 @@ void FUN_00404770(void)
  * only the entries 164 to 191 are kept, with sample 31 and "Level
  * complete!"; then the time left is counted down, 5 points per second,
  * one timer tick per second, the level frame redrawn each time
- * (FUN_00402620(0, 1, t)); fades out. Only caller 0x00409640. */
+ * (draw_level(0, 1, t)); fades out. Only caller 0x00409640. */
 // FUNCTION: HAPPY 0x00404920
 void FUN_00404920(void)
 {
@@ -551,7 +551,7 @@ void FUN_00404920(void)
         player.f48 += 5;
         t--;
         timer_ticks = 0;
-        FUN_00402620(0, 1, t);
+        draw_level(0, 1, t);
         textout_centre(buffer, (FONT *)misc_datafile[4].dat, "Level complete!", 160, 70, -1);
         blit_to_screen(buffer);
         while (!timer_ticks)
