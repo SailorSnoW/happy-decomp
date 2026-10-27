@@ -183,7 +183,7 @@ void blit_to_screen(BITMAP *bmp)
 
 /* Draws text (help text n if n >= 0) in a translucent box on the back
  * buffer, word-wrapped at 293 pixels, then waits for the key
- * keys[DAT_0042f594] (also SPACE or ENTER if wait is set) and for its
+ * keys[controls[5]] (also SPACE or ENTER if wait is set) and for its
  * release [verified]. '@' ends the text; 0x94 is the line break, inserted
  * at the last space when a line is too long. time_left is restored on
  * exit. happy only; callers 0x00403F60, 0x00409080.
@@ -212,7 +212,7 @@ void message_box(int n, char *text, int wait)
         strcpy(buf, help_texts[n]);
     else
         strcpy(buf, text);
-    while (keys[DAT_0042f594]) {
+    while (keys[controls[5]]) {
         read_joystick();
         read_keyboard();
     }
@@ -223,7 +223,7 @@ void message_box(int n, char *text, int wait)
     lines = 1;
     do {
         s[0] = buf[i];
-        w += text_length((FONT *)DAT_00414c9c[4].dat, s);
+        w += text_length((FONT *)misc_datafile[4].dat, s);
         line[j] = s[0];
         line[j + 1] = 0;
         if (s[0] == ' ') {
@@ -245,7 +245,7 @@ void message_box(int n, char *text, int wait)
         i++;
         j++;
     } while (i < strlen(buf));
-    color_map = &trans_table;
+    color_map = &light_table;
     drawing_mode(DRAW_MODE_TRANS, NULL, 0, 0);
     rectfill(buffer, 10, 40, 309, lines * 20 + 46, 100);
     solid_mode();
@@ -256,8 +256,8 @@ void message_box(int n, char *text, int wait)
     do {
         s[0] = buf[i];
         if (s[0] != '\x94') {
-            textout(buffer, (FONT *)DAT_00414c9c[4].dat, s, x, y, -1);
-            x += text_length((FONT *)DAT_00414c9c[4].dat, s);
+            textout(buffer, (FONT *)misc_datafile[4].dat, s, x, y, -1);
+            x += text_length((FONT *)misc_datafile[4].dat, s);
         } else {
             x = 16;
             y += 18;
@@ -265,15 +265,15 @@ void message_box(int n, char *text, int wait)
         i++;
     } while (i < strlen(buf));
     blit_to_screen(buffer);
-    while (!keys[DAT_0042f594] && !wait) {
+    while (!keys[controls[5]] && !wait) {
         read_joystick();
         read_keyboard();
     }
-    while (wait && !keys[DAT_0042f594] && !key[KEY_SPACE] && !key[KEY_ENTER]) {
+    while (wait && !keys[controls[5]] && !key[KEY_SPACE] && !key[KEY_ENTER]) {
         read_joystick();
         read_keyboard();
     }
-    while (keys[DAT_0042f594] || key[KEY_SPACE] || key[KEY_ENTER]) {
+    while (keys[controls[5]] || key[KEY_SPACE] || key[KEY_ENTER]) {
         read_joystick();
         read_keyboard();
     }

@@ -52,11 +52,11 @@ extern int keys[128];
 extern volatile int time_left;
 extern T_00414040 DAT_00414040[20];
 extern OBJ DAT_00414140[100];
-extern DATAFILE *DAT_00414c9c;
+extern DATAFILE *misc_datafile;
 extern char help_texts[16][HELP_TEXT_SIZE];
-extern COLOR_MAP trans_table;
+extern COLOR_MAP light_table;
 extern BITMAP *buffer;
-extern int DAT_0042f594;
+extern int controls[7];
 extern OBJ DAT_00440060[40];
 
 void FUN_00401000(void);

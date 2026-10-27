@@ -1,5 +1,24 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 4: initialisation and shutdown (happy block_02)
+
+Note: `notes/matching.md` §3, §3a, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_02.c`: 16/16 at 100%. `timer_1s` (`0x004018B0`), `timer_15ms` (`0x004018F0`), `save_screenshot` (`0x00401900`), `init_hiscores` (`0x00401970`), `FUN_004019c0`, `init_color_tables` (`0x00401A30`), `start_scroll_message` (`0x00401AA0`), `draw_scroll_message` (`0x00401B20`), `yes_no_box` (`0x00401BE0`), `load_data` (`0x00401D60`), `save_settings` / `load_settings` / `default_settings` (`0x00401DA0`–`0x00401EA0`, `happy.sav`), `init_game` (`0x00401F00`), `shutdown_game` (`0x00402120`), plus the library function `_set_errno_erange` (`0x00402110`).
+- Corrected names of step 3 [verified]: `0x004174E0` is the **light** table (`create_light_table`), renamed `light_table`; the translucency table is `0x0042F5A0` (`trans_table`). `DAT_00414c9c` is `misc_datafile` (`data/misc.dat`). `DAT_0042f594` is `controls[5]` (`controls[7]` at `0x0042F580`, the key bindings saved in `happy.sav`).
+- New globals: 35 more in `src/happy/data.c` (`hiscores`, `controls`, `fps`/`frame_count`, the scrolling message, colour tables, fixed-point constants of `init_game`...), and `errno` of LIBC (`0x00413B3C`) annotated by name.
+- Matching findings: `matching.md` §3a (unsigned score field, returned value kept in `eax`, `volatile` timer variables, one literal per line).
+- Ghidra disassembly replaced by a scratch capstone script reading `game/happy.exe` directly (Ghidra blocked).
+
+### Remaining
+- **Ghidra blocked** since the `save_program` of step 3: every request times out. To check in the Ghidra GUI (dialog?), then save, then carry over the names of step 3 (corrections above: `light_table`, `trans_table`, `misc_datafile`, `controls`) and of block_02.
+- Next: happy block_03 (`0x004021A0`–`0x0040302F`), leaves first (`0x00402260`, `0x004024E0` before `0x00402620`).
+
+### Open questions
+- `controls[2]` and `controls[3]` are not set by `default_settings` [verified]: set elsewhere, or unused?
+- `DAT_004274e4`: 640x200 bitmap created by `init_game`, use unknown.
+
 ## 2026-10-27 — Matching, step 3: shared utilities (happy block_01, maped block_03)
 
 Note: `notes/matching.md` §3, §3b, §5. Branch `decomp/happy`.
