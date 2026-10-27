@@ -22,9 +22,15 @@
 
 
 
-\## Current phase: inventory (no C code written)
+\## Current phase: matching decompilation (started 2026-10-27)
 
-Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: no renaming, no types applied, no comments, unless explicitly requested.
+C89 decompilation of happy, then maped, then loader, verified with reccmp. Work branch: `decomp/happy`, one commit per batch of functions, with the reccmp scores in the message. The inventory (`notes/layout-*.md`, `notes/data/functions-*.csv`) is the map: blocks = candidate source files.
+
+Order of work: block_09 (map module, shared with maped), block_01 (shared utilities), then the other blocks of happy, leaves first (callees before callers), the largest functions last (`0x00404C50`, `0x00409F30`, `0x00402620`, `0x00409870`); then maped (reusing `src/common/`), then loader.
+
+Per function: full listing (`disassemble_function`), Ghidra's pseudo-C as a starting point only (it can be wrong, e.g. a lost `volatile` in `0x00406C80`), C89, `scripts/build.py`, `reccmp-reccmp --target HAPPY --verbose 0x...`, iterate. A function stuck below 100% is documented with its diff in `notes/` and left for later.
+
+Details of the setup: `notes/matching.md`.
 
 
 
@@ -35,7 +41,7 @@ Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: 
 \- VC6 (CD 1 of Visual Studio 6.0 Enterprise) in `C:\RE\tools\vc6`, outside the repository: cl 12.00.8168, link 6.00.8168, `LIBC.LIB` identical to the game's. No usable `VCVARS32.BAT`: set `PATH`, `INCLUDE` and `LIB` (`notes/toolchain-vc6.md` §1). From Git Bash, export `MSYS2_ARG_CONV_EXCL='*'`. `scripts/vc6.py` runs the tools with the right environment, natively on Windows or through Wine on macOS (root: `VC6_ROOT`, otherwise `tools/vc6` next to the repository).
 - **Setting up a machine** (Windows or macOS Apple Silicon): skill `dev-setup` (`.claude/skills/dev-setup/`). Diagnostics: `python scripts/doctor.py [--deep]`, standard library only. On macOS, the venv's Python is `.venv/bin/python` instead of `.venv/Scripts/python`.
 - Allegro 4.0.3 in `3rdparty/allegro-4.0.3/`: `include/` and `lib/msvc/allegro.def`, copied byte for byte from the official archive (`all403.zip`), configured for MSVC. Only modification: `alplatf.h` contains `#define ALLEGRO_MSVC`, as after `fix.bat msvc`. Provenance, SHA-256 and the command that generates `alleg40.lib` (`LIB /DEF`, import by ordinal like the game): `3rdparty/allegro-4.0.3/README.md`. `.gitattributes` prevents git from converting their CRLF line endings. The full archive stays in `captures/allegro-4.0.3/`, for reference; do not compile with that copy, which is configured for DJGPP.
-- reccmp **0.1.7**, installed in the global Python 3.12 (not in `.venv`): `reccmp-project`, `reccmp-reccmp`, `reccmp-datacmp`. Tested on 5 functions of happy, at 100% (`notes/toolchain-vc6.md` §6). **`reccmp-ghidra-import` writes to Ghidra**: do not use it without explicit approval.
+- reccmp **0.1.7**, installed in the global Python 3.12 (not in `.venv`): `reccmp-project`, `reccmp-reccmp`, `reccmp-datacmp`. Project: `reccmp-project.yml` at the root (3 targets, `source_root: src`); `reccmp-user.yml` and `reccmp-build.yml` are per machine (ignored by git, the second one written by `scripts/build.py`). **`reccmp-ghidra-import` writes to Ghidra**: do not use it without explicit approval.
 - MCP server `x64dbg` (port 9095): configured in `.mcp.json`, to be started separately. Not used during the inventory.
 
 \- PowerShell shell, Python 3.12, `upx`.
@@ -57,7 +63,7 @@ Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: 
   - `callers` also counts a function that contains a mere DATA reference (e.g. `0x0040B377` to `0x0040CA3A`). To tell a real call apart, read the `type` in `get_xrefs_to`.
 - **Counts**: `find_functions` only lists internal functions (happy: 220, maped: 200, loader: 63). `get_function_count` and `list_open_programs` add the imported functions (happy: 324 = 220 + 104, maped: 295 = 200 + 95, loader: 118 = 63 + 55). Ghidra misses functions (happy 19, maped 23, loader 7, including the whole `main` of loader): the reference counts are those of the CSVs `notes/data/functions-*.csv` (239, 223, 70).
 - **Pagination**: `limit`/`offset`, and the response gives `total`. `limit=0` returns everything, except for `search_strings` and `find_code_gaps`, where 0 returns an empty page.
-- **Read-only**: the groups loaded by default contain write tools (`rename_*`, `set_*`, `create_*`, `delete_*`, `add_function_tag`, `set_bookmark`, `clear_flow_and_repair`, `reanalyze`, `save_program`, `import_file`, `close_program`, `exit_ghidra`...). They are forbidden unless explicitly requested. `run_script_inline` and `run_ghidra_script` are disabled server-side (`GHIDRA_MCP_ALLOW_SCRIPTS` not set) and must not be enabled without approval.
+- **Writes (decided on 2026-10-27)**: allowed, to carry the names and types of `src/` into Ghidra: renaming functions, globals and variables (`rename_*`), applying types, structures and prototypes (`set_variable_type`, `set_function_prototype`, data types), then `save_program`. Backup made before the first write session: `happy-decomp_2026_10_27.gar` at the root of the repository (ignored by git). Every other write tool stays forbidden unless explicitly requested: `create_*`/`delete_*` (including creating the functions Ghidra misses), comments, tags, bookmarks, `clear_flow_and_repair`, `reanalyze`, `import_file`, `close_program`, `exit_ghidra`... `run_script_inline` and `run_ghidra_script` are disabled server-side (`GHIDRA_MCP_ALLOW_SCRIPTS` not set) and must not be enabled without approval.
 - **Scripts**: every tool is also an HTTP endpoint that returns JSON (`GET http://127.0.0.1:8089/<tool>?program=happy.exe&...`). `GET /mcp/schema` describes the 205 endpoints: method, parameters, `read_only`, `destructive`. For any bulk processing, use `scripts/ghidra_rest.py`, which only allows `read_only` GETs. `scripts/ghidra_mcp.py` and `scripts/ghidra_dump.py` targeted the old GhidrAssistMCP server (port 8080) and are obsolete. The cache `captures/ghidra-cache/happy_exe.json` they produced is now only read by `inventory_happy.py`, kept for the record.
 - **Inventory scripts** (in `scripts/`, to be run with `.venv/Scripts/python`, which contains `capstone` 5.0.9):
   - `ghidra_dump_rest.py <exe>`: JSON copy of Ghidra in `captures/ghidra-cache/<exe>_exe_rest.json`. Rerun only if the Ghidra project changes;
@@ -69,6 +75,10 @@ Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: 
   - `pe_allegro.py`: PE headers, Rich header, exports of `alleg40.dll` and imports of the exes (`notes/data/alleg40-*.csv`);
   - `shared_code.py`: game code shared by the three exes (`notes/shared-code.md`, `notes/data/shared-functions.csv`);
   - `decompme_candidates.py`: GAME functions of 15 to 60 instructions and their traits, `--dump` for the disassembly (`notes/decompme-candidates.md`).
+- **Matching scripts** (same Python):
+  - `build.py [--final] [happy] [maped] [loader]`: compiles `src/` and links `build/<exe>/<exe>.exe` + `.pdb` in the order of the blocks, generates stubs for the functions not decompiled yet, then runs `reccmp-project detect`. `/OPT:NOREF` by default, `--final` for `/OPT:REF`;
+  - `progress.py [exe...]`: runs reccmp on each built target, writes `notes/data/progress-<exe>.csv` and prints the progress per block;
+  - `crt_names.py [exe...]`: names the CRT functions by byte identity with the objects of `LIBC.LIB`; writes `notes/data/crt-<exe>.csv` and the `LIBRARY` annotations `src/crt/<exe>.h`.
 
 
 
@@ -81,6 +91,8 @@ Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: 
 \- Explicitly distinguish \*\*\[verified]\*\* (directly observed: string, import, bytes, xref) and \*\*\[hypothesis]\*\* (deduced). Never present a hypothesis as a fact.
 
 \- Do not invent function or source file names. A proposed name remains a hypothesis with its justification.
+
+\- Naming in `src/` (decided on 2026-10-27): source files keep neutral names (`block_05.c`, after the blocks of `notes/layout-*.md` §8), with the theme in a header comment. Functions and globals get a descriptive name when the code justifies one, with a comment that tags it `[hypothesis]` and gives the evidence; otherwise `FUN_<address>` / `DAT_<address>`. Names in Ghidra follow those of `src/`.
 
 \- CRT or Allegro functions recognised by Ghidra (Function ID, imports) are \[verified]; those recognised by deduction are \[hypothesis].
 
@@ -100,9 +112,11 @@ Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: 
 
 
 
-\## Next phase (for information, do not start)
+\## Decompilation rules
 
-C89 decompilation with VC6 + reccmp. Annotations `// FUNCTION: HAPPY 0x...`. No inline assembly \*\*in the game code\*\*, no artificial tricks to force a match.
+C89 decompilation with VC6 + reccmp. Annotations `// FUNCTION: HAPPY 0x...` (one line per exe for the code in `src/common/`). No inline assembly \*\*in the game code\*\*, no artificial tricks to force a match.
+
+\- Layout of `src/`: `common/` (compiled into happy and maped), `happy/`, `maped/`, `loader/` (one `block_NN.c` per block, functions in address order, `data.c` for the globals with their `// GLOBAL:` annotations, `<exe>.h` for the shared declarations), `include/` (headers shared between exes), `crt/` (generated `LIBRARY` annotations, never compiled).
 
 \- Compiler and options chosen on 2026-10-27: **VC 6.0 without service pack, `cl /O2`**, without any `/G` option. Five functions out of five match at 100% on decomp.me (`notes/decompme-candidates.md` §10-11).
   - `/G6` and SP5 + Processor Pack do not match.
@@ -110,9 +124,9 @@ C89 decompilation with VC6 + reccmp. Annotations `// FUNCTION: HAPPY 0x...`. No 
   - [verified locally] `/O2` implies `/Gy` (one COMDAT section per function, 16-byte aligned, `0x90` padding) and does not inline small functions on its own (`notes/toolchain-vc6.md` §5).
 
 - Linking and reccmp [verified on a test exe, `notes/toolchain-vc6.md` §6]:
-  - compile with `/Zi` and link with `/DEBUG /INCREMENTAL:NO /OPT:REF`: the code and addresses do not change;
+  - compile with `/Zi` and link with `/DEBUG /INCREMENTAL:NO /OPT:REF`: the code and addresses do not change. During the decompilation, `scripts/build.py` links with `/OPT:NOREF`, otherwise the functions whose callers are still stubs are dropped (`notes/matching.md`);
   - name the produced exe `happy.exe` (resp. `maped.exe`, `loader.exe`), since `reccmp-project detect` looks for the target's name;
-  - annotate the CRT as `// LIBRARY: HAPPY 0x...` with its name (`// _free`), otherwise every CRT call counts as a mismatch. The names come from `notes/data/functions-*.csv`.
+  - annotate the CRT as `// LIBRARY: HAPPY 0x...` with its name (`// _free`), otherwise every CRT call counts as a mismatch. These annotations are generated by `scripts/crt_names.py` in `src/crt/` (names from `LIBC.LIB`, [verified] by byte identity).
 
 \- Exception decided on 2026-10-27: the official Allegro 4.0.3 headers are included as is, including their inline assembly (`al386vc.h`: `fixmul`, `fixdiv`, etc.). MSVC configuration of Allegro, without `ALLEGRO_NO_ASM` or `ALLEGRO_USE_C`, with `/I 3rdparty/allegro-4.0.3/include`. The code coming from these headers (e.g. `0x00402110`) is annotated as library code, not decompiled.
 

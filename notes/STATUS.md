@@ -12,10 +12,9 @@ Note: `notes/matching.md`. Branch `decomp/happy`. Decisions taken with the user:
 - `scripts/crt_names.py`: CRT names by byte identity with `LIBC.LIB` (relocations ignored). `notes/data/crt-*.csv`, `src/crt/*.h` (381 `LIBRARY` annotations). happy: 152 of 155 named (before: 35), 1 import thunk, 1 ambiguous 1-byte `ret`, 1 not found.
 - [verified] reccmp: happy 5 functions at 100% (`0x00406C80`, `0x00409010`, `0x0040A9A0`, `0x0040AB00`, `0x0040AC10`) and `WinMain` `0x0040A970` at 91.67% (`push main`, `main` still a stub); maped 3 at 100%. `reccmp-datacmp`: 0 issues. `smoke_reccmp.py`: still 5/5.
 - [verified] With `/OPT:REF`, decompiled functions that nothing calls yet are dropped from the exe: hence `/OPT:NOREF` while decompiling.
+- `CLAUDE.md` updated (with the user's authorisation): current phase, Ghidra write rules, naming, layout of `src/`, matching scripts. Ghidra backup before any write: `happy-decomp_2026_10_27.gar` (root, 18:29, ignored by git).
 
 ### Remaining
-- **`CLAUDE.md` not updated**: the change (current phase, Ghidra write rules, naming, matching scripts) was refused by the permission classifier as a self-modification. To be applied by the user or authorised.
-- Fresh `.gar` archive of the Ghidra project before the first write to Ghidra.
 - Step 2: rest of block_09 (`0x0040AA30`, `0x0040AB30`, `0x0040AC40`, `0x0040AD20`), and maped's `0x00401160` and `0x004013A0`.
 - `doctor.py` does not check `reccmp-project.yml` / `reccmp-user.yml` yet.
 
