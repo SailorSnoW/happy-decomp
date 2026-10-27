@@ -8,7 +8,7 @@ address,size,name,candidates,member,external,status
 0x004016D0,109,__onexit,,build\intel\st_obj\onexit.obj,1,verified
 0x0040173D,18,_atexit,,build\intel\st_obj\onexit.obj,1,verified
 0x0040174F,47,___onexitinit,,build\intel\st_obj\onexit.obj,1,verified
-0x00401780,47,__alloca_probe,,build\intel\st_obj\chkstk.obj,1,verified
+0x00401780,47,__chkstk,,build\intel\st_obj\chkstk.obj,1,verified
 0x004017AF,246,_WinMainCRTStartup,,build\intel\st_obj\wincrt0.obj,1,verified
 0x004018A5,37,__amsg_exit,,build\intel\st_obj\wincrt0.obj build\intel\st_obj\wwincrt0.obj,1,verified
 0x004018CA,36,_fast_error_exit,,build\intel\st_obj\wincrt0.obj build\intel\st_obj\wwincrt0.obj,0,verified
@@ -64,6 +64,6 @@ address,size,name,candidates,member,external,status
 0x00404074,329,___crtGetStringTypeA,,build\intel\st_obj\a_str.obj,1,verified
 0x004041C0,88,_memset,,build\intel\st_obj\memset.obj,1,verified
 0x00404220,6,,KERNEL32.DLL!RtlUnwind,,0,import thunk
-0x00404226,134,__chdir,,build\intel\st_obj\chdir.obj,1,verified
+0x00404226,134,_chdir,,build\intel\st_obj\chdir.obj,1,verified
 0x004042AC,103,__dosmaperr,,build\intel\st_obj\dosmap.obj,1,verified
 0x00404313,123,__mbctoupper,,build\intel\st_obj\mbtoupr.obj,1,verified

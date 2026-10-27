@@ -54,7 +54,7 @@ The 5 CRT functions smaller than 16 bytes were not compared.
 
 - [verified] **`/O2` implies `/Gy`**: each function is a COMDAT `.text` section (flags `0x60501020`) aligned on 16 bytes. The linker fills the gaps with `0x90` (`t_comdat.exe`: `f1` at `0x00401000`, `f2` at `0x00401010`, `f3` at `0x00401030`). This explains the 16-byte alignment with `0x90` of the game's functions (`notes/layout-happy.md`). The CRT functions, assembled or compiled differently, are not aligned on 16. It also makes possible the elimination of unreferenced functions by `/OPT:REF`, enabled by default without `/DEBUG`: that was the condition stated in `notes/shared-code.md`.
 - [verified] `/O2` does not inline small functions of the same file on its own (`t_comdat.exe`: `main` calls `f1`, `f2` and `f3`). This is consistent with `/Ob1`.
-- [verified] **AliasObj60** counts the `OLDNAMES.LIB` aliases actually used: `itoa`, `chdir` and `strcmpi` give `AliasObj60 ×3`. [hypothesis] happy therefore calls two functions by their old name, without `_` (`strcmpi` for `__strcmpi` at `0x00408500`?), maped and loader only one. To be identified during the matching phase.
+- [verified] **AliasObj60** counts the `OLDNAMES.LIB` aliases actually used: `itoa`, `chdir` and `strcmpi` give `AliasObj60 ×3`. [hypothesis] happy therefore calls two functions by their old name, without `_` (`strcmpi` for `__strcmpi` at `0x00408500`?), maped and loader only one. **Identified for maped and loader** [verified 2026-10-27]: `chdir`, from the CRT layout it produces (`notes/matching.md` §3). happy's two are still to identify.
 - [verified] `Utc12_CPP 8168 ×1` appears in all tests, even without C++. That object therefore comes from `LIBC.LIB`: the game is entirely in C.
 
 ## 6. End-to-end test (2026-10-27)

@@ -32,6 +32,15 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PADDING = (0x90, 0xCC)
 # Relocations that patch 4 bytes: DIR32, DIR32NB, SECREL, REL32
 RELOC_4 = (0x06, 0x07, 0x0B, 0x14)
+# Public aliases at the same offset of one .obj, where the relocations of the
+# CRT pick one name and cl emits calls to the other: reccmp names the call
+# target with the name of the recompiled code, so the annotation takes it.
+# chkstk.obj: LIBC calls __alloca_probe, cl calls __chkstk for a frame over
+# 4 KB (loader main 0x00401005) [verified].
+# chdir.obj: the game calls chdir, the OLDNAMES.LIB alias of _chdir, and the
+# PDB names the target _chdir [verified: with chdir in loader main, the
+# recompiled CRT order matches the original, notes/matching.md §3].
+COMPILER_ALIASES = {"__alloca_probe": "__chkstk", "__chdir": "_chdir"}
 
 
 def ar_members(data):
@@ -220,7 +229,8 @@ def run(exe):
                   "verified" if len(ns) == 1 else
                   "ambiguous" if ns else "not found")
         out.append({"address": "0x%08X" % a, "size": size,
-                    "name": ns[0] if len(ns) == 1 or alias else "",
+                    "name": COMPILER_ALIASES.get(ns[0], ns[0])
+                    if len(ns) == 1 or alias else "",
                     "candidates": (thunks[a] if a in thunks else
                                    " ".join(ns[1:]) if alias else
                                    " ".join(ns) if len(ns) > 1 else ""),

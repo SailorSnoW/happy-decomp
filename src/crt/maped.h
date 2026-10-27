@@ -475,7 +475,7 @@
 // _$I10_OUTPUT
 
 // LIBRARY: MAPED 0x0040c1c0
-// __alloca_probe
+// __chkstk
 
 // LIBRARY: MAPED 0x0040c1ef
 // __setmode
@@ -487,7 +487,7 @@
 // ___multtenpow12
 
 // LIBRARY: MAPED 0x0040c516
-// __chdir
+// _chdir
 
 // LIBRARY: MAPED 0x0040c59c
 // __mbctoupper

@@ -218,6 +218,6 @@ Observations:
 
 ## 10. Open questions specific to loader
 
-1. **Contents of a 335-byte slot** of `happy.clv`. `main` fills it between `0x00401110` and `0x004013C0` (`pack_fgets`, `exists`), and happy reads it in `0x00409F30`. Is it a file name followed by other fields?
-2. **The `""` string at `0x00406708`** (§6): to be explained, together with happy's `"OK"`, by the planned compilation experiment (two .c files containing the same literal, linked with LIBC).
+1. **Contents of a 335-byte slot** of `happy.clv`. `main` fills it between `0x00401110` and `0x004013C0` (`pack_fgets`, `exists`), and happy reads it in `0x00409F30`. Is it a file name followed by other fields? **Answered 2026-10-27** [verified, `src/loader/block_01.c`]: 255 bytes of file name (the line of the list made relative to the folder of the list by `replace_filename`, checked with `exists`), then 80 bytes holding the line itself (`pack_fgets(line, 79, f)`); copies at `0x004011F0`-`0x00401247`. The list: lines skipped up to a first `#`, then regular maps up to the next `#`, then bonus maps up to a third `#`.
+2. **The `""` string at `0x00406708`** (§6): to be explained, together with happy's `"OK"`, by the planned compilation experiment (two .c files containing the same literal, linked with LIBC). **Answered for `""`, 2026-10-27** [verified]: cl 12 emits `""` as a 1-byte COMDAT in `.bss` (uninitialised, all zero; `link /dump /headers` of the object), and the linker places it first in `.bss`, at `0x00406708`, before `errno`. Not a merge with a CRT string. happy's `"OK"` is not empty and stays open.
 3. **Should the 7 missing functions be created in Ghidra**, in particular `main` (`0x00401000`), which Ghidra does not cover at all? Same decision as for happy and maped.

@@ -722,9 +722,11 @@ void editor_loop(void)
 
 /* [verified] Allegro's main: allegro_init, chdir to the folder of the
  * exe, initialisation; with one argument, loads that map as load_map
- * does; then the editor loop and the shutdown. chdir (the OLDNAMES alias)
- * and _chdir give the same call; reccmp only knows the CRT name of the
- * target, __chdir, so the source uses _chdir. */
+ * does; then the editor loop and the shutdown. chdir, the OLDNAMES alias
+ * of _chdir: the same call, but the linker resolves the alias in a later
+ * pass, which puts _chdir and its callees at the end of the CRT as in the
+ * original [verified: 162 of the 163 named CRT functions at their original
+ * address, 17 with _chdir; notes/matching.md §3]. */
 // FUNCTION: MAPED 0x00405ae0
 int main(int argc, char *argv[])
 {
@@ -736,7 +738,7 @@ int main(int argc, char *argv[])
     get_executable_name(exe, sizeof(exe));
     // STRING: MAPED 0x00410128
     replace_filename(dir, exe, "", sizeof(dir));
-    _chdir(dir);
+    chdir(dir);
     init_editor();
     if (argc == 2) {
         m = map_load(argv[1]);

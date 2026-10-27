@@ -31,7 +31,7 @@
 // ___onexitinit
 
 // LIBRARY: LOADER 0x00401780
-// __alloca_probe
+// __chkstk
 
 // LIBRARY: LOADER 0x004017af
 // _WinMainCRTStartup
@@ -193,7 +193,7 @@
 // _memset
 
 // LIBRARY: LOADER 0x00404226
-// __chdir
+// _chdir
 
 // LIBRARY: LOADER 0x004042ac
 // __dosmaperr

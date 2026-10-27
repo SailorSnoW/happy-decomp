@@ -1,5 +1,29 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 15: loader (2/2 at 100%)
+
+Note: `notes/matching.md` §3, §3a, §4, §5; `notes/layout-loader.md` §10. Branch `decomp/happy`.
+
+### Done
+- [verified] **loader: 2/2 GAME functions at 100%**: `main` (`0x00401000`, 1,172 bytes) and `WinMain` (`0x004014A0`), in `src/loader/block_01.c`; `src/loader/data.c` only annotates `errno` (the game has no globals). `reccmp-datacmp` 1 variable, 0 issues.
+- [verified] **Whole-exe check**: the objects linked again without `/DEBUG` give `.text`, `.rdata` and `.data` byte-identical to the original loader.exe; only `.rsrc` (the icon) is missing (`matching.md` §3).
+- [verified] What loader does: the list of maps is `argv[1]` or a `.txt` picked with `file_select_ex` under `maps/` (640x480 window); lines skipped up to a first `#`, regular maps (at most 18) up to the next `#`, bonus maps (at most 8) up to a third `#`; each name is made relative to the folder of the list and must exist. A slot of `happy.clv` = 255 bytes of file name + 80 bytes of the list line (`layout-loader.md` §10, question 1 answered). Return codes 2-5 for the errors; the list is not closed on those paths.
+- [verified] `chdir`, not `_chdir`: the OLDNAMES alias is resolved in a later link pass, which puts `__chdir` and its callees at the end of the CRT as in the originals. loader: 68/68 CRT functions at their original address (0 with `_chdir`); maped: 162/163 (17 before; `__ld12tod` is the one left). maped `main` switched to `chdir`, still 100%. This identifies the single OLDNAMES alias of maped and loader (`toolchain-vc6.md` §5).
+- [verified] `""` (`0x00406708`, `layout-loader.md` §10 question 2): cl 12 emits it as a 1-byte COMDAT in `.bss`, placed first in `.bss` before `errno`; not a merge with a CRT string.
+- `scripts/crt_names.py`: `COMPILER_ALIASES` names `chkstk.obj` `__chkstk` (the name cl calls; the CRT relocations had chosen `__alloca_probe`) and `chdir.obj` `_chdir` (the alias the game calls). `src/crt/maped.h` and `loader.h` regenerated.
+- Matching finding (`matching.md` §3a): `num_bonus = num_normal = 0;` decides a register reload order that two assignments, in either order, do not give (99.44% -> 100%).
+- No regression: happy 84/84, 66 at 100%; maped 50/50, 42 at 100%; `reccmp-datacmp` 72 / 37 / 1 variables, 0 issues.
+- Ghidra: `WinMain` and `errno` renamed in loader.exe, saved. `main` has no function in Ghidra (skipped, creation not allowed).
+
+### Remaining
+- **All three exes are annotated.** Below 100%: happy 18 functions (14 end-of-array pointers, `draw_level`, `main`, `play_level`, `bonus_room`, `enter_hiscore`), maped 8 (`set_screen_mode`, `auto_mask`, `pick_tile`, five end-of-array pointers).
+- Next phase per CLAUDE.md: the C17 port, verified against the matching build; or a pass on the functions below 100%.
+
+### Open questions
+- happy's two OLDNAMES aliases (`strcmpi` is one [hypothesis]): the same CRT-layout check as for `chdir` could identify them once happy's game code has its original size.
+- maped `__ld12tod` (`0x0040A81F` in the original, `0x0040A809` rebuilt): the only CRT function of maped not at its original address.
+- `layout-loader.md` §10 question 3: create the functions Ghidra misses (`main` of loader)? Not allowed without approval.
+
 ## 2026-10-27 — Matching, step 14: maped (50/50 annotated)
 
 Note: `notes/matching.md` §3, §3a, §5; `notes/maped-diffs.md`. Branch `decomp/happy`.

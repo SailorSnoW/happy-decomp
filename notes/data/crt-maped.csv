@@ -165,10 +165,10 @@ address,size,name,candidates,member,external,status
 0x0040B992,199,___mtold12,,..\build\intel\st_obj\mantold.obj,1,verified
 0x0040BA59,1233,___strgtold12,,..\build\intel\st_obj\strgtold.obj,1,verified
 0x0040BF2A,659,_$I10_OUTPUT,,..\build\intel\st_obj\x10fout.obj,1,verified
-0x0040C1C0,47,__alloca_probe,,build\intel\st_obj\chkstk.obj,1,verified
+0x0040C1C0,47,__chkstk,,build\intel\st_obj\chkstk.obj,1,verified
 0x0040C1EF,118,__setmode,,build\intel\st_obj\setmode.obj,1,verified
 0x0040C265,544,___ld12mul,,..\build\intel\st_obj\tenpow.obj,1,verified
 0x0040C485,124,___multtenpow12,,..\build\intel\st_obj\tenpow.obj,1,verified
 0x0040C510,6,,KERNEL32.DLL!RtlUnwind,,0,import thunk
-0x0040C516,134,__chdir,,build\intel\st_obj\chdir.obj,1,verified
+0x0040C516,134,_chdir,,build\intel\st_obj\chdir.obj,1,verified
 0x0040C59C,123,__mbctoupper,,build\intel\st_obj\mbtoupr.obj,1,verified
