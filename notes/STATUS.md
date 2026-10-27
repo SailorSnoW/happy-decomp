@@ -1,5 +1,23 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 8: menus and introduction (happy block_06)
+
+Note: `notes/matching.md` §3, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_06.c`: 8/8. At 100%: `draw_title` (`0x004063A0`, title, credits and "v1.3" on the menu background `DAT_004274e4`), `set_controls` (`0x00406560`), `options_menu` (`0x00406850`, volumes, "set controls", "main menu"), `show_logo` (`0x00406BA0`, "Free Lunch Design presents"), `wait_or_esc` (`0x00406C80`), `intro_caption` (`0x00406CD0`), `play_intro` (`0x00406D60`, 1,947 bytes). `clear_objects` (`0x00406B80`, clears `DAT_00414140[i].f1a`) 83.33%: end-of-array pointer only (`matching.md` §3).
+- [verified] `controls`: `set_controls` names the slots (0 right, 1 left, 4 jump, 5 talk, 6 slide) and refuses a key equal to `controls[2]` or `controls[3]`, which it never sets (`0x00406777`). Joystick directions and buttons 1-4 map to the codes 116-124, as in `read_joystick`.
+- Matching findings (`matching.md` §3): a string array initialiser needs one element per line, each after its `// STRING:` marker; `DATAFILE` entries are 16 bytes.
+- No regression: happy 67/84 annotated, 50 at 100%; `reccmp-datacmp` 71 + 4 variables, 0 issues.
+- Ghidra: 7 functions renamed with their prototypes, saved (`ghidra_sync.py --save`). `passwords` and `player` still refused (`type_would_evict`, see step 7).
+
+### Remaining
+- Next: happy block_07 (`0x00407500`–`0x0040986F`, 12 functions, `anim_tick` already done), leaves first.
+
+### Open questions
+- `controls[2]` and `controls[3]`: neither `default_settings` nor `set_controls` sets them; `set_controls` still compares with them. Set elsewhere (block_07/08?) or unused.
+- `DAT_00413b20` (0, 1 or 2) chooses the title drawn by `draw_title` (logo sprites 35 + 36, "* HAPPYLAND ADVENTURES *", or sprite 35 only) and the level list of `load_level`: [hypothesis] a game variant or level set.
+
 ## 2026-10-27 — Matching, step 7: gameplay (happy block_05, without 0x00404C50)
 
 Note: `notes/matching.md` §3, §3a, §5; `notes/block05-diffs.md`. Branch `decomp/happy`.

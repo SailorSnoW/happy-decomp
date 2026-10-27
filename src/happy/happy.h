@@ -225,7 +225,14 @@ void FUN_00404c50(void);
 void bonus_room(void);
 
 /* block_06.c */
+void draw_title(void);
+void set_controls(void);
+void options_menu(int n);
+void clear_objects(void);
+void show_logo(void);
 int wait_or_esc(int ms);
+int intro_caption(char *text, int ms);
+void play_intro(void);
 
 /* block_07.c */
 void anim_tick(int a, int b);

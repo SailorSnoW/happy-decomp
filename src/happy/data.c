@@ -257,7 +257,9 @@ unsigned char DAT_0042f568;
 
 /* [hypothesis] Control keys, as Allegro KEY_ codes: default_settings sets
  * 0 RIGHT, 1 LEFT, 4 ALT, 5 LCONTROL, 6 DOWN [verified]; 5 closes
- * message_box. Saved in happy.sav (28 bytes). */
+ * message_box. Saved in happy.sav (28 bytes). set_controls names them
+ * [verified]: 0 right, 1 left, 4 jump, 5 talk, 6 slide; it never sets 2
+ * and 3, but refuses a key equal to them. */
 // GLOBAL: HAPPY 0x0042f580
 int controls[7];
 
