@@ -1,0 +1,69 @@
+address,size,name,candidates,member,external,status
+0x004014D0,254,_strncpy,,build\intel\st_obj\strncpy.obj,1,verified
+0x004015CE,45,__cinit,,build\intel\st_obj\crt0dat.obj,1,verified
+0x004015FB,17,_exit,,build\intel\st_obj\crt0dat.obj,1,verified
+0x0040160C,17,__exit,,build\intel\st_obj\crt0dat.obj,1,verified
+0x0040161D,153,_doexit,,build\intel\st_obj\crt0dat.obj,0,verified
+0x004016B6,26,__initterm,,build\intel\st_obj\crt0dat.obj,0,verified
+0x004016D0,109,__onexit,,build\intel\st_obj\onexit.obj,1,verified
+0x0040173D,18,_atexit,,build\intel\st_obj\onexit.obj,1,verified
+0x0040174F,47,___onexitinit,,build\intel\st_obj\onexit.obj,1,verified
+0x00401780,47,__alloca_probe,,build\intel\st_obj\chkstk.obj,1,verified
+0x004017AF,246,_WinMainCRTStartup,,build\intel\st_obj\wincrt0.obj,1,verified
+0x004018A5,37,__amsg_exit,,build\intel\st_obj\wincrt0.obj build\intel\st_obj\wwincrt0.obj,1,verified
+0x004018CA,36,_fast_error_exit,,build\intel\st_obj\wincrt0.obj build\intel\st_obj\wwincrt0.obj,0,verified
+0x004018EE,288,_realloc,,build\intel\st_obj\realloc.obj,1,verified
+0x00401A0E,41,__msize,,build\intel\st_obj\msize.obj,1,verified
+0x00401A37,18,_malloc,,build\intel\st_obj\malloc.obj,1,verified
+0x00401A49,44,__nh_malloc,,build\intel\st_obj\malloc.obj,1,verified
+0x00401A75,54,__heap_alloc,,build\intel\st_obj\malloc.obj,1,verified
+0x00401AAB,321,__XcptFilter,,build\intel\st_obj\winxfltr.obj,1,verified
+0x00401BEC,67,_xcptlookup,,build\intel\st_obj\winxfltr.obj,0,verified
+0x00401C2F,88,__wincmdln,,build\intel\st_obj\wincmdln.obj,1,verified
+0x00401C87,185,__setenvp,,build\intel\st_obj\stdenvp.obj,1,verified
+0x00401D40,153,__setargv,,build\intel\st_obj\stdargv.obj,1,verified
+0x00401DD9,436,_parse_cmdline,,build\intel\st_obj\stdargv.obj,0,verified
+0x00401F8D,306,___crtGetEnvironmentStringsA,,build\intel\st_obj\a_env.obj,1,verified
+0x004020BF,427,__ioinit,,build\intel\st_obj\ioinit.obj,1,verified
+0x0040226A,60,__heap_init,,build\intel\st_obj\heapinit.obj,1,verified
+0x004022A8,32,__global_unwind2,,build\intel\st_obj\exsup.obj,1,verified (spans labels)
+0x004022C8,34,__unwind_handler,,build\intel\st_obj\exsup.obj,0,verified
+0x004022EA,104,__local_unwind2,,build\intel\st_obj\exsup.obj,1,verified (spans labels)
+0x00402352,35,__abnormal_termination,,build\intel\st_obj\exsup.obj,1,verified
+0x00402375,9,__NLG_Notify1,,build\intel\st_obj\exsup.obj,1,verified
+0x0040237E,34,,,,0,not found
+0x004023A0,189,__except_handler3,,build\intel\st_obj\exsup3.obj,1,verified
+0x0040245D,27,__seh_longjmp_unwind@4,,build\intel\st_obj\exsup3.obj,1,verified
+0x00402478,57,__FF_MSGBANNER,,build\intel\st_obj\crt0msg.obj,1,verified
+0x004024B1,339,__NMSG_WRITE,,build\intel\st_obj\crt0msg.obj,1,verified
+0x00402604,27,__callnewh,,build\intel\st_obj\handler.obj,1,verified
+0x0040261F,62,___sbh_heap_init,,build\intel\st_obj\sbheap.obj,1,verified
+0x0040265D,43,___sbh_find_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x00402688,811,___sbh_free_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x004029B3,777,___sbh_alloc_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x00402CBC,177,___sbh_alloc_new_region,,build\intel\st_obj\sbheap.obj,1,verified
+0x00402D6D,251,___sbh_alloc_new_group,,build\intel\st_obj\sbheap.obj,1,verified
+0x00402E68,758,___sbh_resize_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x00403160,821,_memcpy,,build\intel\st_obj\memcpy.obj,1,verified (spans labels)
+0x00403495,47,_free,,build\intel\st_obj\free.obj,1,verified
+0x004034C4,17,__ismbblead,,build\intel\st_obj\ismbbyte.obj,1,verified
+0x004034D5,49,_x_ismbbtype,,build\intel\st_obj\ismbbyte.obj,0,verified
+0x00403506,409,__setmbcp,,build\intel\st_obj\mbctype.obj,1,verified
+0x0040369F,74,_getSystemCP,,build\intel\st_obj\mbctype.obj,0,verified
+0x004036E9,51,_CPtoLCID,,build\intel\st_obj\mbctype.obj,0,verified
+0x0040371C,41,_setSBCS,,build\intel\st_obj\mbctype.obj,0,verified
+0x00403745,389,_setSBUpLow,,build\intel\st_obj\mbctype.obj,0,verified
+0x004038CA,28,___initmbctable,,build\intel\st_obj\mbctype.obj,1,verified
+0x004038F0,16,_strcpy,,build\intel\st_obj\strcat.obj,1,verified
+0x00403900,224,_strcat,,build\intel\st_obj\strcat.obj,1,verified
+0x004039E0,123,_strlen,,build\intel\st_obj\strlen.obj,1,verified
+0x00403A5B,137,___crtMessageBoxA,,build\intel\st_obj\crtmbox.obj,1,verified
+0x00403AF0,821,_memmove,,build\intel\st_obj\memmove.obj,1,verified (spans labels)
+0x00403E25,548,___crtLCMapStringA,,build\intel\st_obj\a_map.obj,1,verified
+0x00404049,43,_strncnt,,build\intel\st_obj\a_cmp.obj build\intel\st_obj\a_map.obj,0,verified
+0x00404074,329,___crtGetStringTypeA,,build\intel\st_obj\a_str.obj,1,verified
+0x004041C0,88,_memset,,build\intel\st_obj\memset.obj,1,verified
+0x00404220,6,,KERNEL32.DLL!RtlUnwind,,0,import thunk
+0x00404226,134,__chdir,,build\intel\st_obj\chdir.obj,1,verified
+0x004042AC,103,__dosmaperr,,build\intel\st_obj\dosmap.obj,1,verified
+0x00404313,123,__mbctoupper,,build\intel\st_obj\mbtoupr.obj,1,verified

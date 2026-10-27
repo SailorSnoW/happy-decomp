@@ -1,0 +1,52 @@
+targets:
+  HAPPY:
+    filename: happy.exe
+    source_root: src
+    hash:
+      sha256: c42e561678e5b968c5110e05b7e81eb28581b81bbdebaca81aa3c68502a5f4ba
+    data_sources: []
+    encoding:
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
+      ignore_variables: []
+      icon:
+    marker_aliases: {}
+  MAPED:
+    filename: maped.exe
+    source_root: src
+    hash:
+      sha256: 789ee11e62e1a2b1241f60e3a060f0bd2ac926d15a6762e6b2b31946cac74f92
+    data_sources: []
+    encoding:
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
+      ignore_variables: []
+      icon:
+    marker_aliases: {}
+  LOADER:
+    filename: loader.exe
+    source_root: src
+    hash:
+      sha256: 4814e49733f8b4c7b7050f0898b824fe58fcaf8d23930d8e96d00410eee74fd4
+    data_sources: []
+    encoding:
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
+      ignore_variables: []
+      icon:
+    marker_aliases: {}

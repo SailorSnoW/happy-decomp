@@ -1,0 +1,174 @@
+address,size,name,candidates,member,external,status
+0x00405CA0,6,,d_check_proc,,0,import thunk
+0x00405CA6,6,,d_radio_proc,,0,import thunk
+0x00405CAC,6,,d_edit_proc,,0,import thunk
+0x00405CB2,6,,d_text_proc,,0,import thunk
+0x00405CB8,6,,d_button_proc,,0,import thunk
+0x00405CBE,6,,d_ctext_proc,,0,import thunk
+0x00405CC4,6,,d_shadow_box_proc,,0,import thunk
+0x00405CCA,47,_free,,build\intel\st_obj\free.obj,1,verified
+0x00405CF9,18,_malloc,,build\intel\st_obj\malloc.obj,1,verified
+0x00405D0B,44,__nh_malloc,,build\intel\st_obj\malloc.obj,1,verified
+0x00405D37,54,__heap_alloc,,build\intel\st_obj\malloc.obj,1,verified
+0x00405D6D,86,_fclose,,build\intel\st_obj\fclose.obj,1,verified
+0x00405DC3,232,_fread,,build\intel\st_obj\fread.obj,1,verified
+0x00405EAB,32,__fsopen,,build\intel\st_obj\fopen.obj,1,verified
+0x00405ECB,19,_fopen,,build\intel\st_obj\fopen.obj,1,verified
+0x00405EDE,266,_fwrite,,build\intel\st_obj\fwrite.obj,1,verified
+0x00405FE8,23,__fpmath,,..\build\intel\st_obj\fpinit.obj,1,verified
+0x00405FFF,1,,__fpclear __rttosnpop,..\build\intel\st_obj\87disp.obj ..\build\intel\st_obj\fpinit.obj,1,ambiguous
+0x00406000,56,__cfltcvt_init,,..\build\intel\st_obj\fpinit.obj,1,verified
+0x00406038,39,__ftol,,..\build\intel\st_obj\ftol.obj,1,verified
+0x0040605F,30,_rand,,build\intel\st_obj\rand.obj,1,verified
+0x0040607D,82,_sprintf,,build\intel\st_obj\sprintf.obj,1,verified
+0x004060CF,140,_fseek,,build\intel\st_obj\fseek.obj,1,verified
+0x0040615B,139,_atol,,build\intel\st_obj\atox.obj,1,verified
+0x004061E6,11,_atoi,,build\intel\st_obj\atox.obj,1,verified
+0x004061F1,45,__cinit,,build\intel\st_obj\crt0dat.obj,1,verified
+0x0040621E,17,_exit,,build\intel\st_obj\crt0dat.obj,1,verified
+0x0040622F,17,__exit,,build\intel\st_obj\crt0dat.obj,1,verified
+0x00406240,153,_doexit,,build\intel\st_obj\crt0dat.obj,0,verified
+0x004062D9,26,__initterm,,build\intel\st_obj\crt0dat.obj,0,verified
+0x004062F3,109,__onexit,,build\intel\st_obj\onexit.obj,1,verified
+0x00406360,18,_atexit,,build\intel\st_obj\onexit.obj,1,verified
+0x00406372,47,___onexitinit,,build\intel\st_obj\onexit.obj,1,verified
+0x004063A1,246,_WinMainCRTStartup,,build\intel\st_obj\wincrt0.obj,1,verified
+0x00406497,37,__amsg_exit,,build\intel\st_obj\wincrt0.obj build\intel\st_obj\wwincrt0.obj,1,verified
+0x004064BC,36,_fast_error_exit,,build\intel\st_obj\wincrt0.obj build\intel\st_obj\wwincrt0.obj,0,verified
+0x004064E0,60,__heap_init,,build\intel\st_obj\heapinit.obj,1,verified
+0x0040651C,62,___sbh_heap_init,,build\intel\st_obj\sbheap.obj,1,verified
+0x0040655A,43,___sbh_find_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x00406585,811,___sbh_free_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x004068B0,777,___sbh_alloc_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x00406BB9,177,___sbh_alloc_new_region,,build\intel\st_obj\sbheap.obj,1,verified
+0x00406C6A,251,___sbh_alloc_new_group,,build\intel\st_obj\sbheap.obj,1,verified
+0x00406D65,758,___sbh_resize_block,,build\intel\st_obj\sbheap.obj,1,verified
+0x0040705B,27,__callnewh,,build\intel\st_obj\handler.obj,1,verified
+0x00407076,179,__close,,build\intel\st_obj\close.obj,1,verified
+0x00407129,43,__freebuf,,build\intel\st_obj\_freebuf.obj,1,verified
+0x00407154,59,_fflush,,build\intel\st_obj\fflush.obj,1,verified
+0x0040718F,92,__flush,,build\intel\st_obj\fflush.obj,1,verified
+0x004071EB,9,__flushall,,build\intel\st_obj\fflush.obj,1,verified
+0x004071F4,109,_flsall,,build\intel\st_obj\fflush.obj,0,verified
+0x00407261,217,__filbuf,,build\intel\st_obj\_filbuf.obj,1,verified
+0x0040733A,502,__read,,build\intel\st_obj\read.obj,1,verified
+0x00407530,821,_memcpy,,build\intel\st_obj\memcpy.obj,1,verified (spans labels)
+0x00407865,368,__openfile,,build\intel\st_obj\_open.obj,1,verified
+0x004079D5,120,__getstream,,build\intel\st_obj\stream.obj,1,verified
+0x00407A4D,277,__flsbuf,,build\intel\st_obj\_flsbuf.obj,1,verified
+0x00407B62,429,__write,,build\intel\st_obj\write.obj,1,verified
+0x00407D0F,18,__setdefaultprecision,,build\intel\st_obj\fp8.obj,1,verified
+0x00407D21,62,__ms_p5_test_fdiv,,..\build\intel\st_obj\testfdiv.obj,1,verified
+0x00407D5F,41,__ms_p5_mp_test_fdiv,,..\build\intel\st_obj\testfdiv.obj,1,verified
+0x00407D88,90,__forcdecpt,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00407DE2,78,__cropzeros,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00407E30,24,__positive,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00407E48,62,__fassign,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00407E86,260,__cftoe,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00407F8A,222,__cftof,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00408068,155,__cftog,,..\build\intel\st_obj\cvt.obj,1,verified
+0x00408103,39,__cftoe_g,,..\build\intel\st_obj\cvt.obj,0,verified
+0x0040812A,35,__cftof_g,,..\build\intel\st_obj\cvt.obj,0,verified
+0x0040814D,81,__cfltcvt,,..\build\intel\st_obj\cvt.obj,1,verified
+0x0040819E,37,__shift,,..\build\intel\st_obj\cvt.obj,0,verified
+0x004081C3,1857,__output,,build\intel\st_obj\output.obj,1,verified
+0x00408904,53,_write_char,,build\intel\st_obj\output.obj,0,verified
+0x00408939,49,_write_multi_char,,build\intel\st_obj\output.obj build\intel\st_obj\woutput.obj,0,verified
+0x0040896A,56,_write_string,,build\intel\st_obj\output.obj,0,verified
+0x004089A2,13,_get_int_arg,,build\intel\st_obj\cprintf.obj build\intel\st_obj\output.obj build\intel\st_obj\woutput.obj,0,verified
+0x004089AF,16,_get_int64_arg,,build\intel\st_obj\cprintf.obj build\intel\st_obj\output.obj build\intel\st_obj\woutput.obj,0,verified
+0x004089BF,14,_get_short_arg,,build\intel\st_obj\cprintf.obj build\intel\st_obj\output.obj,0,verified
+0x004089CD,154,__lseek,,build\intel\st_obj\lseek.obj,1,verified
+0x00408A67,344,_ftell,,build\intel\st_obj\ftell.obj,1,verified
+0x00408BBF,117,__isctype,,build\intel\st_obj\isctype.obj,1,verified
+0x00408C40,52,__allmul,,build\intel\st_obj\llmul.obj,1,verified
+0x00408C74,288,_realloc,,build\intel\st_obj\realloc.obj,1,verified
+0x00408D94,41,__msize,,build\intel\st_obj\msize.obj,1,verified
+0x00408DBD,321,__XcptFilter,,build\intel\st_obj\winxfltr.obj,1,verified
+0x00408EFE,67,_xcptlookup,,build\intel\st_obj\winxfltr.obj,0,verified
+0x00408F41,88,__wincmdln,,build\intel\st_obj\wincmdln.obj,1,verified
+0x00408F99,185,__setenvp,,build\intel\st_obj\stdenvp.obj,1,verified
+0x00409052,153,__setargv,,build\intel\st_obj\stdargv.obj,1,verified
+0x004090EB,436,_parse_cmdline,,build\intel\st_obj\stdargv.obj,0,verified
+0x0040929F,306,___crtGetEnvironmentStringsA,,build\intel\st_obj\a_env.obj,1,verified
+0x004093D1,427,__ioinit,,build\intel\st_obj\ioinit.obj,1,verified
+0x0040957C,32,__global_unwind2,,build\intel\st_obj\exsup.obj,1,verified (spans labels)
+0x0040959C,34,__unwind_handler,,build\intel\st_obj\exsup.obj,0,verified
+0x004095BE,104,__local_unwind2,,build\intel\st_obj\exsup.obj,1,verified (spans labels)
+0x00409626,35,__abnormal_termination,,build\intel\st_obj\exsup.obj,1,verified
+0x00409649,9,__NLG_Notify1,,build\intel\st_obj\exsup.obj,1,verified
+0x00409652,34,,,,0,not found
+0x00409674,189,__except_handler3,,build\intel\st_obj\exsup3.obj,1,verified
+0x00409731,27,__seh_longjmp_unwind@4,,build\intel\st_obj\exsup3.obj,1,verified
+0x0040974C,57,__FF_MSGBANNER,,build\intel\st_obj\crt0msg.obj,1,verified
+0x00409785,339,__NMSG_WRITE,,build\intel\st_obj\crt0msg.obj,1,verified
+0x004098E0,821,_memmove,,build\intel\st_obj\memmove.obj,1,verified (spans labels)
+0x00409C15,103,__dosmaperr,,build\intel\st_obj\dosmap.obj,1,verified
+0x00409C7C,149,__alloc_osfhnd,,build\intel\st_obj\osfinfo.obj,1,verified
+0x00409D11,119,__set_osfhnd,,build\intel\st_obj\osfinfo.obj,1,verified
+0x00409D88,122,__free_osfhnd,,build\intel\st_obj\osfinfo.obj,1,verified
+0x00409E02,61,__get_osfhandle,,build\intel\st_obj\osfinfo.obj,1,verified
+0x00409E3F,87,__commit,,build\intel\st_obj\commit.obj,1,verified
+0x00409E96,165,___initstdio,,build\intel\st_obj\_file.obj,1,verified
+0x00409F3B,20,___endstdio,,build\intel\st_obj\_file.obj,1,verified
+0x00409F4F,68,__getbuf,,build\intel\st_obj\_getbuf.obj,1,verified
+0x00409F93,697,__sopen,,build\intel\st_obj\open.obj,1,verified
+0x0040A24C,38,__isatty,,build\intel\st_obj\isatty.obj,1,verified
+0x0040A272,53,__control87,,..\build\intel\st_obj\ieee87.obj,1,verified
+0x0040A2A7,22,__controlfp,,..\build\intel\st_obj\ieee87.obj,1,verified
+0x0040A2BD,146,__abstract_cw,,..\build\intel\st_obj\ieee87.obj,0,verified
+0x0040A34F,137,__hw_cw,,..\build\intel\st_obj\ieee87.obj,0,verified
+0x0040A3D8,203,_tolower,,build\intel\st_obj\tolower.obj,1,verified
+0x0040A4A3,73,__ZeroTail,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A4EC,86,__IncMan,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A542,140,__RoundMan,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A5CE,27,__CopyMan,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A5E9,12,__FillZeroMan,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A5F5,27,__IsZeroMan,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A610,141,__ShrMan,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A69D,364,__ld12cvt,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A809,22,__ld12tod,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A81F,22,__ld12tod,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A835,45,__atodbl,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A862,45,__atoflt,,..\build\intel\st_obj\intrncvt.obj,1,verified
+0x0040A890,16,_strcpy,,build\intel\st_obj\strcat.obj,1,verified
+0x0040A8A0,224,_strcat,,build\intel\st_obj\strcat.obj,1,verified
+0x0040A980,119,__fptostr,,build\intel\st_obj\_fptostr.obj,1,verified
+0x0040A9F7,100,__fltout,,..\build\intel\st_obj\cfout.obj,1,verified
+0x0040AA5B,182,___dtold,,..\build\intel\st_obj\cfout.obj,1,verified
+0x0040AB20,88,_memset,,build\intel\st_obj\memset.obj,1,verified
+0x0040AB80,123,_strlen,,build\intel\st_obj\strlen.obj,1,verified
+0x0040ABFB,9,__fptrap,,build\intel\st_obj\crt0fp.obj,1,verified
+0x0040AC04,104,_wctomb,,build\intel\st_obj\wctomb.obj,1,verified
+0x0040AC70,104,__aulldiv,,build\intel\st_obj\ulldiv.obj,1,verified
+0x0040ACE0,117,__aullrem,,build\intel\st_obj\ullrem.obj,1,verified
+0x0040AD55,329,___crtGetStringTypeA,,build\intel\st_obj\a_str.obj,1,verified
+0x0040AE9E,17,__ismbblead,,build\intel\st_obj\ismbbyte.obj,1,verified
+0x0040AEAF,49,_x_ismbbtype,,build\intel\st_obj\ismbbyte.obj,0,verified
+0x0040AEE0,409,__setmbcp,,build\intel\st_obj\mbctype.obj,1,verified
+0x0040B079,74,_getSystemCP,,build\intel\st_obj\mbctype.obj,0,verified
+0x0040B0C3,51,_CPtoLCID,,build\intel\st_obj\mbctype.obj,0,verified
+0x0040B0F6,41,_setSBCS,,build\intel\st_obj\mbctype.obj,0,verified
+0x0040B11F,389,_setSBUpLow,,build\intel\st_obj\mbctype.obj,0,verified
+0x0040B2A4,28,___initmbctable,,build\intel\st_obj\mbctype.obj,1,verified
+0x0040B2C0,137,___crtMessageBoxA,,build\intel\st_obj\crtmbox.obj,1,verified
+0x0040B350,254,_strncpy,,build\intel\st_obj\strncpy.obj,1,verified
+0x0040B44E,125,_calloc,,build\intel\st_obj\calloc.obj,1,verified
+0x0040B4CB,88,__fcloseall,,build\intel\st_obj\closeall.obj,1,verified
+0x0040B523,326,__chsize,,build\intel\st_obj\chsize.obj,1,verified
+0x0040B669,548,___crtLCMapStringA,,build\intel\st_obj\a_map.obj,1,verified
+0x0040B88D,43,_strncnt,,build\intel\st_obj\a_cmp.obj build\intel\st_obj\a_map.obj,0,verified
+0x0040B8B8,33,___addl,,..\build\intel\st_obj\mantold.obj,1,verified
+0x0040B8D9,94,___add_12,,..\build\intel\st_obj\mantold.obj,1,verified
+0x0040B937,46,___shl_12,,..\build\intel\st_obj\mantold.obj,1,verified
+0x0040B965,45,___shr_12,,..\build\intel\st_obj\mantold.obj,1,verified
+0x0040B992,199,___mtold12,,..\build\intel\st_obj\mantold.obj,1,verified
+0x0040BA59,1233,___strgtold12,,..\build\intel\st_obj\strgtold.obj,1,verified
+0x0040BF2A,659,_$I10_OUTPUT,,..\build\intel\st_obj\x10fout.obj,1,verified
+0x0040C1C0,47,__alloca_probe,,build\intel\st_obj\chkstk.obj,1,verified
+0x0040C1EF,118,__setmode,,build\intel\st_obj\setmode.obj,1,verified
+0x0040C265,544,___ld12mul,,..\build\intel\st_obj\tenpow.obj,1,verified
+0x0040C485,124,___multtenpow12,,..\build\intel\st_obj\tenpow.obj,1,verified
+0x0040C510,6,,KERNEL32.DLL!RtlUnwind,,0,import thunk
+0x0040C516,134,__chdir,,build\intel\st_obj\chdir.obj,1,verified
+0x0040C59C,123,__mbctoupper,,build\intel\st_obj\mbtoupr.obj,1,verified
