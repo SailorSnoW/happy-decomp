@@ -78,6 +78,7 @@ Details of the setup: `notes/matching.md`.
 - **Matching scripts** (same Python):
   - `build.py [--final] [happy] [maped] [loader]`: compiles `src/` and links `build/<exe>/<exe>.exe` + `.pdb` in the order of the blocks, generates stubs for the functions not decompiled yet, then runs `reccmp-project detect`. `/OPT:NOREF` by default, `--final` for `/OPT:REF`;
   - `progress.py [exe...]`: runs reccmp on each built target, writes `notes/data/progress-<exe>.csv` and prints the progress per block;
+  - `ghidra_sync.py [--apply | --save] [exe...]`: carries the names, prototypes and global types of `src/` into Ghidra (dry run by default; `--save` waits for the auto-analysis before saving). Structures are imported by hand first (`notes/matching.md` §3b);
   - `crt_names.py [exe...]`: names the CRT functions by byte identity with the objects of `LIBC.LIB`; writes `notes/data/crt-<exe>.csv` and the `LIBRARY` annotations `src/crt/<exe>.h`.
 
 

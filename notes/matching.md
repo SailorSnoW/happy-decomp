@@ -61,7 +61,16 @@ Scratch tools for this (not versioned): compile one file with the project flags 
 
 ## 3b. Ghidra
 
-Names are carried from `src/` into Ghidra after each batch, types too: the structures of `src/include/*.h` are imported with `import_data_types` (Ghidra's C parser, structure text copied from the header), then applied with `apply_data_type` to the globals and with `set_function_prototype` to the functions. Allegro types (`BITMAP`, `DATAFILE`) do not exist in Ghidra: `void *` in the prototypes for now. `rename_symbol` on an address without defined data creates a label (`trans_table`, happy `DAT_00440060`). Names (`rename_function` / `rename_symbol` with `strict_mode=off`: the server's naming gate wants PascalCase and a `g_` prefix, which `src/` does not use), then `save_program`. Backup from before the first write: `happy-decomp_2026_10_27.gar`.
+Names and types are carried from `src/` into Ghidra after each batch with `scripts/ghidra_sync.py` (dry run by default; `--apply` writes, `--save` writes then saves). It reads the `FUNCTION`, `LIBRARY` and `GLOBAL` annotations (not `src/crt/`) and only calls `rename_function`, `rename_symbol`, `set_function_prototype` and `apply_data_type`, with `strict_mode=off` (the server's naming gate wants PascalCase and a `g_` prefix, which `src/` does not use). Allegro types that Ghidra lacks (`BITMAP`, `DATAFILE`...) become `void *` in prototypes; a global of such a type only gets its name. A `DAT_<address>` name of `src/` keeps Ghidra's default name (`DAT_...`, `OBJ_ARRAY_...`). Functions that Ghidra misses (`timer_1s`, `timer_15ms`) are skipped: creating them is not allowed.
+
+Structures go first, by hand: `import_data_types` with the structure text of the header. Importing an existing name **replaces** the type in place, and the arrays already typed with it follow [verified 2026-10-27, `OBJ`].
+
+Pitfalls [verified 2026-10-27]:
+- **Auto-analysis queue**: every write (prototype, applied type) queues analysis tasks. A `save_program` sent while they run waits behind them, and the whole HTTP server blocks: every request times out (here for hours, until Ghidra was restarted after a manual save showed "30+ wait for analysis" tasks). `ghidra_sync.py --save` waits for `analysis_status` to report `analyzing: false` before saving. A write can also fail during the analysis ("Invalid signature" on a valid prototype) and succeed afterwards.
+- **Do not use `modify_struct_field` / `add_struct_field`**: retyping a field shrank `OBJ` from 28 to 16 bytes (later fields packed down) and renamed it with a Hungarian prefix (`x` -> `nX`). Repaired by re-importing the structure.
+- `rename_symbol` on an address without defined data creates a label.
+
+Backup from before the first write: `happy-decomp_2026_10_27.gar`.
 
 Consequence: `captures/ghidra-cache/*_rest.json` is the Ghidra project **before** the renames. Regenerating it (`ghidra_dump_rest.py`) and then `inventory.py` would change the `ghidra_name` column of `notes/data/functions-*.csv`. Keep the cache as is unless the inventory itself must be redone.
 

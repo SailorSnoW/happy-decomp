@@ -1,5 +1,21 @@
 # STATUS
 
+## 2026-10-27 — Ghidra synchronised with src/ (blocks 01-04 and 09)
+
+Note: `notes/matching.md` §3b.
+
+### Done
+- [verified] Cause of the blockage: the auto-analysis queued by the writes; `save_program` waited behind it and blocked the HTTP server. Ghidra restarted by the user after a manual save; the batch of step 3 was saved.
+- `scripts/ghidra_sync.py`: names, prototypes and global types from the annotations of `src/`, dry run by default, saves only after the analysis. Applied to happy (140 changes: blocks 02-04, the corrected names `light_table`, `trans_table`, `misc_datafile`, `controls`); maped already in sync. Re-run: 0 differences for both. Both programs saved.
+- Structures imported or updated in Ghidra: `OBJ` (x, y, f10), `MAP` (f03, f04), `HISCORE`, `PARTICLE`, `T_00416d00`, `T_0043f5c0`. `OBJ` of maped was broken by `modify_struct_field` (28 -> 16 bytes) and repaired by re-importing it.
+
+### Remaining
+- Next: happy block_05 (19 functions, gameplay), leaves first, `0x00404C50` at the end.
+- `timer_1s` (`0x004018B0`) and `timer_15ms` (`0x004018F0`) are not functions in Ghidra (creating them requires approval).
+
+### Open questions
+- End-of-array pointers (step 5): decision pending.
+
 ## 2026-10-27 — Matching, step 6: loading and resetting a level (happy block_04)
 
 Note: `notes/matching.md` §3, §3a, §5. Branch `decomp/happy`.
