@@ -1,5 +1,19 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 11: start menu and custom game (happy block_08 complete)
+
+Note: `notes/matching.md` §3a, §5; `notes/block08-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] `start_menu` (`0x00409870`, 1,476 bytes) and `custom_game` (`0x00409F30`, 2,296 bytes): 100%. block_08 complete: 4 of 5 at 100%, `main` 83.81% (loop rotation only, retried with both callees at 100%).
+- [verified] `start_menu`: the mouse band sets `DAT_00413b20` (0 "HAPPYLAND ADVENTURES" -> `data/xlevels.dat`, 1 "THE ORIGINAL GAME" -> `data/levels.dat`, 2 "CREATE CUSTOM GAME", 3 "EXIT" -> -1); W toggles `screen_mode` (320x200 / 640x480). `custom_game`: up to 18 level maps (`DAT_004404e0`, count `DAT_004450a8`) and 8 bonus maps (`DAT_0043f5c0`, count `DAT_0042f568`) picked with `file_select` under `./maps/`, saved in `happy.clv`; the counts are read and written as 2 bytes each, one byte more than the globals.
+- Matching findings (`matching.md` §3a): two `?:` on `screen_mode` instead of an `if`/`else` (found by trying the shapes in a loop: declaration orders, variable reuse and loop variables changed nothing); `while (!done)` instead of `do`/`while`; nested "Play!" tests.
+- No regression: happy 82/84 annotated, 58 at 100% (49.4% of the bytes); maped 9/50, 9 at 100%; `reccmp-datacmp` 72 + 4 variables, 0 issues.
+- Ghidra: `start_menu`, `custom_game` renamed with their prototypes, saved.
+
+### Remaining
+- Next: `0x00402620` (level frame, 2,166 bytes), then `0x00404C50` (game loop, 4,443 bytes); then maped.
+
 ## 2026-10-27 — Matching, step 10: main and the custom game panel (happy block_08, without the two large functions)
 
 Note: `notes/matching.md` §3, §3a, §5; `notes/block08-diffs.md`. Branch `decomp/happy`.
@@ -12,7 +26,7 @@ Note: `notes/matching.md` §3, §3a, §5; `notes/block08-diffs.md`. Branch `decomp/
 - Ghidra: `draw_slot_panel` renamed with its prototype, `DAT_00413b10` typed, saved. `main` has no function in Ghidra (skipped); `passwords` and `player` still refused (`type_would_evict`).
 
 ### Remaining
-- Next: the four large functions (`0x00404C50`, `0x00409F30`, `0x00402620`, `0x00409870`), then maped. Retry the loop of `main` once `0x00409870` and `0x00409F30` are done.
+- Next: the four large functions (`0x00404C50`, `0x00409F30`, `0x00402620`, `0x00409870`), then maped. Retry the loop of `main` once `0x00409870` and `0x00409F30` are done (done in step 11: no change).
 
 ### Open questions
 - `main`: which C shape keeps VC6 from rotating the start menu loop (`block08-diffs.md`)?

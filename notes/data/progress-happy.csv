@@ -71,10 +71,10 @@ address,size,block,name,matching
 0x00409010,105,block_07,anim_tick,100.00
 0x00409080,1467,block_07,play_ending,99.82
 0x00409640,557,block_07,play_game,99.38
-0x00409870,1476,block_08,,
+0x00409870,1476,block_08,start_menu,100.00
 0x00409E40,238,block_08,draw_slot_panel,100.00
-0x00409F30,2296,block_08,,
-0x0040A830,313,block_08,_mangled_main,81.90
+0x00409F30,2296,block_08,custom_game,100.00
+0x0040A830,313,block_08,_mangled_main,83.81
 0x0040A970,37,block_08,WinMain,100.00
 0x0040A9A0,135,block_09,map_clear,100.00
 0x0040AA30,197,block_09,map_create,100.00

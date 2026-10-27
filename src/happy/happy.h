@@ -250,8 +250,8 @@ void play_ending(void);
 void play_game(void);
 
 /* block_08.c */
-int FUN_00409870(void);
+int start_menu(void);
 void draw_slot_panel(int x1, int y1, int x2, int y2);
-int FUN_00409f30(void);
+int custom_game(void);
 
 #endif

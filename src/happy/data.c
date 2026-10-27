@@ -94,6 +94,10 @@ int DAT_00413b10;
 // GLOBAL: HAPPY 0x00413b14
 int use_joystick;
 
+/* [hypothesis] Game chosen in start_menu [verified: set from the mouse
+ * band there]: 0 "HAPPYLAND ADVENTURES" (data/xlevels.dat), 1 "THE
+ * ORIGINAL GAME" (data/levels.dat), 2 "CREATE CUSTOM GAME" (custom_game,
+ * then data/levels.dat), 3 "EXIT". */
 // GLOBAL: HAPPY 0x00413b20
 int DAT_00413b20;
 
@@ -190,7 +194,8 @@ OBJ DAT_00414140[100];
 // GLOBAL: HAPPY 0x00414c40
 char scroll_text[80];
 
-/* [hypothesis] A datafile whose entries FUN_004019C0 counts. */
+/* The levels: data/xlevels.dat or data/levels.dat, loaded by start_menu
+ * [verified]; FUN_004019C0 counts its entries. */
 // GLOBAL: HAPPY 0x00414c90
 DATAFILE *DAT_00414c90;
 
@@ -265,6 +270,8 @@ RGB_MAP rgb_table;
 // GLOBAL: HAPPY 0x0042f500
 PLAYER player;
 
+/* custom_game: number of bonus maps of DAT_0043f5c0 (at most 8, saved in
+ * happy.clv) [verified]. */
 // GLOBAL: HAPPY 0x0042f568
 unsigned char DAT_0042f568;
 
@@ -359,7 +366,9 @@ unsigned char DAT_004450a0;
 // GLOBAL: HAPPY 0x004450a4
 int DAT_004450a4;
 
-/* Number of entries of DAT_00414c90, minus 8 or 9 (FUN_004019C0). */
+/* Number of entries of DAT_00414c90, minus 8 or 9 (FUN_004019C0); in
+ * custom_game, the number of level maps of DAT_004404e0 (at most 18,
+ * saved in happy.clv) [verified]. */
 // GLOBAL: HAPPY 0x004450a8
 unsigned char DAT_004450a8;
 
