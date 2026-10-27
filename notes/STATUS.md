@@ -11,15 +11,15 @@ Note: `notes/matching.md` §3, §3a, §5; `notes/maped-diffs.md`. Branch `decomp
 - Matching findings (`matching.md` §3, §3a): a `// STRING:` marker before a line without the literal drops the whole function (use `reccmp-decomplint`); separate `if`s versus `else if` (merged tails); separate locals for derived values (`editor_loop` 45% -> 99.7%); parameters reused as temporaries (`resize_map`); `i + dx` in the expression; `object_message` is inline; `chdir` is an OLDNAMES alias of `_chdir`.
 - Scratch tools (not versioned): a disassembler of the originals with names from `src/`, and an object comparator (compile one file, compare one function instruction by instruction, jump targets as indices) with a statement-order permuter; they found every shape above.
 - Ghidra: maped functions renamed with their prototypes, globals typed and named, saved (`ghidra_sync.py --save maped`). Left: the functions Ghidra does not have (`slider_changed`, `main`, the 7 thunks).
-- No regression: happy 84/84, 66 at 100%. The final link of maped (`build.py --final maped`) succeeds: 69,689 bytes (original 73,728), still with the data stubs below.
+- No regression: happy 84/84, 66 at 100%. The final link of maped (`build.py --final maped`) succeeds: 69,689 bytes (original 73,728).
 - `layout-maped.md` §10 question 3: `0x00403140` is called on F1 and empty.
 
 ### Remaining
 - Next: loader (`src/loader/`, 70 functions in the inventory, `notes/layout-loader.md`).
 - maped below 100%: `set_screen_mode`, `auto_mask`, `pick_tile` (shapes tried: `maped-diffs.md`).
 
-### Open questions
-- **maped final link**: `common/block_01.c` is compiled whole into maped and its happy-only functions reference globals maped does not define (`keys`, `buffer`, `screen_mode`, `controls`, `light_table`, `time_left`, `use_joystick`, `DAT_00414040`); `build.py` still gives them function stubs, also with `--final` (`matching.md` §2). Define them in maped's `data.c`, split the file, or guard with `#ifdef`? To decide before the final maped exe.
+### Decisions
+- **Per-exe macro** (decided with the user): `build.py` compiles each exe with `/DHAPPY`, `/DMAPED` or `/DLOADER`; the happy-only functions of `common/block_01.c` and their globals' declarations are inside `#ifdef HAPPY` (evidence: `matching.md` §2). No stub left in maped; `build.py --final happy maped` links both (81,977 and 69,689 bytes); same scores, `reccmp-datacmp` 0 issues.
 
 ## 2026-10-27 — Matching, step 13: game loop (happy fully decompiled)
 

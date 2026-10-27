@@ -4,12 +4,20 @@
  * [hypothesis] A single source file linked into both exes, like block_09:
  * maped keeps only FUN_00401160 and init_help_texts, which are adjacent
  * there (notes/shared-code.md). Tables, input, screen display, message box,
- * help texts. */
+ * help texts.
+ * The happy-only functions are inside #ifdef HAPPY (macro set by
+ * scripts/build.py; its name is ours) [hypothesis, notes/matching.md §2]:
+ * they use globals that maped does not have [verified: no room for keys[128]
+ * in maped's .bss, no screen_mode = 32 in its .data], and the VC6 linker
+ * refuses their references even when /OPT:REF drops the functions
+ * [verified]; two separate files could not keep happy's order, where the
+ * shared functions are interleaved with the others. */
 #include <stdlib.h>
 #include <string.h>
 #include <allegro.h>
 #include "block_01.h"
 
+#ifdef HAPPY
 /* Fills the table at 0x00414040 [verified]; entry 0 only gets f4 = 0.
  * [verified] The assignments are grouped by field (f0, then f8, then f4):
  * written entry by entry, the stores come out in another order (38.66%).
@@ -66,6 +74,7 @@ void FUN_00401000(void)
     DAT_00414040[18].f4 = 2;
     DAT_00414040[19].f4 = 32;
 }
+#endif
 
 /* Clears the 100 object slots and fills the object templates 0 to 34
  * [verified]. Templates 0-25: f13 = f14 = 'Q' + 2 * i; 26-33: f13 = 8 * i;
@@ -115,6 +124,7 @@ void FUN_00401160(void)
     DAT_00440060[26 + i].f12 = 0;
 }
 
+#ifdef HAPPY
 /* Copies the state of joystick 0 into keys[116] to keys[124] when
  * use_joystick is set [verified: Allegro joy[0], stick 0 and buttons 0-3].
  * [hypothesis] So that the game reads keyboard and joystick through the
@@ -279,6 +289,8 @@ void message_box(int n, char *text, int wait)
     }
     time_left = saved;
 }
+
+#endif
 
 /* Default help texts [verified]: 0 "n/a", 1 to 9 the texts below, 10 to 15
  * "-". 0x00403070 then overwrites all 16 with those of the .map file.

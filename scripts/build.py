@@ -11,6 +11,10 @@ exe. --final links with /OPT:REF, as the original was [hypothesis,
 notes/shared-code.md]; the linker option does not change the code
 (notes/toolchain-vc6.md §6).
 
+Each exe is compiled with its name defined (/DHAPPY, /DMAPED, /DLOADER):
+src/common/ leaves out the functions of the other exe with #ifdef
+(notes/matching.md §2). The macro changes no code.
+
 Functions that are not decompiled yet are still called: the symbols the link
 reports as unresolved get an empty definition in build/<exe>/stubs.c
 (generated, never annotated), then the link is redone. The exe is therefore
@@ -92,7 +96,7 @@ def build(vc, exe, lib, opt):
         shutil.rmtree(out)
     (out / "obj").mkdir(parents=True)
     inc = ["/I", vc.path(SRC / "include"), "/I", vc.path(SRC / exe),
-           "/I", vc.path(ALLEGRO / "include")]
+           "/I", vc.path(ALLEGRO / "include"), "/D" + exe.upper()]
 
     def cl(src, obj):
         rc, text = vc.run(["cl"] + CFLAGS + inc + [

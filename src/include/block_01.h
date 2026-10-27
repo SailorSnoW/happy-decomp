@@ -52,28 +52,34 @@ typedef struct T_00414040 {
  * reads from a .map file]. */
 #define HELP_TEXT_SIZE 257
 
-/* Globals used by this file, defined in each exe's data.c. The happy-only
- * functions use globals that maped does not define: in maped they are left
- * to the stubs of scripts/build.py (notes/matching.md §2). */
+/* Globals used by this file, defined in each exe's data.c. Those of the
+ * happy-only functions exist in happy only (#ifdef HAPPY, see
+ * common/block_01.c). */
+#ifdef HAPPY
 extern int screen_mode;
 extern int use_joystick;
 extern int keys[128];
 extern volatile int time_left;
 extern T_00414040 DAT_00414040[20];
-extern OBJ DAT_00414140[100];
-extern DATAFILE *misc_datafile;
-extern char help_texts[16][HELP_TEXT_SIZE];
 extern COLOR_MAP light_table;
 extern BITMAP *buffer;
 extern int controls[7];
+#endif
+extern OBJ DAT_00414140[100];
+extern DATAFILE *misc_datafile;
+extern char help_texts[16][HELP_TEXT_SIZE];
 extern OBJ DAT_00440060[40];
 
+#ifdef HAPPY
 void FUN_00401000(void);
+#endif
 void FUN_00401160(void);
+#ifdef HAPPY
 void read_joystick(void);
 void read_keyboard(void);
 void blit_to_screen(BITMAP *bmp);
 void message_box(int n, char *text, int wait);
+#endif
 void init_help_texts(void);
 
 #endif
