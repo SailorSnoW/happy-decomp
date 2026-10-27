@@ -35,14 +35,11 @@ extern int DAT_00410118;
 /* [hypothesis] Folder of the file selector, "./maps/" at start (1024
  * bytes up to the next global). */
 extern char DAT_00410340[1024];
-/* Counts set by FUN_004019b0: DAT_004107a0 = DAT_004107a4 = tiles of
- * map_datafile after the first two entries [verified]. */
-extern int DAT_004107a0;
-extern int DAT_004107a4;
-extern int DAT_004107a8;
-extern int DAT_004107ac;
-extern int DAT_004107b0;
-extern int DAT_004107b4;
+/* Number of choices of each editing mode (indexed by DAT_00422404 in
+ * pick_tile) [verified], set by FUN_004019b0: [0] and [1] the tiles of
+ * map_datafile after the first two entries, [2] 10 masks, [3] 18 items
+ * (19 with the winter tile set), [4] 34 templates, [5] 9 types. */
+extern int DAT_004107a0[6];
 /* [hypothesis] data/sprites.dat (load_data). */
 extern DATAFILE *DAT_004113d4;
 /* Light table, made current by init_color_tables [verified]. */
@@ -102,5 +99,15 @@ void save_objects(void);
 int yes_no_box(char *text);
 void save_map(void);
 void save_map_as(void);
+void shift_map(int dx, int dy);
+void resize_map(int x, int y);
+void wait_arrows_released(void);
+int rand_range(int lo, int hi);
+void add_object(int x, int y, int type);
+char select_help_text(void);
+void auto_mask(int x, int y);
+void check_masks(void);
+void pick_tile(void);
+void editor_loop(void);
 
 #endif

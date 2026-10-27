@@ -40,25 +40,25 @@ int take_screenshot(void)
 }
 
 /* Counts the tiles of map_datafile (entries from index 2 up to DAT_END)
- * and sets the bounds of the tile, item and object pickers [hypothesis:
- * 0x004107A0-0x004107B4 are read by the editor loop]. Bit 3 of MAP.f79
- * (the "x" tile set, as in happy load_level) adds 1 to DAT_004107ac.
+ * and sets the number of choices of each editing mode, DAT_004107a0
+ * [verified: pick_tile indexes it by the mode]. Bit 3 of MAP.f79 (the
+ * "x" tile set, as in happy load_level) gives one item more.
  * [verified] An if/else in this position: VC6 turns it into
  * ((f79 & 8) | 0x90) >> 3; a ?: or the statement at the end of the
  * function gives other registers or another order. */
 // FUNCTION: MAPED 0x004019b0
 void FUN_004019b0(void)
 {
-    for (DAT_004107a0 = 0; map_datafile[DAT_004107a0 + 2].type != DAT_END; DAT_004107a0++)
+    for (DAT_004107a0[0] = 0; map_datafile[DAT_004107a0[0] + 2].type != DAT_END; DAT_004107a0[0]++)
         ;
-    DAT_004107a4 = DAT_004107a0;
-    DAT_004107a8 = 10;
+    DAT_004107a0[1] = DAT_004107a0[0];
+    DAT_004107a0[2] = 10;
     if (DAT_00410110->f79 & 8)
-        DAT_004107ac = 19;
+        DAT_004107a0[3] = 19;
     else
-        DAT_004107ac = 18;
-    DAT_004107b0 = 34;
-    DAT_004107b4 = 9;
+        DAT_004107a0[3] = 18;
+    DAT_004107a0[4] = 34;
+    DAT_004107a0[5] = 9;
 }
 
 /* Sets the graphics mode [verified]: 640x480 if mode is 0, the screen is

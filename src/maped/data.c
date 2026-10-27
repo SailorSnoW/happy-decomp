@@ -172,6 +172,11 @@ int DAT_00410118;
 // GLOBAL: MAPED 0x00410120
 int DAT_00410120;
 
+/* CRT variable, passed by allegro_init in main [verified: 15 CRT functions
+ * use it, notes/layout-maped.md §4.3]. Annotated by name like happy's. */
+// GLOBAL: MAPED 0x00410134
+// errno
+
 // GLOBAL: MAPED 0x00410340
 char DAT_00410340[1024];
 
@@ -185,22 +190,7 @@ char DAT_00410740[80];
 char DAT_00410790[16];
 
 // GLOBAL: MAPED 0x004107a0
-int DAT_004107a0;
-
-// GLOBAL: MAPED 0x004107a4
-int DAT_004107a4;
-
-// GLOBAL: MAPED 0x004107a8
-int DAT_004107a8;
-
-// GLOBAL: MAPED 0x004107ac
-int DAT_004107ac;
-
-// GLOBAL: MAPED 0x004107b0
-int DAT_004107b0;
-
-// GLOBAL: MAPED 0x004107b4
-int DAT_004107b4;
+int DAT_004107a0[6];
 
 /* Edit buffer of text_dialog, 256 bytes [verified: dp, d1 = 256]. */
 // GLOBAL: MAPED 0x004107e0
