@@ -206,7 +206,7 @@ void export_map_image(char *filename)
     bmp = create_bitmap(DAT_00410110->w * 16, DAT_00410110->h * 16);
     if (bmp == NULL) {
         // STRING: MAPED 0x0040f31c
-        FUN_00403800("failed to create buffer for image output", 1);
+        show_message("failed to create buffer for image output", 1);
         return;
     }
     packfile_password(NULL);
@@ -261,7 +261,7 @@ void export_map_image(char *filename)
     destroy_bitmap(bmp);
     // STRING: MAPED 0x0040f294
     sprintf(msg, "%s saved", get_filename(path));
-    FUN_00403800(msg, 1);
+    show_message(msg, 1);
 }
 
 /* Draws the editor frame on the back buffer and shows it [verified]: the

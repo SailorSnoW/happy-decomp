@@ -93,6 +93,14 @@ void export_map_image(char *filename);
 void draw_editor(void);
 void FUN_00403140(void);
 void edit_colors(void);
-void FUN_00403800(char *text, int n);
+void load_objects(void);
+void load_map(int reload);
+void edit_properties(void);
+void new_map(void);
+void show_message(char *text, int wait);
+void save_objects(void);
+int yes_no_box(char *text);
+void save_map(void);
+void save_map_as(void);
 
 #endif
