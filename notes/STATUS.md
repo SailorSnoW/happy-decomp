@@ -14,6 +14,7 @@ Note: `notes/matching.md` §3, §3a, §5; `notes/block05-diffs.md`. Branch `deco
 
 ### Remaining
 - `0x00404C50` (game loop, 4,443 bytes): left for the end with the other large functions (CLAUDE.md).
+- **Ghidra not synchronised for block_05**: the server stopped answering (connection refused on port 8089) after the commit. To do once Ghidra is restarted: re-import `OBJ` in both programs (`f08`/`f0c` are now two `int`, `matching.md` §3b), then `ghidra_sync.py --save happy`.
 - Next: happy block_06 (`0x004063A0`–`0x004074FF`).
 
 ### Open questions
