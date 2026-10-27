@@ -33,9 +33,15 @@ typedef struct MAP {
     char datafile[0x22];
     /* defaults set by map_create */
     unsigned char f77;
+    /* [hypothesis] music: entry 8 + f78 of misc_datafile, 0 if above 11
+     * (start_level, 0x00403820) */
     unsigned char f78;
     unsigned char f79;
+    /* [hypothesis] time limit in seconds: copied into time_left
+     * (0x00403820, 0x00405DB0) */
     unsigned char f7a;
+    /* [hypothesis] Happylanders to save before the exit opens, and in all
+     * (update_objects, 0x004041F0) */
     unsigned char f7b;
     unsigned char f7c;
     unsigned char f7d;

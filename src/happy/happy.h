@@ -48,7 +48,10 @@ typedef struct T_0043f5c0 {
 } T_0043f5c0;
 
 /* data.c */
+extern char *passwords[21];
 extern int DAT_00412088;
+extern int DAT_0041208c;
+extern int DAT_00412090;
 extern int DAT_00413b20;
 extern int DAT_00413b24;
 extern int DAT_00413b28;
@@ -93,6 +96,9 @@ extern PARTICLE particles[256];
 extern int scroll_active;
 
 extern int DAT_00413b2c;
+extern int DAT_00413b30;
+extern int DAT_00413b34;
+extern int DAT_0044004c;
 extern int DAT_00414cc0[512];
 extern int DAT_004154c0[512];
 extern fixed DAT_0042f500;
@@ -118,8 +124,8 @@ extern int DAT_0042f560;
 extern unsigned char DAT_0042f564;
 extern unsigned char DAT_0043f5a0;
 extern T_0043f5c0 DAT_0043f5c0[8];
-extern unsigned char DAT_00440038;
-extern unsigned char DAT_00440048;
+extern char DAT_00440038;
+extern char DAT_00440048;
 extern T_0043f5c0 DAT_004404e0[18];
 extern unsigned char DAT_00442080;
 extern unsigned char DAT_004450a0;
@@ -146,6 +152,7 @@ void shutdown_game(void);
 void draw_particles(int ox, int oy);
 void draw_snow(int ox, int oy, int from, int to);
 void draw_objects(int ox, int oy);
+void FUN_00402620(int a, int b, int c);
 void init_level_palette(void);
 
 /* block_04.c */
@@ -154,6 +161,27 @@ void load_level_objects(char *filename);
 void FUN_00403130(void);
 void load_level(int n, int keep, int custom);
 void reset_player(int full);
+
+/* block_05.c */
+void spawn_particle(int x, int y, int color, int dir);
+void open_exit(void);
+void FUN_004036c0(void);
+void start_level(int n, int keep, int custom);
+void FUN_00403a40(void);
+unsigned char take_item(int x, int y);
+void FUN_00403ce0(int i);
+void FUN_00403da0(int i);
+int FUN_00403e00(BITMAP *spr1, BITMAP *spr2, int x1, int y1, int x2, int y2);
+void FUN_00403f60(void);
+void FUN_00404110(void);
+void update_objects(void);
+void kill_player(void);
+void FUN_00404770(void);
+void FUN_00404920(void);
+void drop_item(void);
+void pause_game(void);
+void FUN_00404c50(void);
+void bonus_room(void);
 
 /* block_06.c */
 int wait_or_esc(int ms);

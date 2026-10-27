@@ -14,10 +14,71 @@
 // GLOBAL: HAPPY 0x00412030
 int screen_mode = 32;
 
+/* [hypothesis] Passwords of the levels, stored with every character + 1
+ * ("opof" = "none" for entry 0; entries 16-20 begin with "HAXE-")
+ * [verified: FUN_00404770 subtracts 1 from each character before printing
+ * entry DAT_00440038 - 1]. */
+// GLOBAL: HAPPY 0x00412034
+char *passwords[21] = {
+    // STRING: HAPPY 0x00412214
+    "opof",
+    // STRING: HAPPY 0x00412204
+    "uijfgpgqsjodft",
+    // STRING: HAPPY 0x004121f4
+    "tpnfuijohgjtiz",
+    // STRING: HAPPY 0x004121e4
+    "epouuvsobspvoe",
+    // STRING: HAPPY 0x004121d0
+    "zpvsljohboervffo",
+    // STRING: HAPPY 0x004121bc
+    "nbyjnjmmjboesblf",
+    // STRING: HAPPY 0x004121a8
+    "xifsftuifebnodbu",
+    // STRING: HAPPY 0x00412194
+    "epoufbuzfmmpxtopx",
+    // STRING: HAPPY 0x00412180
+    "gpsftupgcmbdlpblt",
+    // STRING: HAPPY 0x0041216c
+    "dbozpvtffuifnppo",
+    // STRING: HAPPY 0x00412158
+    "ifsfdpnftzvmfujef",
+    // STRING: HAPPY 0x00412144
+    "xizepzpvcvjmenfvq",
+    // STRING: HAPPY 0x00412130
+    "uifnbobufuxptpdlt",
+    // STRING: HAPPY 0x0041211c
+    "dbstbsfpgufocjhhfs",
+    // STRING: HAPPY 0x00412108
+    "bohszcfbstbsfhsffo",
+    // STRING: HAPPY 0x004120f4
+    "tbdlgvmmpgqpubupft",
+    // STRING: HAPPY 0x004120e0
+    "IBYF.TQMJUTFDPOET",
+    // STRING: HAPPY 0x004120cc
+    "IBYF.DBOUUPVDINF",
+    // STRING: HAPPY 0x004120bc
+    "IBYF.PQFOTFTBNF",
+    // STRING: HAPPY 0x004120a8
+    "IBYF.HPIPNFCBEEJF",
+    // STRING: HAPPY 0x00412094
+    "IBYF.GVMMDBQBDJUZ"
+};
+
 /* [hypothesis] Clock running: timer_1s decrements time_left only when it
  * is set. Initial value 1 [verified]. */
 // GLOBAL: HAPPY 0x00412088
 int DAT_00412088 = 1;
+
+/* [hypothesis] Number of objects that can follow the player
+ * (FUN_00403f60 compares DAT_0042f558 with it). Initial value 5
+ * [verified]. */
+/* [hypothesis] Enemies kept: start_level removes the objects with bit 2
+ * of f19 when it is 0. Initial value 1 [verified]. */
+// GLOBAL: HAPPY 0x0041208c
+int DAT_0041208c = 1;
+
+// GLOBAL: HAPPY 0x00412090
+int DAT_00412090 = 5;
 
 /* [hypothesis] Joystick enabled: read_joystick (0x004012A0) does nothing
  * when it is 0; init_game sets it when install_joystick succeeds. */
@@ -35,6 +96,14 @@ int DAT_00413b28;
 
 // GLOBAL: HAPPY 0x00413b2c
 int DAT_00413b2c;
+
+// GLOBAL: HAPPY 0x00413b30
+int DAT_00413b30;
+
+/* [hypothesis] Exit always open: start_level calls open_exit when it is
+ * set. */
+// GLOBAL: HAPPY 0x00413b34
+int DAT_00413b34;
 
 /* errno of LIBC (single-threaded: a variable, not a function): allegro_init
  * passes &errno; read and written by the CRT (0x0040B3D7, 0x0040B645...)
@@ -282,8 +351,10 @@ unsigned char DAT_0043f5a0;
 // GLOBAL: HAPPY 0x0043f5c0
 T_0043f5c0 DAT_0043f5c0[8];
 
+/* [hypothesis] Current level, 1-based: FUN_00404770 prints password
+ * DAT_00440038 - 1. Signed [verified: movsx in FUN_00404770]. */
 // GLOBAL: HAPPY 0x00440038
-unsigned char DAT_00440038;
+char DAT_00440038;
 
 /* Scrolling message position [verified: start_scroll_message,
  * draw_scroll_message]. */
@@ -297,8 +368,13 @@ int scroll_y;
 // GLOBAL: HAPPY 0x00440044
 fixed DAT_00440044;
 
+/* [hypothesis] Number of bonus items (item 18) in the level: signed
+ * [verified: movsx in take_item]. */
 // GLOBAL: HAPPY 0x00440048
-unsigned char DAT_00440048;
+char DAT_00440048;
+
+// GLOBAL: HAPPY 0x0044004c
+int DAT_0044004c;
 
 /* [hypothesis] Object templates, 40 of them (the next global is at
  * 0x004404C0); FUN_00401160 fills 0 to 34. */

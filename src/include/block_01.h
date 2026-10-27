@@ -15,7 +15,10 @@ typedef struct OBJ {
     /* position in pixels [verified: draw_objects, 0x004024E0] */
     int x;
     int y;
-    unsigned char f08[8];
+    /* [hypothesis] index into the saved player positions and delay behind
+     * the player, for an object that follows him (0x00403CE0) */
+    int f08;
+    int f0c;
     /* [hypothesis] facing left: the sprite is flipped horizontally */
     unsigned char f10;
     unsigned char f11;

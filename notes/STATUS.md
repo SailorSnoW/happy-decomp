@@ -1,5 +1,24 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 7: gameplay (happy block_05, without 0x00404C50)
+
+Note: `notes/matching.md` §3, §3a, §5; `notes/block05-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_05.c`: 18 of the 19 functions. 10 at 100% (`spawn_particle`, `open_exit`, `FUN_004036c0` switches, `FUN_00403a40`, `FUN_00403ce0`, `FUN_00403da0`, `FUN_00403e00` pixel collision, `pause_game`, `FUN_00404770` password screen, `drop_item`); 6 that only differ by end-of-array pointers or calls to undecompiled functions (`start_level`, `FUN_00403f60`, `FUN_00404110`, `update_objects`, `kill_player`, `FUN_00404920`); `bonus_room` 99.34% and `take_item` 85.55% (`block05-diffs.md`).
+- [verified] `FUN_00403e00` is the 8-bit case of `check_pp_collision` (PPCol library, Ivan Baldo) [hypothesis on the origin: same structure, and only that structure matches].
+- [verified] Passwords: table of 21 strings at `0x00412034`, each character + 1 (`passwords` in `data.c`, with `// STRING:` annotations); the current level `DAT_00440038` is 1-based and signed.
+- Types: `OBJ.f08`/`f0c` are two `int` (index into the 512 saved player positions and delay, for the objects that follow the player); `DAT_00440038` and `DAT_00440048` are `char` (movsx); comments on `MAP.f78` (music), `f7a` (time limit), `f7b`/`f7c` (Happylanders to save). New globals: `passwords`, `DAT_0041208c` (= 1), `DAT_00412090` (= 5), `DAT_00413b30`, `DAT_00413b34`, `DAT_0044004c`.
+- Matching findings: `matching.md` §3a (MIN assigned to a global, `!x & 1`, merged `if`/`else` calls, stack slots, late initialisation of a register local, zero-extended byte loads).
+- No regression: happy 60/84 annotated, 43 at 100%; `reccmp-datacmp` 95 + 4 variables, 0 issues.
+
+### Remaining
+- `0x00404C50` (game loop, 4,443 bytes): left for the end with the other large functions (CLAUDE.md).
+- Next: happy block_06 (`0x004063A0`–`0x004074FF`).
+
+### Open questions
+- **`DAT_0042f550` / `DAT_0042f564`**: the original loads them with `mov dword` / `and 0xff`, which VC6 only emits when it knows the alignment (structure member, array element, `static` or initialised definition). Their uses are in blocks 03, 05 and 07, so a `static` in one file would mean those blocks are one source file. Options: a structure for the player state around `0x0042F500` (but `DAT_0042f568` is loaded the other way, so it would not be part of it), arrays, or leave `take_item` at 85.55%. To decide with the user.
+
 ## 2026-10-27 — Ghidra synchronised with src/ (blocks 01-04 and 09)
 
 Note: `notes/matching.md` §3b.
