@@ -225,7 +225,7 @@ Bytes: sum of the function sizes, without padding (same convention as happy). Th
 Functions:
 - `0x00401000` = happy `0x0040A9A0` (resets the tiles);
 - `0x00401090` = happy `0x0040AA30` (creation, `"unnamed.dat"`);
-- `0x00401160` (not in happy; `malloc`/`free`; only caller `0x00403EB0`, an editing tool): resizing [hypothesis];
+- `0x00401160` (not in happy; `malloc`/`free`; only caller `0x00403EB0`, an editing tool): ~~resizing [hypothesis]~~ → **copy** of a map [verified 2026-10-27, decompiled at 100%: same `w`/`h`, both strings and every tile copied from the source; `notes/matching.md`];
 - `0x00401260` = happy `0x0040AB00` (freeing);
 - `0x00401290` = happy `0x0040AB30` (loading, `"rb"`);
 - `0x00401370` = happy `0x0040AC10` (datafile);
@@ -235,7 +235,7 @@ Evidence:
 - [verified] Five functions are identical to happy, in the same order.
 - [verified] The block starts `.text`.
 - [verified] The strings of `0x004013A0` (`"wb"`, `0x0040E048`) follow those of the module's other functions (`0x0040E030`–`0x0040E044`) and precede the globals of the next .obj (§6). `0x004013A0` therefore belongs to the map module, and the end of the block is strong.
-- [hypothesis] Order in the source file: clear, create, resize, destroy, load, load the datafile, write, then happy's two tile reads (`0x0040AC40`, `0x0040AD20`). Each exe keeps only what it uses. This assumes `/OPT:REF` with function COMDATs (`/Gy`).
+- [hypothesis] Order in the source file: clear, create, copy, destroy, load, load the datafile, write, then happy's two tile reads (`0x0040AC40`, `0x0040AD20`). Each exe keeps only what it uses. This assumes `/OPT:REF` with function COMDATs (`/Gy`).
 
 ### block_02 — `0x00401400`–`0x0040169F`
 Functions:
@@ -338,7 +338,7 @@ Provisional answers:
 - **Q4 (shared file or copy-paste)** [hypothesis]: both at once.
   - The map module and block_03 are shared sources, reduced by `/OPT:REF`. The code is identical and each exe keeps an ordered subset of the same functions.
   - Initialisation and shutdown (block_04) are a skeleton copied then modified: same function order, different code.
-- **Q10 (shared map file for matching)**: a single source file must produce the map module of both exes. It contains at least 9 functions in this order: `clear`, `create`, `resize?`, `destroy`, `load`, `load_dat`, `save?`, then the two tile reads. [hypothesis] The position of the two tile reads (after `save?` or elsewhere) is not observable.
+- **Q10 (shared map file for matching)**: a single source file must produce the map module of both exes. It contains at least 9 functions in this order: `clear`, `create`, `copy`, `destroy`, `load`, `load_dat`, `save`, then the two tile reads. [hypothesis] The position of the two tile reads (after `save?` or elsewhere) is not observable.
 
 ## 10. Open questions specific to maped
 

@@ -77,9 +77,9 @@ address,size,block,name,matching
 0x0040A830,313,block_08,,
 0x0040A970,37,block_08,WinMain,91.67
 0x0040A9A0,135,block_09,map_clear,100.00
-0x0040AA30,197,block_09,,
+0x0040AA30,197,block_09,map_create,100.00
 0x0040AB00,39,block_09,map_destroy,100.00
-0x0040AB30,214,block_09,,
+0x0040AB30,214,block_09,map_load,100.00
 0x0040AC10,48,block_09,map_load_datafile,100.00
-0x0040AC40,210,block_09,,
-0x0040AD20,46,block_09,,
+0x0040AC40,210,block_09,map_collision_at,100.00
+0x0040AD20,46,block_09,map_t4_at,100.00

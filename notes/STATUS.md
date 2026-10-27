@@ -1,5 +1,24 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 2: map module complete (happy block_09, maped block_01)
+
+Note: `notes/matching.md` §3, §3b, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/common/block_09.c`: 9 functions, all at 100% in reccmp. happy 7/7 (`0x0040A9A0`–`0x0040AD20`), maped 7/7 (`0x00401000`–`0x004013A0`). New: `map_create` (`0x0040AA30`), `map_load` (`0x0040AB30`), `map_collision_at` (`0x0040AC40`), `map_t4_at` (`0x0040AD20`), and for maped only `map_copy` (`0x00401160`) and `map_save` (`0x004013A0`).
+- `src/include/map.h`: `MAP` laid out field by field (header of 0x85 bytes = start of a `.map` file, defaults of `map_create` at `0x77`–`0x83`, `tiles` at `0x88`).
+- [verified] Correction: maped `0x00401160` is a **copy** of a map, not a resize (`layout-maped.md` §8 and `shared-code.md` corrected).
+- [verified] String literals need `// STRING:` annotations, otherwise reccmp counts a difference on identical code (`map_create` 96.72% → 100%).
+- Ghidra: first writes (16 functions, 3 globals renamed, both programs saved). Backup: `happy-decomp_2026_10_27.gar`.
+
+### Remaining
+- Step 3: happy block_01 (shared utilities, `0x00401000`–`0x004017C0`), with maped block_03.
+- `MAP` and `TILE` structures to create in Ghidra and apply to the map functions' prototypes.
+
+### Open questions
+- Order in the source of `map_save` (maped only) relative to `map_collision_at` / `map_t4_at` (happy only): not observable.
+- Names of the fields `f77`–`f84` and of the tile bytes `t0`, `t1`, `t3`, `t4`: to be found in the callers (game loop, editor).
+
 ## 2026-10-27 — Matching phase, step 1: infrastructure ready
 
 Note: `notes/matching.md`. Branch `decomp/happy`. Decisions taken with the user: start of the matching phase, Ghidra writes allowed for names and types (after a fresh `.gar`), neutral file names and descriptive function names tagged `[hypothesis]`, work on a branch.

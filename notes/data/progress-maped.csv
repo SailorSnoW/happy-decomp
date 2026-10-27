@@ -1,11 +1,11 @@
 address,size,block,name,matching
 0x00401000,135,block_01,map_clear,100.00
-0x00401090,197,block_01,,
-0x00401160,245,block_01,,
+0x00401090,197,block_01,map_create,100.00
+0x00401160,245,block_01,map_copy,100.00
 0x00401260,39,block_01,map_destroy,100.00
-0x00401290,214,block_01,,
+0x00401290,214,block_01,map_load,100.00
 0x00401370,48,block_01,map_load_datafile,100.00
-0x004013A0,89,block_01,,
+0x004013A0,89,block_01,map_save,100.00
 0x00401400,210,block_02,,
 0x004014E0,225,block_02,,
 0x004015D0,200,block_02,,

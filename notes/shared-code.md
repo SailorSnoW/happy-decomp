@@ -80,7 +80,7 @@ These pairs have specific strings or imports in common, but their code is too di
 
 ### 2.5 Variants and mirrors specific to maped
 
-- `0x00401160` (maped, 245 B, map module): its best candidate is happy `0x0040AA30` ("similar": `malloc`/`free`, constant `0x8C`, `s_calls` 0.86). That happy function is already the identical pair of maped `0x00401090`. [hypothesis] Variant of map creation (resizing?) removed from happy by `/OPT:REF`, as `layout-maped.md` §9 already suggested.
+- `0x00401160` (maped, 245 B, map module): its best candidate is happy `0x0040AA30` ("similar": `malloc`/`free`, constant `0x8C`, `s_calls` 0.86). That happy function is already the identical pair of maped `0x00401090`. [hypothesis] Variant of map creation (resizing?) removed from happy by `/OPT:REF`, as `layout-maped.md` §9 already suggested. → [verified 2026-10-27] It is a copy of a map (`map_copy`, `src/common/block_09.c`), not a resize.
 - `0x004013A0` (maped, `"wb"`): its best candidate is happy `0x0040AB30` (map loading, `s_bytes` 0.51, constant `0x85`). [hypothesis] Map writing, mirror of the loading, in the same module.
 - `0x004039B0` (maped, `"ab"`): writes `0xAF0` then `0x1010` bytes. It is the exact inverse of reading the end of the map (`0x00403200` in maped, `0x00403070` in happy) [verified by the constants]. happy has no equivalent.
 

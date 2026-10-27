@@ -35,6 +35,14 @@ Globals are all defined in `<exe>/data.c`, in address order, until the .obj that
 Pitfalls [verified]:
 - An annotation followed by a macro call that ends in `);` (`END_OF_MAIN();`) is taken by reccmp's parser for a declaration and silently dropped. Lookup by name instead: a comment line with the symbol name right after the annotation (`// WinMain`, undecorated; `// _WinMain@16` is not found).
 - `WinMain` (`0x0040A970`) is at 91.67% while `main` is a stub: the only difference is `push main`, which points at an unannotated function.
+- **String literals need a `// STRING:` annotation** (one line per exe, right before the line that uses the literal; inside a function body is fine). Without it, reccmp names the literal on the recompiled side (`"unnamed" (STRING)`) but not on the original side (`<OFFSET3>`), and counts a difference: `map_create` was at 96.72% with identical code. An inline `strcpy` of a literal (`mov` of dwords from the string) is concerned too. Pooled strings (`/Gf`, `layout-happy.md` §6) are annotated once.
+- After editing a source, rebuild before running reccmp: annotations are matched through the source line numbers of the PDB, and a shifted line gives "Failed to find function symbol".
+
+## 3b. Ghidra
+
+Names are carried from `src/` into Ghidra after each batch (`rename_function` / `rename_symbol` with `strict_mode=off`: the server's naming gate wants PascalCase and a `g_` prefix, which `src/` does not use), then `save_program`. Backup from before the first write: `happy-decomp_2026_10_27.gar`.
+
+Consequence: `captures/ghidra-cache/*_rest.json` is the Ghidra project **before** the renames. Regenerating it (`ghidra_dump_rest.py`) and then `inventory.py` would change the `ghidra_name` column of `notes/data/functions-*.csv`. Keep the cache as is unless the inventory itself must be redone.
 
 ## 4. CRT names: `scripts/crt_names.py`
 
@@ -56,6 +64,8 @@ Named = annotated in `src/crt/<exe>.h` (aliases included): 152 + 163 + 66 = 381 
 
 ## 5. State on 2026-10-27
 
-- [verified] happy: `wait_or_esc` `0x00406C80`, `anim_tick` `0x00409010`, `map_clear` `0x0040A9A0`, `map_destroy` `0x0040AB00` and `map_load_datafile` `0x0040AC10` at 100%; `WinMain` `0x0040A970` at 91.67% (above). maped: `0x00401000`, `0x00401260`, `0x00401370` at 100%.
+- [verified] happy: block_09 complete (7/7 at 100%: `map_clear`, `map_create`, `map_destroy`, `map_load`, `map_load_datafile`, `map_collision_at`, `map_t4_at`); `wait_or_esc` `0x00406C80` and `anim_tick` `0x00409010` at 100%; `WinMain` `0x0040A970` at 91.67% (above).
+- [verified] maped: block_01 complete (7/7 at 100%, including the two maped-only functions `map_copy` `0x00401160` and `map_save` `0x004013A0`).
 - [verified] `reccmp-datacmp`: happy 6 variables, maped 1, 0 issues.
 - reccmp reports no `[ERROR]` on the 381 `LIBRARY` annotations.
+- Ghidra: these 16 functions and the globals `timer_ticks` (`0x00442084`), `map_datafile` (happy `0x004450B4`, maped `0x0042B0E0`) are renamed. The `MAP`/`TILE` structures are not created in Ghidra yet.
