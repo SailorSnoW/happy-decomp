@@ -28,7 +28,7 @@ C89 decompilation of happy, then maped, then loader, verified with reccmp. Work 
 
 Order of work: block_09 (map module, shared with maped), block_01 (shared utilities), then the other blocks of happy, leaves first (callees before callers), the largest functions last (`0x00404C50`, `0x00409F30`, `0x00402620`, `0x00409870`); then maped (reusing `src/common/`), then loader.
 
-Per function: full listing (`disassemble_function`), Ghidra's pseudo-C as a starting point only (it can be wrong, e.g. a lost `volatile` in `0x00406C80`), C89, `scripts/build.py`, `reccmp-reccmp --target HAPPY --verbose 0x...`, iterate. A function stuck below 100% is documented with its diff in `notes/` and left for later.
+Per function: full listing (`disassemble_function`), Ghidra's pseudo-C as a starting point only (it can be wrong, e.g. a lost `volatile` in `0x00406C80`), C89, `scripts/build.py`, `python scripts/reccmp_run.py --target HAPPY --verbose 0x...` (reccmp-reccmp with the end-of-array operands compared by offset, `notes/matching.md` §3), iterate. A function stuck below 100% is documented with its diff in `notes/` and left for later.
 
 Details of the setup: `notes/matching.md`.
 
@@ -77,7 +77,8 @@ Details of the setup: `notes/matching.md`.
   - `decompme_candidates.py`: GAME functions of 15 to 60 instructions and their traits, `--dump` for the disassembly (`notes/decompme-candidates.md`).
 - **Matching scripts** (same Python):
   - `build.py [--final] [happy] [maped] [loader]`: compiles `src/` and links `build/<exe>/<exe>.exe` + `.pdb` in the order of the blocks, generates stubs for the functions not decompiled yet, then runs `reccmp-project detect`. `/OPT:NOREF` by default, `--final` for `/OPT:REF`;
-  - `progress.py [exe...]`: runs reccmp on each built target, writes `notes/data/progress-<exe>.csv` and prints the progress per block;
+  - `progress.py [exe...]`: runs reccmp (through `reccmp_run.py`) on each built target, writes `notes/data/progress-<exe>.csv` and prints the progress per block;
+  - `reccmp_run.py`: reccmp-reccmp 0.1.7 patched at run time (package unchanged), to be run with the Python where reccmp is installed; same arguments. Operands at the same offset of one matched variable (pointers past the end of an array) compare equal (decided with the user on 2026-10-27, `notes/matching.md` §3); `--audit` lists every line concerned;
   - `ghidra_sync.py [--apply | --save] [exe...]`: carries the names, prototypes and global types of `src/` into Ghidra (dry run by default; `--save` waits for the auto-analysis before saving). Structures are imported by hand first (`notes/matching.md` §3b);
   - `crt_names.py [exe...]`: names the CRT functions by byte identity with the objects of `LIBC.LIB`; writes `notes/data/crt-<exe>.csv` and the `LIBRARY` annotations `src/crt/<exe>.h`.
 

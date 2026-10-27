@@ -1,5 +1,19 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 17: end-of-array pointers compared by offset
+
+Note: `notes/matching.md` §3, §5; `scripts/reccmp_run.py`. Branch `decomp/happy`.
+
+### Done
+- Decided with the user: the end-of-array operands are fixed on the comparison side, not in the sources (no layout trick). `scripts/reccmp_run.py` runs reccmp-reccmp 0.1.7 with a run-time patch: two operands of lines that the diff aligns one to one are equal when their addresses are at the same offset of one matched variable, at most 64 bytes outside it. `progress.py` runs it with the Python where reccmp is installed (shebang or `python.exe` next to `Scripts/`, checked by `import reccmp`).
+- [verified] **happy: 82/84 at 100% (85.0% of the bytes)**, up from 68: the 14 end-of-array functions and `enter_hiscore`. maped: 47/50 (its five end-of-array functions). loader 2/2. `reccmp-datacmp` 72 / 37 / 1 variables, 0 issues.
+- [verified] Checks: `--audit` on HAPPY and MAPED lists 50 + 35 lines; in the game code only end-of-array `cmp` operands and `hiscores - 1`; in the CRT, unannotated CRT variables next to `errno` and `wind` at the same offset in both exes (correct, not counted by `progress.py`). Negative test: `clear_objects` with `i < 99` stays at 83.33% (`DAT_00414140[99].f1a` against `scroll_text[10]`).
+- CLAUDE.md: the per-function command is now `python scripts/reccmp_run.py --target HAPPY --verbose 0x...`.
+
+### Remaining
+- happy: `play_level` 99.84% and `bonus_room` 99.78%, both "effective match" for reccmp (register / operand order only, `notes/block05-diffs.md`).
+- maped: `set_screen_mode` 85.94%, `auto_mask` 80.54%, `pick_tile` 97.83%.
+
 ## 2026-10-27 — Matching, step 16: happy, main and draw_level at 100%
 
 Note: `notes/matching.md` §3, §3a, §4, §5; `notes/block03-diffs.md`, `notes/block08-diffs.md`, `notes/block05-diffs.md`. Branch `decomp/happy`.

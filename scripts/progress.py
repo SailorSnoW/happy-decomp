@@ -3,6 +3,9 @@
 Runs reccmp-reccmp --json on each built target (scripts/build.py first), then
 crosses the result with the GAME functions of notes/data/functions-<exe>.csv.
 LIBRARY functions (CRT) are left out of the counts.
+reccmp-reccmp is run through scripts/reccmp_run.py (pointers just outside a
+variable compared by their offset, notes/matching.md §3), with the Python in
+which reccmp is installed (outside .venv).
 
 Outputs:
 - notes/data/progress-<exe>.csv: one row per GAME function (address, size,
@@ -23,12 +26,33 @@ BUILD = ROOT / "build"
 EXES = ("happy", "maped", "loader")
 
 
-def reccmp(exe):
+def reccmp_python():
+    """The Python interpreter in which reccmp-reccmp is installed."""
     tool = shutil.which("reccmp-reccmp")
     if tool is None:
         sys.exit("reccmp-reccmp not found in PATH")
+    tool = pathlib.Path(tool)
+    cands = []
+    with open(tool, "rb") as f:
+        first = f.readline()
+    if first.startswith(b"#!"):
+        cands.append(first[2:].strip().decode())
+    cands += [str(tool.parent.parent / "python.exe"), str(tool.parent / "python.exe"),
+              str(tool.parent / "python3"), "python3", "python"]
+    for c in cands:
+        try:
+            r = subprocess.run([c, "-c", "import reccmp"], capture_output=True)
+        except OSError:
+            continue
+        if r.returncode == 0:
+            return c
+    sys.exit("no Python with reccmp found for %s" % tool)
+
+
+def reccmp(exe):
     out = BUILD / exe / "reccmp.json"
-    p = subprocess.run([tool, "--target", exe.upper(), "--json", str(out),
+    p = subprocess.run([reccmp_python(), str(ROOT / "scripts" / "reccmp_run.py"),
+                        "--target", exe.upper(), "--json", str(out),
                         "--silent", "--no-color"], cwd=ROOT,
                        capture_output=True, text=True, errors="replace")
     errors = [ln for ln in (p.stdout + p.stderr).splitlines()
