@@ -17,8 +17,8 @@ void timer_1s(void)
     frame_count = 0;
     if (DAT_00412088)
         time_left--;
-    if (DAT_0042f516)
-        DAT_0042f516--;
+    if (player.f16)
+        player.f16--;
 }
 
 /* Called every 15 ms [verified: install_int(timer_15ms, 15)]. */
@@ -282,7 +282,7 @@ void init_game(void)
     FUN_00401160();
     init_help_texts();
     DAT_00440044 = itofix(1);
-    DAT_0042f51c = itofix(1) / 10;
+    player.f1c = itofix(1) / 10;
     DAT_00414024 = fixdiv(itofix(22), itofix(100));
     DAT_004404c0 = fixdiv(itofix(12), itofix(100));
     DAT_0042f59c = itofix(1) / 10;

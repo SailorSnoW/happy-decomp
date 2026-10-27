@@ -36,7 +36,7 @@ void spawn_particle(int x, int y, int color, int dir)
 
 /* [hypothesis] Opens the level exit [verified]: clears t1 and the
  * collision t2 of the cells where t4 == 3, with 5 particles (colours 164 to
- * 175) on each; DAT_0042f548 += 500, DAT_004450a0 = 1, sample 27, message
+ * 175) on each; player.f48 += 500, DAT_004450a0 = 1, sample 27, message
  * "Level exit is now open!". Callers 0x00403820, 0x004041F0. */
 // FUNCTION: HAPPY 0x004035b0
 void open_exit(void)
@@ -57,7 +57,7 @@ void open_exit(void)
             }
         }
     }
-    DAT_0042f548 += 500;
+    player.f48 += 500;
     DAT_004450a0 = 1;
     play_sample(misc_datafile[27].dat, DAT_00442088, 128, 1000, 0);
     // STRING: HAPPY 0x004125a4
@@ -170,26 +170,26 @@ void start_level(int n, int keep, int custom)
     DAT_0044004c = 0;
 }
 
-/* Unless DAT_0042f520 is set, advances the 2-frame animation counter
- * DAT_0042f52c every 8 calls [verified] (same counter as anim_tick,
+/* Unless player.f20 is set, advances the 2-frame animation counter
+ * player.f2c every 8 calls [verified] (same counter as anim_tick,
  * 0x00409010). Callers 0x00404C50, 0x00405DB0. */
 // FUNCTION: HAPPY 0x00403a40
 void FUN_00403a40(void)
 {
-    if (DAT_0042f520 == 0 && ++DAT_0042f530 == 8) {
-        DAT_0042f530 = 0;
-        if (++DAT_0042f52c > 1)
-            DAT_0042f52c = 0;
+    if (player.f20 == 0 && ++player.f30 == 8) {
+        player.f30 = 0;
+        if (++player.f2c > 1)
+            player.f2c = 0;
     }
 }
 
 /* [hypothesis] Picks up the item of the cell at (x, y) pixels: t3 of the
- * cell indexes DAT_00414040 [verified]. Adds f0 to DAT_0042f548 (score?);
- * every 250 items worth 10, an extra life (DAT_0042f540 + 1); then the
- * flags f4: 2 counts towards the bonus room (DAT_0042f550 against
- * DAT_00440048), 0x10 adds 60 s to time_left, 8 adds to DAT_0042f544 up to
- * 3 and is not taken when it is already 3, 1 sets DAT_0042f54c, 4 sets
- * DAT_0042f516 to 20, 0x20 counts the magic spheres (DAT_0042f560) unless
+ * cell indexes DAT_00414040 [verified]. Adds f0 to player.f48 (score?);
+ * every 250 items worth 10, an extra life (player.f40 + 1); then the
+ * flags f4: 2 counts towards the bonus room (player.f50 against
+ * DAT_00440048), 0x10 adds 60 s to time_left, 8 adds to player.f44 up to
+ * 3 and is not taken when it is already 3, 1 sets player.f4c, 4 sets
+ * player.f16 to 20, 0x20 counts the magic spheres (player.f60) unless
  * DAT_00413b20 or DAT_00442080. A taken item leaves 15 particles and
  * clears t3. Returns t3 (0: nothing). Only caller 0x00404C50. */
 // FUNCTION: HAPPY 0x00403a80
@@ -205,32 +205,32 @@ unsigned char take_item(int x, int y)
     t = DAT_00414130->tiles[i].t3;
     if (t == 0)
         return 0;
-    DAT_0042f548 += DAT_00414040[t].f0;
-    if (DAT_00414040[t].f0 == 10 && ++DAT_0042f564 == 250) {
+    player.f48 += DAT_00414040[t].f0;
+    if (DAT_00414040[t].f0 == 10 && ++player.f64 == 250) {
         // STRING: HAPPY 0x004125fc
         start_scroll_message("E X T R A   L I F E !");
-        DAT_0042f540++;
-        DAT_0042f564 = 0;
+        player.f40++;
+        player.f64 = 0;
         play_sample(misc_datafile[31].dat, DAT_00442088, 128, 1000, 0);
     }
     if (DAT_00414040[t].f4 & 2) {
-        DAT_0042f550++;
-        if (DAT_0042f550 == DAT_00440048)
+        player.f50++;
+        if (player.f50 == DAT_00440048)
             // STRING: HAPPY 0x004125dc
             start_scroll_message("Bonusroom available at exit!");
     }
     if (DAT_00414040[t].f4 & 0x10)
         time_left += 60;
-    if ((DAT_00414040[t].f4 & 8) && DAT_0042f544 == 3)
+    if ((DAT_00414040[t].f4 & 8) && player.f44 == 3)
         take = 0;
-    if ((DAT_00414040[t].f4 & 8) && DAT_0042f544 < 3)
-        DAT_0042f544 = MIN(DAT_0042f544 + 1, 3);
-    if ((DAT_00414040[t].f4 & 1) && !DAT_0042f54c & 1)
-        DAT_0042f54c++;
+    if ((DAT_00414040[t].f4 & 8) && player.f44 < 3)
+        player.f44 = MIN(player.f44 + 1, 3);
+    if ((DAT_00414040[t].f4 & 1) && !player.f4c & 1)
+        player.f4c++;
     if (DAT_00414040[t].f4 & 4)
-        DAT_0042f516 = 20;
+        player.f16 = 20;
     if ((DAT_00414040[t].f4 & 0x20) && DAT_00413b20 == 0 && !DAT_00442080) {
-        if (++DAT_0042f560 == 5)
+        if (++player.f60 == 5)
             // STRING: HAPPY 0x004125bc
             start_scroll_message("You found five magic spheres!");
         for (j = 0; j < 35; j++)
@@ -245,9 +245,9 @@ unsigned char take_item(int x, int y)
     return t;
 }
 
-/* Object i starts following the player [hypothesis]: DAT_0042f548 += 100,
- * DAT_0042f558 + 1, saves its position in DAT_00416d00[i], f1b = 2, f08 =
- * DAT_0042f554 - 13 * DAT_0042f558 modulo 512 and f0c = 13 * DAT_0042f558
+/* Object i starts following the player [hypothesis]: player.f48 += 100,
+ * player.f58 + 1, saves its position in DAT_00416d00[i], f1b = 2, f08 =
+ * player.f54 - 13 * player.f58 modulo 512 and f0c = 13 * player.f58
  * [verified] ([hypothesis] an index into the 512 saved positions of
  * DAT_00414cc0, i.e. a delay behind the player). Plays sample 26. Only
  * caller FUN_00403f60. [verified] Order of the first two statements: the
@@ -255,31 +255,31 @@ unsigned char take_item(int x, int y)
 // FUNCTION: HAPPY 0x00403ce0
 void FUN_00403ce0(int i)
 {
-    DAT_0042f558++;
-    DAT_0042f548 += 100;
+    player.f58++;
+    player.f48 += 100;
     DAT_00416d00[i].x = DAT_00414140[i].x;
     DAT_00416d00[i].y = DAT_00414140[i].y;
     DAT_00414140[i].f1b = 2;
-    DAT_00414140[i].f08 = DAT_0042f554 - DAT_0042f558 * 13;
-    DAT_00414140[i].f0c = DAT_0042f558 * 13;
+    DAT_00414140[i].f08 = player.f54 - player.f58 * 13;
+    DAT_00414140[i].f0c = player.f58 * 13;
     if (DAT_00414140[i].f08 < 0)
         DAT_00414140[i].f08 += 512;
     play_sample(misc_datafile[26].dat, DAT_00442088, 128, rand() % 400 + 800, 0);
 }
 
-/* [hypothesis] The player is hurt: sample 34, DAT_0042f544 - 1 (lives?),
- * DAT_0042f54d = 150, DAT_0042f54e = 16, DAT_0042f54f = 4 or -4 depending
- * on DAT_0042f508 [verified]. i (the object) is passed but not used
+/* [hypothesis] The player is hurt: sample 34, player.f44 - 1 (lives?),
+ * player.f4d = 150, player.f4e = 16, player.f4f = 4 or -4 depending
+ * on player.f08 [verified]. i (the object) is passed but not used
  * [verified: push in FUN_00403f60]. Only caller FUN_00403f60. */
 // FUNCTION: HAPPY 0x00403da0
 void FUN_00403da0(int i)
 {
     play_sample(misc_datafile[34].dat, DAT_00442088, 128, 1000, 0);
-    DAT_0042f52c = 0;
-    DAT_0042f54d = 150;
-    DAT_0042f54e = 16;
-    DAT_0042f54f = DAT_0042f508 ? 4 : -4;
-    DAT_0042f544--;
+    player.f2c = 0;
+    player.f4d = 150;
+    player.f4e = 16;
+    player.f4f = player.f08 ? 4 : -4;
+    player.f44--;
 }
 
 /* [hypothesis] Pixel-perfect collision of the bitmaps spr1 at (x1, y1) and
@@ -352,12 +352,12 @@ int FUN_00403e00(BITMAP *spr1, BITMAP *spr2, int x1, int y1, int x2, int y2)
 
 /* [hypothesis] Contacts between the player and the objects [verified]:
  * for each active object whose sprite touches the player's (sprite 64 +
- * DAT_0042f52c, top left = player position - (8, 21)):
+ * player.f2c, top left = player position - (8, 21)):
  * - f19 bit 1 and controls[5] pressed: help text f1b (message_box);
- * - f19 bit 0, f1b == 0 and DAT_0042f558 < DAT_00412090: FUN_00403ce0;
- * - f19 bit 2, unless DAT_00413b30: with DAT_0042f52c == 8 and
+ * - f19 bit 0, f1b == 0 and player.f58 < DAT_00412090: FUN_00403ce0;
+ * - f19 bit 2, unless DAT_00413b30: with player.f2c == 8 and
  *   DAT_00416d00[i].f10 == 0, sample 34 and the object is flipped
- *   (f10 = 26, speed -3); otherwise, unless DAT_0042f516 or DAT_0042f54d,
+ *   (f10 = 26, speed -3); otherwise, unless player.f16 or player.f4d,
  *   FUN_00403da0.
  * Only caller 0x00404C50. */
 // FUNCTION: HAPPY 0x00403f60
@@ -368,22 +368,22 @@ void FUN_00403f60(void)
     for (i = 0; i < 100; i++) {
         if (DAT_00414140[i].f1a) {
             if (FUN_00403e00(DAT_00415cc0[DAT_00414140[i].f13 + DAT_00414140[i].f14].dat,
-                             DAT_00415cc0[DAT_0042f52c + 64].dat, DAT_00414140[i].x,
-                             DAT_00414140[i].y, fixtoi(DAT_0042f500) - 8,
-                             fixtoi(DAT_0042f504) - 21)) {
+                             DAT_00415cc0[player.f2c + 64].dat, DAT_00414140[i].x,
+                             DAT_00414140[i].y, fixtoi(player.x) - 8,
+                             fixtoi(player.y) - 21)) {
                 if ((DAT_00414140[i].f19 & 2) && keys[controls[5]])
                     message_box(DAT_00414140[i].f1b, NULL, 0);
                 if ((DAT_00414140[i].f19 & 1) && DAT_00414140[i].f1b == 0
-                    && DAT_0042f558 < DAT_00412090)
+                    && player.f58 < DAT_00412090)
                     FUN_00403ce0(i);
                 if ((DAT_00414140[i].f19 & 4) && DAT_00413b30 == 0) {
-                    if (DAT_0042f52c == 8 && DAT_00416d00[i].f10 == 0) {
+                    if (player.f2c == 8 && DAT_00416d00[i].f10 == 0) {
                         play_sample(misc_datafile[34].dat, DAT_00442088, 128, rand() % 400 + 300, 0);
                         DAT_00416d00[i].f0c = itofix(-3);
                         DAT_00416d00[i].f08 = itofix(DAT_00414140[i].y);
                         DAT_00416d00[i].f10 = 26;
                         DAT_00416d00[i].y = DAT_00414140[i].y;
-                    } else if (!DAT_0042f516 && !DAT_0042f54d && DAT_00416d00[i].f10 == 0) {
+                    } else if (!player.f16 && !player.f4d && DAT_00416d00[i].f10 == 0) {
                         FUN_00403da0(i);
                     }
                 }
@@ -424,13 +424,13 @@ void FUN_00404110(void)
     start_scroll_message("All Happylanders have been saved!");
 }
 
-/* [hypothesis] The player dies [verified]: DAT_0042f540 - 1 (lives?),
- * DAT_0042f53c = 0; with the camera frozen on the player (clamped to the
+/* [hypothesis] The player dies [verified]: player.f40 - 1 (lives?),
+ * player.f3c = 0; with the camera frozen on the player (clamped to the
  * map), sprite 65 flipped upside down jumps up (speed -2, gravity
  * DAT_004404c0, at most 6) and falls 220 pixels, drifting one pixel per
- * frame away from DAT_0042f508; the objects keep moving and the followers
+ * frame away from player.f08; the objects keep moving and the followers
  * keep receiving the player's positions. "TIME OUT!" when time_left < 0,
- * then a fade out; DAT_0042f544 = 1. Only caller 0x00404C50. */
+ * then a fade out; player.f44 = 1. Only caller 0x00404C50. */
 // FUNCTION: HAPPY 0x00404480
 void kill_player(void)
 {
@@ -443,15 +443,15 @@ void kill_player(void)
     fixed end;
 
     dir = -1;
-    DAT_0042f540--;
-    DAT_0042f53c = 0;
-    cx = MIN(MAX(fixtoi(DAT_0042f500) - 159, 0), (DAT_00414130->w - 20) * 16);
-    cy = MIN(MAX(fixtoi(DAT_0042f504) - 100, 0), DAT_00414130->h * 16 - 216);
-    x = fixtoi(DAT_0042f500);
-    y = DAT_0042f504;
+    player.f40--;
+    player.f3c = 0;
+    cx = MIN(MAX(fixtoi(player.x) - 159, 0), (DAT_00414130->w - 20) * 16);
+    cy = MIN(MAX(fixtoi(player.y) - 100, 0), DAT_00414130->h * 16 - 216);
+    x = fixtoi(player.x);
+    y = player.y;
     dy = itofix(-2);
-    end = DAT_0042f504 + itofix(220);
-    if (DAT_0042f508)
+    end = player.y + itofix(220);
+    if (player.f08)
         dir = 1;
     while (y < end) {
         timer_ticks = 0;
@@ -465,17 +465,17 @@ void kill_player(void)
         dy = MIN(dy + DAT_004404c0, itofix(6));
         y += dy;
         x += dir;
-        DAT_00414cc0[DAT_0042f554] = x - 8;
-        DAT_004154c0[DAT_0042f554] = fixtoi(y) - 17;
-        if (++DAT_0042f554 == 512)
-            DAT_0042f554 = 0;
+        DAT_00414cc0[player.f54] = x - 8;
+        DAT_004154c0[player.f54] = fixtoi(y) - 17;
+        if (++player.f54 == 512)
+            player.f54 = 0;
         while (!timer_ticks)
             ;
     }
     if (time_left < 0)
         fade_out_range(2, 0, 163);
     fade_out(4);
-    DAT_0042f544 = 1;
+    player.f44 = 1;
 }
 
 /* [hypothesis] "You earned a password!" screen [verified]: five sprites
@@ -548,7 +548,7 @@ void FUN_00404920(void)
         textout_centre(screen, (FONT *)misc_datafile[4].dat, "Level complete!", 160, 70, -1);
     fade_from(DAT_00441c80, pal, 2);
     while (t) {
-        DAT_0042f548 += 5;
+        player.f48 += 5;
         t--;
         timer_ticks = 0;
         FUN_00402620(0, 1, t);
@@ -566,9 +566,9 @@ void FUN_00404920(void)
  * - f19 bit 0 and f1b == 2 (following the player, FUN_00403ce0): after
  *   the delay f0c, takes the saved player position f08 (DAT_00414cc0 /
  *   DAT_004154c0, 512 entries); on a cell with t4 == 2, while
- *   DAT_0042f53c is set and DAT_0042f514 is 0, it is saved: sample 28,
- *   DAT_0042f548 += 250, DAT_0042f515 + 1, f1b = 1; FUN_00404110 when
- *   DAT_0042f515 reaches MAP.f7c, open_exit when it reaches MAP.f7b;
+ *   player.f3c is set and player.f14 is 0, it is saved: sample 28,
+ *   player.f48 += 250, player.f15 + 1, f1b = 1; FUN_00404110 when
+ *   player.f15 reaches MAP.f7c, open_exit when it reaches MAP.f7b;
  * - f19 bit 2 (enemy): falls while DAT_00416d00[i].f10 counts down (speed
  *   f0c, gravity DAT_00414024), otherwise walks one pixel every f12 + 1
  *   frames and turns around at a wall or at the edge of a floor.
@@ -588,7 +588,7 @@ void update_objects(void)
                     DAT_00414140[i].f14 = 0;
             }
             if (DAT_00414140[i].f19 & 2) {
-                if (fixtoi(DAT_0042f500) > DAT_00414140[i].x)
+                if (fixtoi(player.x) > DAT_00414140[i].x)
                     DAT_00414140[i].f10 = 0;
                 else
                     DAT_00414140[i].f10 = 1;
@@ -599,17 +599,17 @@ void update_objects(void)
                 if (DAT_00414140[i].f0c == 0) {
                     DAT_00414140[i].x = DAT_00414cc0[DAT_00414140[i].f08];
                     DAT_00414140[i].y = DAT_004154c0[DAT_00414140[i].f08];
-                    if (DAT_0042f53c && map_t4_at(DAT_00414130, DAT_00414140[i].x, DAT_00414140[i].y) == 2
-                        && !DAT_0042f514) {
+                    if (player.f3c && map_t4_at(DAT_00414130, DAT_00414140[i].x, DAT_00414140[i].y) == 2
+                        && !player.f14) {
                         play_sample(misc_datafile[28].dat, DAT_00442088, 128, rand() % 400 + 800, 0);
-                        DAT_0042f558--;
+                        player.f58--;
                         DAT_00414140[i].f1b = 1;
-                        DAT_0042f514 = 17;
-                        DAT_0042f515++;
-                        DAT_0042f548 += 250;
-                        if (DAT_00414130->f7c == DAT_0042f515)
+                        player.f14 = 17;
+                        player.f15++;
+                        player.f48 += 250;
+                        if (DAT_00414130->f7c == player.f15)
                             FUN_00404110();
-                        if (!DAT_004450a0 && DAT_00414130->f7b <= DAT_0042f515)
+                        if (!DAT_004450a0 && DAT_00414130->f7b <= player.f15)
                             open_exit();
                     }
                 }
@@ -724,13 +724,13 @@ void bonus_room(void)
     clear_bitmap(screen);
     set_palette(DAT_00441c80);
     x = -16;
-    DAT_0042f52c = 0;
-    DAT_0042f520 = 0;
+    player.f2c = 0;
+    player.f20 = 0;
     while (x < 144) {
         timer_ticks = 0;
         x++;
         clear_bitmap(buffer);
-        draw_sprite(buffer, (BITMAP *)DAT_00415cc0[DAT_0042f52c + 64].dat, x, 70);
+        draw_sprite(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, x, 70);
         FUN_00403a40();
         blit_to_screen(buffer);
         while (!timer_ticks)
@@ -826,8 +826,8 @@ void bonus_room(void)
     }
     start_level(DAT_004450a4, 0, 1);
     reset_player(0);
-    DAT_0042f52c = 1;
-    DAT_0042f508 = 0;
+    player.f2c = 1;
+    player.f08 = 0;
     DAT_00442080 = 1;
     time_left = DAT_00414130->f7a;
     FUN_00404c50();

@@ -5,7 +5,7 @@
 Note: `notes/matching.md` §3, §3a, §5; `notes/block05-diffs.md`. Branch `decomp/happy`.
 
 ### Done
-- [verified] `src/happy/block_05.c`: 18 of the 19 functions. 10 at 100% (`spawn_particle`, `open_exit`, `FUN_004036c0` switches, `FUN_00403a40`, `FUN_00403ce0`, `FUN_00403da0`, `FUN_00403e00` pixel collision, `pause_game`, `FUN_00404770` password screen, `drop_item`); 6 that only differ by end-of-array pointers or calls to undecompiled functions (`start_level`, `FUN_00403f60`, `FUN_00404110`, `update_objects`, `kill_player`, `FUN_00404920`); `bonus_room` 99.34% and `take_item` 85.55% (`block05-diffs.md`).
+- [verified] `src/happy/block_05.c`: 18 of the 19 functions. 11 at 100% (`spawn_particle`, `open_exit`, `FUN_004036c0` switches, `FUN_00403a40`, `take_item` (after the `PLAYER` decision below), `FUN_00403ce0`, `FUN_00403da0`, `FUN_00403e00` pixel collision, `pause_game`, `FUN_00404770` password screen, `drop_item`); 6 that only differ by end-of-array pointers or calls to undecompiled functions (`start_level`, `FUN_00403f60`, `FUN_00404110`, `update_objects`, `kill_player`, `FUN_00404920`); `bonus_room` 99.34% (`block05-diffs.md`).
 - [verified] `FUN_00403e00` is the 8-bit case of `check_pp_collision` (PPCol library, Ivan Baldo) [hypothesis on the origin: same structure, and only that structure matches].
 - [verified] Passwords: table of 21 strings at `0x00412034`, each character + 1 (`passwords` in `data.c`, with `// STRING:` annotations); the current level `DAT_00440038` is 1-based and signed.
 - Types: `OBJ.f08`/`f0c` are two `int` (index into the 512 saved player positions and delay, for the objects that follow the player); `DAT_00440038` and `DAT_00440048` are `char` (movsx); comments on `MAP.f78` (music), `f7a` (time limit), `f7b`/`f7c` (Happylanders to save). New globals: `passwords`, `DAT_0041208c` (= 1), `DAT_00412090` (= 5), `DAT_00413b30`, `DAT_00413b34`, `DAT_0044004c`.
@@ -17,8 +17,9 @@ Note: `notes/matching.md` §3, §3a, §5; `notes/block05-diffs.md`. Branch `deco
 - Ghidra synchronised for block_05 (after a restart of Ghidra): `OBJ` re-imported in both programs (28 bytes, `f08`/`f0c` as `int`), 36 changes applied and saved, 0 differences left except the type of `passwords` (`0x00412034`): renamed, but `char *[21]` is refused (`type_would_evict`, Ghidra already has 21 separate pointers there; clearing them is not among the allowed writes). `ghidra_sync.py` now also reads globals whose initialiser starts with `= {` at the end of the line.
 - Next: happy block_06 (`0x004063A0`–`0x004074FF`).
 
-### Open questions
-- **`DAT_0042f550` / `DAT_0042f564`**: the original loads them with `mov dword` / `and 0xff`, which VC6 only emits when it knows the alignment (structure member, array element, `static` or initialised definition). Their uses are in blocks 03, 05 and 07, so a `static` in one file would mean those blocks are one source file. Options: a structure for the player state around `0x0042F500` (but `DAT_0042f568` is loaded the other way, so it would not be part of it), arrays, or leave `take_item` at 85.55%. To decide with the user.
+### Decisions
+- **`PLAYER` structure** (decided with the user): the 25 globals at `0x0042F500`-`0x0042F567` are one structure, `PLAYER player` (`happy.h`, 0x68 bytes, fields `x`, `y`, `fXX` = offset). Evidence: the original loads `f50` and `f64` with `mov dword` / `and 0xff`, which VC6 only emits for a known alignment (`matching.md` §3a); `0x0042F568` is loaded the other way and stays a separate global. Result: `take_item` 85.55% -> 100%, no other score changed; happy 44 at 100%, `reccmp-datacmp` 71 + 4 variables, 0 issues.
+- Ghidra: structure `PLAYER` imported, `0x0042F500` renamed `player`, but the type is refused (`type_would_evict`, the 25 old data items are still defined there), like `char *[21]` on `passwords`. To apply by hand in the Ghidra GUI if wanted (Retype at `0x0042F500` -> `PLAYER`, `0x00412034` -> `char *[21]`), or to allow clearing them.
 
 ## 2026-10-27 — Ghidra synchronised with src/ (blocks 01-04 and 09)
 

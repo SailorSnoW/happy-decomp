@@ -70,7 +70,7 @@ char *passwords[21] = {
 int DAT_00412088 = 1;
 
 /* [hypothesis] Number of objects that can follow the player
- * (FUN_00403f60 compares DAT_0042f558 with it). Initial value 5
+ * (FUN_00403f60 compares player.f58 with it). Initial value 5
  * [verified]. */
 /* [hypothesis] Enemies kept: start_level removes the objects with bit 2
  * of f19 when it is 0. Initial value 1 [verified]. */
@@ -247,83 +247,10 @@ BITMAP *buffer;
 // GLOBAL: HAPPY 0x00427500
 RGB_MAP rgb_table;
 
-/* [hypothesis] Player position, fixed point (reset_player). */
+/* [hypothesis] State of the player and of the current level, a structure
+ * (happy.h, PLAYER). */
 // GLOBAL: HAPPY 0x0042f500
-fixed DAT_0042f500;
-
-// GLOBAL: HAPPY 0x0042f504
-fixed DAT_0042f504;
-
-// GLOBAL: HAPPY 0x0042f508
-int DAT_0042f508;
-
-// GLOBAL: HAPPY 0x0042f510
-int DAT_0042f510;
-
-// GLOBAL: HAPPY 0x0042f514
-unsigned char DAT_0042f514;
-
-// GLOBAL: HAPPY 0x0042f515
-unsigned char DAT_0042f515;
-
-/* [hypothesis] A countdown in seconds: timer_1s decrements it down to 0. */
-// GLOBAL: HAPPY 0x0042f516
-unsigned char DAT_0042f516;
-
-/* fixed, 1/10 [verified: init_game] */
-// GLOBAL: HAPPY 0x0042f51c
-fixed DAT_0042f51c;
-
-// GLOBAL: HAPPY 0x0042f520
-int DAT_0042f520;
-
-// GLOBAL: HAPPY 0x0042f52c
-int DAT_0042f52c;
-
-// GLOBAL: HAPPY 0x0042f530
-int DAT_0042f530;
-
-// GLOBAL: HAPPY 0x0042f53c
-int DAT_0042f53c;
-
-// GLOBAL: HAPPY 0x0042f540
-int DAT_0042f540;
-
-// GLOBAL: HAPPY 0x0042f544
-int DAT_0042f544;
-
-// GLOBAL: HAPPY 0x0042f548
-int DAT_0042f548;
-
-// GLOBAL: HAPPY 0x0042f54c
-unsigned char DAT_0042f54c;
-
-// GLOBAL: HAPPY 0x0042f54d
-unsigned char DAT_0042f54d;
-
-// GLOBAL: HAPPY 0x0042f54e
-unsigned char DAT_0042f54e;
-
-// GLOBAL: HAPPY 0x0042f54f
-unsigned char DAT_0042f54f;
-
-// GLOBAL: HAPPY 0x0042f550
-unsigned char DAT_0042f550;
-
-// GLOBAL: HAPPY 0x0042f554
-int DAT_0042f554;
-
-// GLOBAL: HAPPY 0x0042f558
-int DAT_0042f558;
-
-// GLOBAL: HAPPY 0x0042f55c
-int DAT_0042f55c;
-
-// GLOBAL: HAPPY 0x0042f560
-int DAT_0042f560;
-
-// GLOBAL: HAPPY 0x0042f564
-unsigned char DAT_0042f564;
+PLAYER player;
 
 // GLOBAL: HAPPY 0x0042f568
 unsigned char DAT_0042f568;

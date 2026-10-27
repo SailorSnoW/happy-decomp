@@ -6,16 +6,16 @@
 #include "happy.h"
 
 /* Resets a few game variables [verified]. Only caller 0x00409640.
- * [verified] Order: DAT_0042f548 = 0 must come first; several orders of
+ * [verified] Order: player.f48 = 0 must come first; several orders of
  * the next four assignments give the same code, this is one of them. */
 // FUNCTION: HAPPY 0x00403030
 void FUN_00403030(void)
 {
-    DAT_0042f548 = 0;
-    DAT_0042f544 = 1;
-    DAT_0042f540 = 2;
-    DAT_0042f55c = 2;
-    DAT_0042f564 = 0;
+    player.f48 = 0;
+    player.f44 = 1;
+    player.f40 = 2;
+    player.f5c = 2;
+    player.f64 = 0;
     DAT_00440038 = DAT_004450b0;
     DAT_00413b2c = 0;
 }
@@ -142,7 +142,7 @@ void load_level(int n, int keep, int custom)
 
 /* Puts the player back at the start of the level and clears its state
  * [verified]: position = centre of start tile MAP.f03/f04 (x + 8, y + 17
- * pixels, fixed point). full = 0 also clears DAT_0042f515 and
+ * pixels, fixed point). full = 0 also clears player.f15 and
  * DAT_004450a0. [verified] Bug of the original: the loop writes both
  * coordinates into DAT_00414cc0 (y overwrites x) and never writes
  * DAT_004154c0. Callers 0x00403820, 0x00405DB0. */
@@ -151,28 +151,28 @@ void reset_player(int full)
 {
     int i;
 
-    DAT_0042f500 = itofix(DAT_00414130->f03 * 16 + 8);
-    DAT_0042f504 = itofix(DAT_00414130->f04 * 16 + 17);
-    DAT_0042f53c = 1;
-    DAT_0042f510 = 0;
-    DAT_0042f54c = 0;
-    DAT_0042f520 = 0;
-    DAT_0042f550 = 0;
-    DAT_0042f54d = 0;
-    DAT_0042f54e = 0;
-    DAT_0042f54f = 0;
-    DAT_0042f516 = 0;
+    player.x = itofix(DAT_00414130->f03 * 16 + 8);
+    player.y = itofix(DAT_00414130->f04 * 16 + 17);
+    player.f3c = 1;
+    player.f10 = 0;
+    player.f4c = 0;
+    player.f20 = 0;
+    player.f50 = 0;
+    player.f4d = 0;
+    player.f4e = 0;
+    player.f4f = 0;
+    player.f16 = 0;
     if (!full)
-        DAT_0042f515 = 0;
-    DAT_0042f514 = 0;
-    DAT_0042f554 = 0;
-    DAT_0042f508 = 0;
-    DAT_0042f52c = 0;
-    DAT_0042f558 = 0;
-    DAT_0042f560 = 0;
+        player.f15 = 0;
+    player.f14 = 0;
+    player.f54 = 0;
+    player.f08 = 0;
+    player.f2c = 0;
+    player.f58 = 0;
+    player.f60 = 0;
     for (i = 0; i < 512; i++) {
-        DAT_00414cc0[i] = fixtoi(DAT_0042f500) - 8;
-        DAT_00414cc0[i] = fixtoi(DAT_0042f504) - 17;
+        DAT_00414cc0[i] = fixtoi(player.x) - 8;
+        DAT_00414cc0[i] = fixtoi(player.y) - 17;
     }
     DAT_00440048 = 0;
     if (!full)

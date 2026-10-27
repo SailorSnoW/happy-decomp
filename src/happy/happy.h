@@ -47,6 +47,71 @@ typedef struct T_0043f5c0 {
     char f0ff[80];
 } T_0043f5c0;
 
+/* [hypothesis] State of the player and of the current level, 0x68 bytes at
+ * 0x0042F500-0x0042F567. Evidence that these globals are one structure
+ * [verified]: the original loads f50 and f64 as "mov dword" / "and 0xff"
+ * (0x00402D43, 0x00403B5D, 0x004097A8; 0x00402C21), which VC6 only emits
+ * when it knows the alignment, e.g. for a member at a 4-aligned offset
+ * (notes/matching.md §3a). [hypothesis] The bounds: rgb_table ends at
+ * 0x0042F500 and every dword up to 0x0042F564 is used; 0x0042F568 is loaded
+ * the other way ("xor" / "mov cl", 0x004096AF), so it is not a member.
+ * Fields named after their offset unless stated. */
+typedef struct PLAYER {
+    /* position, fixed point (reset_player) */
+    fixed x;
+    fixed y;
+    /* direction: non-zero = facing left [hypothesis: FUN_00403da0 pushes
+     * the player by 4 or -4, kill_player drifts by 1 or -1] */
+    int f08;
+    int f0c;
+    int f10;
+    /* cooldown set to 17 when a Happylander is saved (update_objects) */
+    unsigned char f14;
+    /* [hypothesis] Happylanders saved in the level (update_objects,
+     * compared with MAP.f7b and f7c) */
+    unsigned char f15;
+    /* [hypothesis] A countdown in seconds: timer_1s decrements it down to 0;
+     * take_item sets it to 20 */
+    unsigned char f16;
+    int f18;
+    /* fixed, 1/10 [verified: init_game] */
+    fixed f1c;
+    int f20;
+    int f24;
+    int f28;
+    /* animation frame of the player: sprite 64 + f2c (FUN_00403f60) */
+    int f2c;
+    /* animation counter (FUN_00403a40, anim_tick) */
+    int f30;
+    int f34;
+    int f38;
+    int f3c;
+    /* [hypothesis] lives: kill_player - 1, extra life + 1 (take_item) */
+    int f40;
+    /* [hypothesis] energy: FUN_00403da0 - 1, take_item + 1 up to 3 */
+    int f44;
+    /* [hypothesis] score */
+    int f48;
+    unsigned char f4c;
+    /* [hypothesis] invulnerability frames after a hit (150, FUN_00403da0) */
+    unsigned char f4d;
+    unsigned char f4e;
+    unsigned char f4f;
+    /* [hypothesis] bonus items taken, compared with DAT_00440048
+     * (take_item) */
+    unsigned char f50;
+    /* index of the next saved position in DAT_00414cc0/DAT_004154c0, 0 to
+     * 511 (kill_player) */
+    int f54;
+    /* [hypothesis] objects following the player (FUN_00403ce0) */
+    int f58;
+    int f5c;
+    /* [hypothesis] magic spheres found (take_item) */
+    int f60;
+    /* items worth 10 taken, an extra life at 250 (take_item) */
+    unsigned char f64;
+} PLAYER;
+
 /* data.c */
 extern char *passwords[21];
 extern int DAT_00412088;
@@ -75,10 +140,6 @@ extern int scroll_end;
 extern int scroll_width;
 extern BITMAP *DAT_004274e4;
 extern RGB_MAP rgb_table;
-extern unsigned char DAT_0042f516;
-extern fixed DAT_0042f51c;
-extern int DAT_0042f52c;
-extern int DAT_0042f530;
 extern unsigned char DAT_0042f568;
 extern fixed DAT_0042f59c;
 extern COLOR_MAP trans_table;
@@ -96,32 +157,12 @@ extern PARTICLE particles[256];
 extern int scroll_active;
 
 extern int DAT_00413b2c;
+extern PLAYER player;
 extern int DAT_00413b30;
 extern int DAT_00413b34;
 extern int DAT_0044004c;
 extern int DAT_00414cc0[512];
 extern int DAT_004154c0[512];
-extern fixed DAT_0042f500;
-extern fixed DAT_0042f504;
-extern int DAT_0042f508;
-extern int DAT_0042f510;
-extern unsigned char DAT_0042f514;
-extern unsigned char DAT_0042f515;
-extern int DAT_0042f520;
-extern int DAT_0042f53c;
-extern int DAT_0042f540;
-extern int DAT_0042f544;
-extern int DAT_0042f548;
-extern unsigned char DAT_0042f54c;
-extern unsigned char DAT_0042f54d;
-extern unsigned char DAT_0042f54e;
-extern unsigned char DAT_0042f54f;
-extern unsigned char DAT_0042f550;
-extern int DAT_0042f554;
-extern int DAT_0042f558;
-extern int DAT_0042f55c;
-extern int DAT_0042f560;
-extern unsigned char DAT_0042f564;
 extern unsigned char DAT_0043f5a0;
 extern T_0043f5c0 DAT_0043f5c0[8];
 extern char DAT_00440038;

@@ -9,12 +9,12 @@
 void anim_tick(int a, int b)
 {
     if (a != 0) {
-        DAT_0042f530++;
-        if (DAT_0042f530 == 8) {
-            DAT_0042f530 = 0;
-            DAT_0042f52c++;
-            if (DAT_0042f52c > 1)
-                DAT_0042f52c = 0;
+        player.f30++;
+        if (player.f30 == 8) {
+            player.f30 = 0;
+            player.f2c++;
+            if (player.f2c > 1)
+                player.f2c = 0;
         }
     }
     if (b != 0) {

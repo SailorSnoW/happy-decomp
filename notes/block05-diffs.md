@@ -2,7 +2,7 @@
 
 Functions of `src/happy/block_05.c` whose reccmp diff (2026-10-27) contains something other than an end-of-array pointer or a call to an undecompiled function (`notes/matching.md` §3).
 
-## `take_item` (`0x00403A80`), 85.55%
+## `take_item` (`0x00403A80`): 85.55%, then 100%
 
 Only difference [verified]: the comparison `++DAT_0042f550 == DAT_00440048`.
 
@@ -22,7 +22,7 @@ Cause [verified with test programs, `matching.md` §3a]: the original compiler k
 
 Variants tried without effect: separate increment and comparison, operands swapped, casts `(int)`, `(unsigned)`, `(char)`, `volatile`.
 
-To decide (`STATUS.md`): how to declare `DAT_0042f550` (and `DAT_0042f564`, same pattern at `0x00402C21`).
+**Resolved on 2026-10-27** (decided with the user): `0x0042F500`-`0x0042F567` is declared as one structure, `PLAYER player` (`happy.h`); `take_item` is at 100%.
 
 ## `bonus_room` (`0x00405DB0`), 99.34%
 
