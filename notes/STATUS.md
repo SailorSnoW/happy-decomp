@@ -13,8 +13,8 @@ Note: `notes/matching.md` §3b.
 - Next: happy block_05 (19 functions, gameplay), leaves first, `0x00404C50` at the end.
 - `timer_1s` (`0x004018B0`) and `timer_15ms` (`0x004018F0`) are not functions in Ghidra (creating them requires approval).
 
-### Open questions
-- End-of-array pointers (step 5): decision pending.
+### Decisions
+- End-of-array pointers (step 5): left below 100% with the note of `matching.md` §3, no trick on the layout of the globals (decided with the user).
 
 ## 2026-10-27 — Matching, step 6: loading and resetting a level (happy block_04)
 
