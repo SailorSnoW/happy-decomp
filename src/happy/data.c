@@ -83,6 +83,12 @@ int DAT_0041208c = 1;
 // GLOBAL: HAPPY 0x00412090
 int DAT_00412090 = 5;
 
+/* Set to 1 by the command-line option "-fps" (main) [verified]; main's
+ * store is its only reference in the exe [verified: byte scan], so the
+ * option has no effect. */
+// GLOBAL: HAPPY 0x00413b10
+int DAT_00413b10;
+
 /* [hypothesis] Joystick enabled: read_joystick (0x004012A0) does nothing
  * when it is 0; init_game sets it when install_joystick succeeds. */
 // GLOBAL: HAPPY 0x00413b14

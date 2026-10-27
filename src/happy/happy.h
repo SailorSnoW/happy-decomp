@@ -114,6 +114,7 @@ typedef struct PLAYER {
 
 /* data.c */
 extern char *passwords[21];
+extern int DAT_00413b10;
 extern int DAT_00412088;
 extern int DAT_0041208c;
 extern int DAT_00412090;
@@ -247,5 +248,10 @@ void ending_frames(int x1, int x2, int y, int frames, int flip1, int flip2, int 
 void anim_tick(int a, int b);
 void play_ending(void);
 void play_game(void);
+
+/* block_08.c */
+int FUN_00409870(void);
+void draw_slot_panel(int x1, int y1, int x2, int y2);
+int FUN_00409f30(void);
 
 #endif

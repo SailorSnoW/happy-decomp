@@ -1,5 +1,23 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 10: main and the custom game panel (happy block_08, without the two large functions)
+
+Note: `notes/matching.md` ง3, ง3a, ง5; `notes/block08-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_08.c`: 3 of 5. `draw_slot_panel` (`0x00409E40`, a box with light and dark edges and "RIGHT CLICK A SLOT" / "TO REMOVE IT", drawn twice by `0x00409F30`) 100%; `WinMain` (`0x0040A970`) 91.67% -> 100% now that `main` is annotated; `main` (`0x0040A830`) 81.90%: the calls to `0x00409870` / `0x00409F30`, and a loop rotation that no C shape tried avoids (`block08-diffs.md`).
+- [verified] `main`: options `-widescreen` (`screen_mode` = 1) and `-fps` (`DAT_00413b10` = 1), compared with `strcmpi`. Neither has an effect: `init_game`, called next, always rewrites `screen_mode` (`load_settings` or `default_settings`), and `0x00413B10` has no other reference in the exe (byte scan). `0x00409870` returns -1 (EXIT, `DAT_00413b20` = 3) or 0 after loading `data/levels.dat` / `data/xlevels.dat`; `DAT_00413b20` = 2 runs the custom game screen `0x00409F30` (0 = back to the start menu). `DAT_004450b0` = first level (1, or the password level + 1).
+- Matching findings (`matching.md` ง3a): an expression repeated in two calls rather than a local decides the parameter registers (`draw_slot_panel`); loop rotation of `/O2`. `main` shows as `_mangled_main` (`allegro.h`).
+- No regression: happy 80/84 annotated, 56 at 100%; maped 9/50, 9 at 100%; `reccmp-datacmp` 72 + 4 variables, 0 issues.
+- Ghidra: `draw_slot_panel` renamed with its prototype, `DAT_00413b10` typed, saved. `main` has no function in Ghidra (skipped); `passwords` and `player` still refused (`type_would_evict`).
+
+### Remaining
+- Next: the four large functions (`0x00404C50`, `0x00409F30`, `0x00402620`, `0x00409870`), then maped. Retry the loop of `main` once `0x00409870` and `0x00409F30` are done.
+
+### Open questions
+- `main`: which C shape keeps VC6 from rotating the start menu loop (`block08-diffs.md`)?
+- `-widescreen` and `-fps` are dead options in this build [verified in the code]: leftovers of an earlier version? [hypothesis]
+
 ## 2026-10-27 โ€” Matching, step 9: menus, scores, ending and game flow (happy block_07)
 
 Note: `notes/matching.md` ยง3, ยง3a, ยง5. Branch `decomp/happy`.
