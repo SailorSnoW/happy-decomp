@@ -152,5 +152,5 @@ address,size,name,candidates,member,external,status
 0x00410B8F,124,___multtenpow12,,..\build\intel\st_obj\tenpow.obj,1,verified
 0x00410C10,6,,KERNEL32.DLL!RtlUnwind,,0,import thunk
 0x00410C20,140,__strcmpi,__stricmp,build\intel\st_obj\stricmp.obj,1,verified (aliases)
-0x00410CAC,45,__itoa,,build\intel\st_obj\xtoa.obj,1,verified
+0x00410CAC,45,_itoa,,build\intel\st_obj\xtoa.obj,1,verified
 0x00410CD9,92,_xtoa,,build\intel\st_obj\xtoa.obj,0,verified

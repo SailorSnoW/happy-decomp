@@ -454,7 +454,7 @@
 // __strcmpi
 
 // LIBRARY: HAPPY 0x00410cac
-// __itoa
+// _itoa
 
 // LIBRARY: HAPPY 0x00410cd9
 // _xtoa

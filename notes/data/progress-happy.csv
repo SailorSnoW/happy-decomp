@@ -25,7 +25,7 @@ address,size,block,name,matching
 0x004021A0,177,block_03,draw_particles,98.53
 0x00402260,628,block_03,draw_snow,100.00
 0x004024E0,312,block_03,draw_objects,99.16
-0x00402620,2166,block_03,draw_level,90.32
+0x00402620,2166,block_03,draw_level,100.00
 0x00402EA0,393,block_03,init_level_palette,100.00
 0x00403030,57,block_04,FUN_00403030,100.00
 0x00403070,181,block_04,load_level_objects,98.15
@@ -74,7 +74,7 @@ address,size,block,name,matching
 0x00409870,1476,block_08,start_menu,100.00
 0x00409E40,238,block_08,draw_slot_panel,100.00
 0x00409F30,2296,block_08,custom_game,100.00
-0x0040A830,313,block_08,_mangled_main,83.81
+0x0040A830,313,block_08,_mangled_main,100.00
 0x0040A970,37,block_08,WinMain,100.00
 0x0040A9A0,135,block_09,map_clear,100.00
 0x0040AA30,197,block_09,map_create,100.00

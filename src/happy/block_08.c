@@ -316,14 +316,15 @@ int custom_game(void)
  * level, copied into DAT_00440038 by FUN_00403030]; after play_game,
  * music 21 (unless DAT_00413b2c, set by play_ending) or 19. 3 shows the
  * instructions, 2 quits [verified].
- * Below 100%: VC6 rotates the start menu loop, the original does not
- * (notes/block08-diffs.md); every shape tried gives the same code, it is
- * the only difference left. */
+ * The start menu loop is a while (!done) on a flag, as in custom_game:
+ * written as a do/while or a for (;;) on the calls, VC6 rotates it (the
+ * head copied at the bottom), the original does not (notes/block08-diffs.md). */
 // FUNCTION: HAPPY 0x0040a830
 int main(int argc, char *argv[])
 {
     int i;
     int sel;
+    int done;
 
     for (i = 1; i < argc; i++) {
         // STRING: HAPPY 0x00412f70
@@ -334,10 +335,13 @@ int main(int argc, char *argv[])
             DAT_00413b10 = 1;
     }
     init_game();
-    do {
+    done = 0;
+    while (!done) {
         if (start_menu() < 0)
             goto quit;
-    } while (DAT_00413b20 == 2 && custom_game() == 0);
+        if (DAT_00413b20 != 2 || custom_game() != 0)
+            done = 1;
+    }
     if (DAT_00413b20 == 0) {
         play_intro();
     } else {

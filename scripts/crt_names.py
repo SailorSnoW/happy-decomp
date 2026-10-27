@@ -40,7 +40,10 @@ RELOC_4 = (0x06, 0x07, 0x0B, 0x14)
 # chdir.obj: the game calls chdir, the OLDNAMES.LIB alias of _chdir, and the
 # PDB names the target _chdir [verified: with chdir in loader main, the
 # recompiled CRT order matches the original, notes/matching.md §3].
-COMPILER_ALIASES = {"__alloca_probe": "__chkstk", "__chdir": "_chdir"}
+# xtoa.obj: happy calls itoa, the OLDNAMES.LIB alias of _itoa, and the PDB
+# names the target _itoa [verified: draw_level 0x00402DBD, 0x00402E25].
+COMPILER_ALIASES = {"__alloca_probe": "__chkstk", "__chdir": "_chdir",
+                    "__itoa": "_itoa"}
 
 
 def ar_members(data):

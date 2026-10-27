@@ -112,9 +112,12 @@ void draw_objects(int ox, int oy)
  * items left, time (MAX(time, 0)) and Happylanders left, unless
  * DAT_00442080 is set, then the scrolling message. show: copies the
  * buffer to the screen (blit_to_screen). 12 callers.
- * Below 100%: stack slots and the test of the outer tile loops
- * (notes/block03-diffs.md). The inner loops are controlled by j (VC6 then
- * tests y and keeps j, as the original does). */
+ * Shapes that decide the code (notes/block03-diffs.md): the tile
+ * coordinates are written i * 16 - sx and j * 16 - sy in the calls (VC6
+ * makes the induction variables, tests them instead of i and j, and gives
+ * the original stack slots); the front tile loop has its index in k like
+ * the back one; text_length goes into a local before textout (the stack
+ * cleanups are grouped as in the original). */
 // FUNCTION: HAPPY 0x00402620
 void draw_level(int show, int hud, int time)
 {
@@ -124,12 +127,11 @@ void draw_level(int show, int hud, int time)
     int i;
     int sy;
     int sx;
-    int x;
     int ty;
     int tx;
     int k;
+    int len;
     char buf[20];
-    int y;
 
     frame_count++;
     if (DAT_00414130->f79 & 1) {
@@ -152,18 +154,17 @@ void draw_level(int show, int hud, int time)
         draw_snow(ox, oy, 0, 256);
     if (DAT_00414130->f79 & 2)
         draw_snow(ox, oy, 256, 512);
-    for (x = 0, i = 0; i < 21; x += 16, i++) {
+    for (i = 0; i < 21; i++) {
         for (j = 0; j < 14; j++) {
-            y = j * 16;
             k = (ty + j) * DAT_00414130->w + i + tx;
             if (DAT_00414130->tiles[k].t0 &&
                 DAT_00414130->tiles[k].t0 < 131)
-                draw_rle_sprite(buffer, (RLE_SPRITE *)map_datafile[DAT_00414130->tiles[k].t0].dat, x - sx, y - sy);
+                draw_rle_sprite(buffer, (RLE_SPRITE *)map_datafile[DAT_00414130->tiles[k].t0].dat, i * 16 - sx, j * 16 - sy);
             if (DAT_00414130->tiles[k].t0 >= 131)
-                line(buffer, x - sx, y - sy, x - sx + 15, y - sy + 15, 200);
+                line(buffer, i * 16 - sx, j * 16 - sy, i * 16 - sx + 15, j * 16 - sy + 15, 200);
             if (DAT_00414130->tiles[k].t3 &&
                 DAT_00414130->tiles[k].t3 < 20)
-                draw_sprite(buffer, (BITMAP *)DAT_00415cc0[DAT_00414130->tiles[k].t3 + 133].dat, x - sx, y - sy);
+                draw_sprite(buffer, (BITMAP *)DAT_00415cc0[DAT_00414130->tiles[k].t3 + 133].dat, i * 16 - sx, j * 16 - sy);
         }
     }
     draw_particles(ox, oy);
@@ -181,12 +182,12 @@ void draw_level(int show, int hud, int time)
                 draw_sprite(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, fixtoi(player.x) - ox - 8, fixtoi(player.y) - oy - 21);
         }
     }
-    for (x = 0, i = 0; i < 21; x += 16, i++) {
+    for (i = 0; i < 21; i++) {
         for (j = 0; j < 14; j++) {
-            y = j * 16;
-            if (DAT_00414130->tiles[(ty + j) * DAT_00414130->w + i + tx].t1 &&
-                DAT_00414130->tiles[(ty + j) * DAT_00414130->w + i + tx].t1 < 131)
-                draw_rle_sprite(buffer, (RLE_SPRITE *)map_datafile[DAT_00414130->tiles[(ty + j) * DAT_00414130->w + i + tx].t1].dat, x - sx, y - sy);
+            k = (ty + j) * DAT_00414130->w + i + tx;
+            if (DAT_00414130->tiles[k].t1 &&
+                DAT_00414130->tiles[k].t1 < 131)
+                draw_rle_sprite(buffer, (RLE_SPRITE *)map_datafile[DAT_00414130->tiles[k].t1].dat, i * 16 - sx, j * 16 - sy);
         }
     }
     if (hud) {
@@ -207,9 +208,11 @@ void draw_level(int show, int hud, int time)
         }
         if (!DAT_00442080) {
             itoa(MAX(time, 0), buf, 10);
-            textout(buffer, (FONT *)misc_datafile[4].dat, buf, 318 - text_length((FONT *)misc_datafile[4].dat, buf), 2, -1);
+            len = text_length((FONT *)misc_datafile[4].dat, buf);
+            textout(buffer, (FONT *)misc_datafile[4].dat, buf, 318 - len, 2, -1);
             itoa(MAX(DAT_00414130->f7b - player.f15, 0), buf, 10);
-            textout(buffer, (FONT *)misc_datafile[4].dat, buf, 318 - text_length((FONT *)misc_datafile[4].dat, buf), 22, -1);
+            len = text_length((FONT *)misc_datafile[4].dat, buf);
+            textout(buffer, (FONT *)misc_datafile[4].dat, buf, 318 - len, 22, -1);
         }
         if (scroll_active)
             draw_scroll_message(buffer);

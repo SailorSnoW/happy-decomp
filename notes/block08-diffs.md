@@ -2,7 +2,21 @@
 
 Functions of `src/happy/block_08.c` whose reccmp diff (2026-10-27) contains something other than an end-of-array pointer or a call to an undecompiled function (`notes/matching.md` §3).
 
-## `main` (`0x0040A830`), 81.90%
+## `main` (`0x0040A830`): 81.90%, 83.81%, then 100%
+
+**Resolved on 2026-10-27** [verified: reccmp 100%]: the start menu loop is written on a flag, like the `while (!done)` of `custom_game`:
+```c
+done = 0;
+while (!done) {
+    if (start_menu() < 0)
+        goto quit;
+    if (DAT_00413b20 != 2 || custom_game() != 0)
+        done = 1;
+}
+```
+VC6 threads the jumps through the known values of `done` after the loop optimisations, so the loop is never rotated: the head `call start_menu` stays the target of the back edge and the exit block stays at the end. Four other flag forms give the same code (`done = 1;` then `done = 0` when the custom game returns 0; `done = custom_game();` when `DAT_00413b20 == 2`, otherwise 1; nested `if`s); a `do`/`while (!done)` with nested `if`/`else` gives 95.10%. The form kept is the simplest one.
+
+History (before the fix):
 
 Two differences [verified]:
 1. the calls to `0x00409870` (start menu) and `0x00409F30` (custom game), not decompiled yet (§3);

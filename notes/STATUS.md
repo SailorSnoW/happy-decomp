@@ -1,5 +1,26 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 16: happy, main and draw_level at 100%
+
+Note: `notes/matching.md` §3, §3a, §4, §5; `notes/block03-diffs.md`, `notes/block08-diffs.md`, `notes/block05-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] **happy: 68/84 GAME functions at 100% (73.1% of the bytes)**, up from 66 (66.8%).
+- [verified] `main` (`0x0040A830`) 83.81% -> 100%: the start menu loop is a `while (!done)` on a flag, as in `custom_game`; VC6 then does not rotate it (`block08-diffs.md`).
+- [verified] `draw_level` (`0x00402620`) 90.32% -> 100%: the tile coordinates are `i * 16 - sx` / `j * 16 - sy` in the calls (no `x` / `y` variables: VC6's induction variables give the original stack slots and loop tests), the front tile index in `k`, and `len = text_length(...)` before `textout` (grouped stack cleanups) (`block03-diffs.md`).
+- [verified] `itoa` is an OLDNAMES alias like `chdir`: `crt_names.py` maps `__itoa` to `_itoa` (`COMPILER_ALIASES`), `src/crt/happy.h` and `notes/data/crt-happy.csv` regenerated; that was the last difference of `draw_level`.
+- Tried without success (`block05-diffs.md`): the swapped reloads of `bonus_room` (every order of the statements after the inner loop, variable splits and reuses, loop forms) and the swapped `add` of `play_level` (a dozen forms of the `MIN`).
+- The end-of-array question looked at again (no change to the decision): the neighbours of the arrays concerned are uninitialised globals (COMMON), placed by the linker in the reverse order of the compiler's symbol table, which depends on the names [verified with test programs: same declarations, other names, other order]; with the original names unknown, the layout cannot be reproduced. Side finding [verified]: `0x00413B10`-`0x00413B34` (`DAT_00413b10`, `use_joystick`, `DAT_00413b20`-`DAT_00413b34`) are in the `.bss` of game objects, before the CRT's `errno`, which VC6 does for globals initialised to 0 or `static` (test program: `int x = 0;` goes to `.bss`), not COMMON; no function depends on it.
+- No regression: maped 42/50, loader 2/2; `reccmp-datacmp` 72 / 37 / 1 variables, 0 issues. `build.py --final happy`: the game code ends at `0x0040AD50` (`rand`), as in the original.
+- No Ghidra sync needed: names and prototypes unchanged.
+
+### Remaining
+- happy below 100%: the 14 end-of-array pointers and `enter_hiscore` (decided with the user, `matching.md` §3), `bonus_room` (end-of-array pointer + swapped reloads), `play_level` 99.84% ("effective match").
+- maped below 100%: `set_screen_mode`, `auto_mask`, `pick_tile` (+ five end-of-array pointers); the shapes found here (flag loops, coordinates in the expressions, locals for nested calls) are worth trying there.
+
+### Open questions
+- happy's OLDNAMES aliases: the original has two (`AliasObj60 ×2`), the sources call three (`itoa`, `stricmp`, `strcmpi`); which spelling is wrong is not observable in the code, and the CRT layout differs for another reason (`matching.md` §3).
+
 ## 2026-10-27 — Matching, step 15: loader (2/2 at 100%)
 
 Note: `notes/matching.md` §3, §3a, §4, §5; `notes/layout-loader.md` §10. Branch `decomp/happy`.
