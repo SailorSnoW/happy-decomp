@@ -39,15 +39,16 @@ ALLEGRO = ROOT / "3rdparty" / "allegro-4.0.3"
 # Link order. Missing files are skipped, so that blocks can be added one at a
 # time. data.c holds the globals until their owner .obj is known.
 SOURCES = {
-    "happy": ["happy/block_%02d.c" % i for i in range(1, 9)]
+    "happy": ["common/block_01.c"]
+    + ["happy/block_%02d.c" % i for i in range(2, 9)]
     + ["common/block_09.c", "happy/data.c"],
-    "maped": ["common/block_09.c"]
-    + ["maped/block_%02d.c" % i for i in range(2, 8)] + ["maped/data.c"],
+    "maped": ["common/block_09.c", "maped/block_02.c", "common/block_01.c"]
+    + ["maped/block_%02d.c" % i for i in range(4, 8)] + ["maped/data.c"],
     "loader": ["loader/block_01.c", "loader/data.c"],
 }
 
 CFLAGS = ["/nologo", "/O2", "/Zi", "/W3", "/c"]
-LFLAGS = ["/nologo", "/SUBSYSTEM:WINDOWS", "/DEBUG", "/INCREMENTAL:NO"]
+LFLAGS = ["/nologo", "/SUBSYSTEM:WINDOWS", "/DEBUG", "/INCREMENTAL:NO", "/MAP"]
 UNRESOLVED = re.compile(r"unresolved external symbol (\S+)")
 
 

@@ -5,6 +5,7 @@
 
 #include <allegro.h>
 #include "map.h"
+#include "block_01.h"
 
 /* data.c */
 extern volatile int timer_ticks;

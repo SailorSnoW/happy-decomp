@@ -9,8 +9,8 @@ address,size,block,name,matching
 0x00401400,210,block_02,,
 0x004014E0,225,block_02,,
 0x004015D0,200,block_02,,
-0x004016A0,306,block_03,,
-0x004017E0,227,block_03,,
+0x004016A0,306,block_03,FUN_00401160,100.00
+0x004017E0,227,block_03,init_help_texts,100.00
 0x004018D0,215,block_04,,
 0x004019B0,102,block_04,,
 0x00401A20,365,block_04,,

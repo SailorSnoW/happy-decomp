@@ -1,5 +1,29 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 3: shared utilities (happy block_01, maped block_03)
+
+Note: `notes/matching.md` §3, §3b, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/common/block_01.c`: the 7 functions of happy block_01, of which maped keeps 2. happy: `read_joystick` (`0x004012A0`), `read_keyboard` (`0x00401350`), `blit_to_screen` (`0x00401380`), `message_box` (`0x004014F0`), `init_help_texts` (`0x004017C0`) at 100%; `FUN_00401000` 98.18%, `FUN_00401160` 98.75%. maped: `FUN_00401160` (`0x004016A0`) and `init_help_texts` (`0x004017E0`) at 100%.
+- [verified] The two functions below 100% have code identical to the original: the only difference is an end-of-array address, named after a different neighbour in the recompiled exe (`matching.md` §3). Not fixable from `data.c` (the linker orders COMMON globals itself).
+- `src/include/block_01.h`: `OBJ` (0x1C bytes: the 100 level objects at `0x00414140` and the 40 templates at `0x00440060`, same type [hypothesis]), `T_00414040` (table of 20 entries {points?, flags?, ?}), `HELP_TEXT_SIZE` (257).
+- New globals (happy `data.c`): `screen_mode` (`0x00412030`, initial value 32), `use_joystick`, `keys[128]` (`0x00413E20`: `key[]` copy + joystick in 116–124), `time_left` (`0x00414020`, `volatile`, decremented by the timer callback `0x004018B0`), `help_texts`, `trans_table`, `buffer`, `DAT_00414040`, `DAT_00414140`, `DAT_00414c9c`, `DAT_0042f594`, `DAT_00440060`. maped `data.c`: `DAT_00414140` (`0x004108E0`), `help_texts` (`0x004113E0`), `DAT_00440060` (`0x0042A860`).
+- Matching findings [verified]: `FUN_00401000` assigns field by field, not entry by entry; `blit_to_screen` uses separate screen counters in the `for` headers; `message_box` needs `volatile` on `time_left`, `strcpy` in each branch, do-while loops and a precise init order (found by trying the 120 orders).
+- `scripts/build.py`: link order with `common/block_01.c` (first in happy, third in maped), `/MAP`.
+- Ghidra: types `MAP`, `TILE`, `OBJ`, `HELP_TEXT` (both programs), `T_00414040` (happy); prototypes of the 7+7 map functions and of block_01; renames of the functions and globals above.
+
+### Remaining
+- **Ghidra save not confirmed**: `save_program` timed out on both programs, then every request timed out (Ghidra blocked, probably a dialog in the GUI). To check in Ghidra, then save.
+- Next: happy block_02 (`0x004018B0`–`0x0040219F`), leaves first.
+- maped final link: the happy-only functions of `block_01.c` use globals that maped lacks (data stubs, `matching.md` §2).
+
+### Open questions
+- Byte 256 of help text 0 is set to `'*'` by `init_help_texts` (both exes): use unknown. Is it `char[16][257]` or a struct {text[256], char}? Same code either way.
+- `FUN_00401160`, second loop: the copy `f14 = f13` reads template `i` instead of `26 + i` [verified]. Bug in the original or a different meaning of the field?
+- Order in the source of `map_save` (maped only) relative to `map_collision_at` / `map_t4_at` (happy only): not observable.
+- Names of the fields `f77`–`f84` of `MAP`, of the tile bytes, and of `OBJ`: to be found in the callers.
+
 ## 2026-10-27 — Matching, step 2: map module complete (happy block_09, maped block_01)
 
 Note: `notes/matching.md` §3, §3b, §5. Branch `decomp/happy`.
@@ -12,8 +36,8 @@ Note: `notes/matching.md` §3, §3b, §5. Branch `decomp/happy`.
 - Ghidra: first writes (16 functions, 3 globals renamed, both programs saved). Backup: `happy-decomp_2026_10_27.gar`.
 
 ### Remaining
-- Step 3: happy block_01 (shared utilities, `0x00401000`–`0x004017C0`), with maped block_03.
-- `MAP` and `TILE` structures to create in Ghidra and apply to the map functions' prototypes.
+- Step 3: happy block_01 (shared utilities, `0x00401000`–`0x004017C0`), with maped block_03. Done (step 3 above).
+- `MAP` and `TILE` structures to create in Ghidra and apply to the map functions' prototypes. Done (step 3 above).
 
 ### Open questions
 - Order in the source of `map_save` (maped only) relative to `map_collision_at` / `map_t4_at` (happy only): not observable.
