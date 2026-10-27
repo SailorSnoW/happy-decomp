@@ -24,8 +24,8 @@ address,size,block,name,matching
 0x00402280,206,block_05,draw_background,100.00
 0x00402350,17,block_05,get_help_text,100.00
 0x00402370,260,block_05,draw_objects,98.94
-0x00402480,1150,block_05,,
-0x00402900,2112,block_05,,
+0x00402480,1150,block_05,export_map_image,99.45
+0x00402900,2112,block_05,draw_editor,100.00
 0x00403140,1,block_05,FUN_00403140,100.00
 0x00403150,171,block_05,edit_colors,100.00
 0x00403200,189,block_06,,

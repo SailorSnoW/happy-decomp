@@ -3,6 +3,7 @@
  * objects, export of the map as an image, the editor frame and the
  * background colours dialog. maped only. */
 #include <stdio.h>
+#include <string.h>
 #include <allegro.h>
 #include "maped.h"
 
@@ -169,6 +170,241 @@ void draw_objects(BITMAP *bmp)
                         2, DAT_00414140[i].y - DAT_0042a424 * 16 - 10, 175);
         }
     }
+}
+
+/* Exports the whole map as an image [verified]: a bitmap of w x h tiles,
+ * the background image MAP.f77 stretched over it (show_background) or
+ * black, then per tile the base tile (show_base_tiles), the item
+ * (show_items; "!!" for an item past the sprites of the tile set), the
+ * cover tile, lit with colour 170 if hilite_cover_tiles (show_cover_tiles),
+ * the walk mask (show_masks) and the type (show_types); the objects
+ * (show_npcs) and the start sprite 64 at MAP.f03/f04. The options come from
+ * maped.ini (defaults 1, except hilite_cover_tiles, show_masks and
+ * show_types). Saved, without datafile password, under the name of
+ * filename with the extension output_format; resets the scroll position.
+ * [verified] mouse_x and mouse_y are read and the values unused. The
+ * outer loop has two counters, the inner one derives y from j: the other
+ * combinations place the "y = 0" before or after the test differently.
+ * Only caller 0x00404C10. */
+// FUNCTION: MAPED 0x00402480
+void export_map_image(char *filename)
+{
+    int i;
+    int j;
+    char msg[512];
+    char path[1024];
+    PALETTE pal;
+    int mx;
+    int my;
+    BITMAP *bmp;
+    int x;
+    int y;
+    int k;
+
+    mx = mouse_x;
+    my = mouse_y;
+    bmp = create_bitmap(DAT_00410110->w * 16, DAT_00410110->h * 16);
+    if (bmp == NULL) {
+        // STRING: MAPED 0x0040f31c
+        FUN_00403800("failed to create buffer for image output", 1);
+        return;
+    }
+    packfile_password(NULL);
+    get_palette(pal);
+    // STRING: MAPED 0x0040f30c
+    if (get_config_int(NULL, "show_background", 1))
+        stretch_blit((BITMAP *)misc_datafile[DAT_00410110->f77].dat, bmp,
+                     0, 0, 320, 200, 0, 0, bmp->w, bmp->h);
+    else
+        clear_bitmap(bmp);
+    DAT_0042a424 = 0;
+    DAT_0042a420 = 0;
+    for (i = 0, x = 0; i < DAT_00410110->w; i++, x += 16) {
+        for (j = 0; j < DAT_00410110->h; j++) {
+            y = j * 16;
+            k = (DAT_0042a424 + j) * DAT_00410110->w + DAT_0042a420 + i;
+            // STRING: MAPED 0x0040f2fc
+            if (DAT_00410110->tiles[k].t0 && get_config_int(NULL, "show_base_tiles", 1))
+                draw_rle_sprite(bmp, (RLE_SPRITE *)map_datafile[DAT_00410110->tiles[k].t0].dat, x, y);
+            // STRING: MAPED 0x0040f2f0
+            if (DAT_00410110->tiles[k].t3 && get_config_int(NULL, "show_items", 1)) {
+                if (DAT_00410110->tiles[k].t3 < ((DAT_00410110->f79 & 8) >> 3) + 19)
+                    draw_sprite(bmp, (BITMAP *)DAT_004113d4[DAT_00410110->tiles[k].t3 + 133].dat, x, y);
+                else
+                    // STRING: MAPED 0x0040f2ec
+                    textprintf(bmp, font, x, y, 175, "!!");
+            }
+            // STRING: MAPED 0x0040f2d8
+            if (DAT_00410110->tiles[k].t1 && get_config_int(NULL, "show_cover_tiles", 1)) {
+                // STRING: MAPED 0x0040f2c4
+                if (get_config_int(NULL, "hilite_cover_tiles", 0))
+                    draw_lit_rle_sprite(bmp, (RLE_SPRITE *)map_datafile[DAT_00410110->tiles[k].t1].dat, x, y, 170);
+                else
+                    draw_rle_sprite(bmp, (RLE_SPRITE *)map_datafile[DAT_00410110->tiles[k].t1].dat, x, y);
+            }
+            // STRING: MAPED 0x0040f2b8
+            if (DAT_00410110->tiles[k].t2 && get_config_int(NULL, "show_masks", 0))
+                draw_tile_mask(bmp, x, y, DAT_00410110->tiles[k].t2);
+            // STRING: MAPED 0x0040f2ac
+            if (DAT_00410110->tiles[k].t4 && get_config_int(NULL, "show_types", 0))
+                draw_tile_type(bmp, x, y, DAT_00410110->tiles[k].t4);
+        }
+    }
+    // STRING: MAPED 0x0040f2a0
+    if (get_config_int(NULL, "show_npcs", 1))
+        draw_objects(bmp);
+    draw_sprite(bmp, (BITMAP *)DAT_004113d4[64].dat, (DAT_00410110->f03 - DAT_0042a420) * 16,
+                (DAT_00410110->f04 - DAT_0042a424) * 16 - 4);
+    replace_extension(path, get_filename(filename), get_config_string(NULL, "output_format", "pcx"), sizeof(path));
+    save_bitmap(path, bmp, pal);
+    packfile_password("happy");
+    destroy_bitmap(bmp);
+    // STRING: MAPED 0x0040f294
+    sprintf(msg, "%s saved", get_filename(path));
+    FUN_00403800(msg, 1);
+}
+
+/* Draws the editor frame on the back buffer and shows it [verified]: the
+ * background, the visible tiles (base tile; item, or "!!" past the sprites
+ * of the tile set; cover tile if DAT_0042acc0 is set, lit with colour 170
+ * in mode 1; walk mask in mode 2, type in mode 5), the objects, the
+ * selection DAT_00422400 under the cursor tile, the start sprite, the
+ * cursor and mouse rectangles, the marked tile DAT_0040e050/e054, then the
+ * status lines: size and cursor position, the mode name and the cover flag
+ * (F2), "RANDOM" (DAT_00410120), "NOSCROLL (F3)", happies and the file,
+ * name and time of the map. Modes of DAT_00422404 [verified: the names]:
+ * 0 BASE, 1 COVER, 2 WALKMASK, 3 ITEM, 4 NPC, 5 TILETYPE. Only caller
+ * 0x00404C10. */
+// FUNCTION: MAPED 0x00402900
+void draw_editor(void)
+{
+    int i;
+    int j;
+    int mx;
+    int my;
+    char label[40];
+    int x;
+    int y;
+    int k;
+
+    mx = mouse_x;
+    my = mouse_y;
+    draw_background();
+    for (i = 0, x = 0; i < DAT_0042acc8; i++, x += 16) {
+        for (j = 0; j < DAT_0042acc4; j++) {
+            y = j * 16;
+            k = (DAT_0042a424 + j) * DAT_00410110->w + DAT_0042a420 + i;
+            if (DAT_00410110->tiles[k].t0)
+                draw_rle_sprite(DAT_00422410, (RLE_SPRITE *)map_datafile[DAT_00410110->tiles[k].t0].dat, x, y);
+            if (DAT_00410110->tiles[k].t3) {
+                if (DAT_00410110->tiles[k].t3 < ((DAT_00410110->f79 & 8) >> 3) + 19)
+                    draw_sprite(DAT_00422410, (BITMAP *)DAT_004113d4[DAT_00410110->tiles[k].t3 + 133].dat, x, y);
+                else
+                    textprintf(DAT_00422410, font, x, y, 175, "!!");
+            }
+            if (DAT_00410110->tiles[k].t1 && DAT_0042acc0) {
+                if (DAT_00422404 == 1)
+                    draw_lit_rle_sprite(DAT_00422410, (RLE_SPRITE *)map_datafile[DAT_00410110->tiles[k].t1].dat, x, y, 170);
+                else
+                    draw_rle_sprite(DAT_00422410, (RLE_SPRITE *)map_datafile[DAT_00410110->tiles[k].t1].dat, x, y);
+            }
+            if (DAT_00422404 == 2 && DAT_00410110->tiles[k].t2)
+                draw_tile_mask(DAT_00422410, x, y, DAT_00410110->tiles[k].t2);
+            if (DAT_00422404 == 5 && DAT_00410110->tiles[k].t4)
+                draw_tile_type(DAT_00422410, x, y, DAT_00410110->tiles[k].t4);
+        }
+    }
+    draw_objects(DAT_00422410);
+    if (DAT_00422404 == 2) {
+        if (DAT_00422400)
+            draw_tile_mask(DAT_00422410, DAT_00422408 * 16, DAT_0042240c * 16, DAT_00422400);
+    } else if (DAT_00422404 == 5) {
+        if (DAT_00422400)
+            draw_tile_type(DAT_00422410, DAT_00422408 * 16, DAT_0042240c * 16, DAT_00422400);
+    } else if (DAT_00422404 == 3 && DAT_00422400 < ((DAT_00410110->f79 & 8) >> 3) + 19) {
+        if (DAT_00422400)
+            draw_sprite(DAT_00422410, (BITMAP *)DAT_004113d4[DAT_00422400 + 133].dat,
+                        DAT_00422408 * 16, DAT_0042240c * 16);
+    } else if (DAT_00422404 == 4 && DAT_00422400 < 35) {
+        draw_sprite(DAT_00422410, (BITMAP *)DAT_004113d4[DAT_00440060[DAT_00422400].f13].dat,
+                    mx, DAT_00422400 < 26 ? my & ~15 : (my & ~15) - 4);
+    } else if (DAT_00422404 == 1) {
+        if (DAT_00422400)
+            draw_lit_rle_sprite(DAT_00422410, (RLE_SPRITE *)map_datafile[DAT_00422400].dat,
+                                DAT_00422408 * 16, DAT_0042240c * 16, 170);
+    } else if (DAT_00422400) {
+        draw_rle_sprite(DAT_00422410, (RLE_SPRITE *)map_datafile[DAT_00422400].dat,
+                        DAT_00422408 * 16, DAT_0042240c * 16);
+    }
+    draw_sprite(DAT_00422410, (BITMAP *)DAT_004113d4[64].dat, (DAT_00410110->f03 - DAT_0042a420) * 16,
+                (DAT_00410110->f04 - DAT_0042a424) * 16 - 4);
+    if (DAT_00422404 != 4)
+        rect(DAT_00422410, DAT_00422408 * 16, DAT_0042240c * 16,
+             DAT_00422408 * 16 + 15, DAT_0042240c * 16 + 15, 255);
+    rect(DAT_00422410, mx - 1, my - 1, mx + 1, my + 1, 255);
+    // STRING: MAPED 0x0040f3fc
+    textprintf(DAT_00422410, (FONT *)misc_datafile[25].dat, 1, 1, 175, "%d,%d [%d,%d]",
+               DAT_00410110->w, DAT_00410110->h,
+               DAT_00422408 + DAT_0042a420, DAT_0042240c + DAT_0042a424);
+    if (DAT_0040e050 > -1) {
+        rect(DAT_00422410, (DAT_0040e050 - DAT_0042a420) * 16 - 1, (DAT_0040e054 - DAT_0042a424) * 16 - 1,
+             (DAT_0040e050 - DAT_0042a420) * 16 + 17, (DAT_0040e054 - DAT_0042a424) * 16 + 17, 175);
+        rect(DAT_00422410, (DAT_0040e050 - DAT_0042a420) * 16 - 2, (DAT_0040e054 - DAT_0042a424) * 16 - 2,
+             (DAT_0040e050 - DAT_0042a420) * 16 + 18, (DAT_0040e054 - DAT_0042a424) * 16 + 18, 23);
+    }
+    switch (DAT_00422404) {
+    case 0:
+        // STRING: MAPED 0x0040f3f4
+        strcpy(label, "BASE");
+        break;
+    case 1:
+        // STRING: MAPED 0x0040f3ec
+        strcpy(label, "COVER");
+        break;
+    case 2:
+        // STRING: MAPED 0x0040f3e0
+        strcpy(label, "WALKMASK");
+        break;
+    case 3:
+        // STRING: MAPED 0x0040f3d8
+        strcpy(label, "ITEM");
+        break;
+    case 4:
+        // STRING: MAPED 0x0040f3d4
+        strcpy(label, "NPC");
+        break;
+    case 5:
+        // STRING: MAPED 0x0040f3c8
+        strcpy(label, "TILETYPE");
+        break;
+    default:
+        // STRING: MAPED 0x0040f3c0
+        strcpy(label, "ERROR!");
+        break;
+    }
+    if (DAT_0042acc0)
+        // STRING: MAPED 0x0040f3b0
+        strcat(label, ", COVER ON (F2)");
+    else
+        // STRING: MAPED 0x0040f39c
+        strcat(label, ", COVER OFF (F2)");
+    // STRING: MAPED 0x0040f398
+    textprintf(DAT_00422410, (FONT *)misc_datafile[25].dat, 1, 8, 175, "%s", label);
+    if (DAT_00410120)
+        // STRING: MAPED 0x0040f390
+        textout(DAT_00422410, (FONT *)misc_datafile[25].dat, "RANDOM", 1, 15, 175);
+    if (!DAT_00410110->f79 & 1)
+        // STRING: MAPED 0x0040f380
+        textprintf(DAT_00422410, (FONT *)misc_datafile[25].dat, 1, SCREEN_H - 20, 175, "NOSCROLL (F3)");
+    // STRING: MAPED 0x0040f370
+    textprintf(DAT_00422410, (FONT *)misc_datafile[25].dat, 1, SCREEN_H - 14, 175, "Happies: %d/%d",
+               DAT_00410110->f7b, DAT_00410110->f7c);
+    textprintf(DAT_00422410, (FONT *)misc_datafile[25].dat, 1, SCREEN_H - 8, 175,
+               // STRING: MAPED 0x0040f348
+               "Save:%s        Name:%s       Time:%d",
+               get_filename(DAT_0042a440), DAT_00410110->name, DAT_00410110->f7a);
+    vsync();
+    blit(DAT_00422410, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 }
 
 /* Empty [verified: a single ret]. Only caller 0x00404C10. */

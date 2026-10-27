@@ -28,6 +28,8 @@ extern char DAT_0042a840[32];
 /* [hypothesis] Palette of the editor (set_palette in FUN_00401400). */
 extern PALETTE DAT_0042ace0;
 
+/* [hypothesis] Random mode ("RANDOM", draw_editor). */
+extern int DAT_00410120;
 /* [hypothesis] Number of the next screenshot (take_screenshot). */
 extern int DAT_00410118;
 /* [hypothesis] Folder of the file selector, "./maps/" at start (1024
@@ -49,6 +51,11 @@ extern COLOR_MAP DAT_00412400;
  * by set_screen_mode) */
 extern int DAT_00422408;
 extern int DAT_0042240c;
+/* [hypothesis] Selection of the current mode (tile, item, template...)
+ * and editing mode, 0-5 (draw_editor names them: BASE, COVER, WALKMASK,
+ * ITEM, NPC, TILETYPE) [verified: the names]. */
+extern int DAT_00422400;
+extern int DAT_00422404;
 /* [hypothesis] Back buffer, 640x480 (init_editor). */
 extern BITMAP *DAT_00422410;
 /* RGB table, made current by init_color_tables [verified]. */
@@ -60,6 +67,8 @@ extern int DAT_0042a424;
 /* [hypothesis] File name of the map, "unnamed.map" at start (1024 bytes
  * up to the next global). */
 extern char DAT_0042a440[1024];
+/* [hypothesis] Cover tiles shown ("COVER ON (F2)", draw_editor). */
+extern int DAT_0042acc0;
 /* [hypothesis] size of the view in tiles: screen height and width / 16 */
 extern int DAT_0042acc4;
 extern int DAT_0042acc8;
@@ -74,5 +83,16 @@ void init_color_tables(void);
 void load_data(void);
 void init_editor(void);
 void shutdown_editor(void);
+void draw_triangle(BITMAP *bmp, int x1, int y1, int x2, int y2, int x3, int y3, int color);
+void draw_tile_mask(BITMAP *bmp, int x, int y, int mask);
+void draw_tile_type(BITMAP *bmp, int x, int y, int type);
+void draw_background(void);
+char *get_help_text(int n);
+void draw_objects(BITMAP *bmp);
+void export_map_image(char *filename);
+void draw_editor(void);
+void FUN_00403140(void);
+void edit_colors(void);
+void FUN_00403800(char *text, int n);
 
 #endif
