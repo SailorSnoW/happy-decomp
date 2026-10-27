@@ -14,7 +14,7 @@ Note: `notes/matching.md` §3, §3a, §5; `notes/block05-diffs.md`. Branch `deco
 
 ### Remaining
 - `0x00404C50` (game loop, 4,443 bytes): left for the end with the other large functions (CLAUDE.md).
-- **Ghidra not synchronised for block_05**: the server stopped answering (connection refused on port 8089) after the commit. To do once Ghidra is restarted: re-import `OBJ` in both programs (`f08`/`f0c` are now two `int`, `matching.md` §3b), then `ghidra_sync.py --save happy`.
+- Ghidra synchronised for block_05 (after a restart of Ghidra): `OBJ` re-imported in both programs (28 bytes, `f08`/`f0c` as `int`), 36 changes applied and saved, 0 differences left except the type of `passwords` (`0x00412034`): renamed, but `char *[21]` is refused (`type_would_evict`, Ghidra already has 21 separate pointers there; clearing them is not among the allowed writes). `ghidra_sync.py` now also reads globals whose initialiser starts with `= {` at the end of the line.
 - Next: happy block_06 (`0x004063A0`–`0x004074FF`).
 
 ### Open questions

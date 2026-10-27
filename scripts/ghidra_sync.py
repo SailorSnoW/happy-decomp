@@ -35,7 +35,8 @@ EXES = {"happy": "HAPPY", "maped": "MAPED", "loader": "LOADER"}
 
 MARKER = re.compile(r"^\s*// (FUNCTION|LIBRARY|GLOBAL): (\w+) (0x[0-9a-fA-F]+)")
 FUNC_DEF = re.compile(r"^([A-Za-z_][\w\s\*]*?)\b(\w+)\s*\((.*)\)\s*$")
-VAR_DECL = re.compile(r"^((?:\w+\s+)*\w+[\s\*]+?)(\w+)((?:\[[^\]]*\])*)\s*(=.*)?;")
+# the line ends with ";", or with "= {" for an initialiser spread over several lines
+VAR_DECL = re.compile(r"^((?:\w+\s+)*\w+[\s\*]+?)(\w+)((?:\[[^\]]*\])*)\s*(=.*)?(?:;|\{\s*$)")
 SCALARS = {"void", "int", "char", "uchar", "uint", "short", "ushort", "long",
            "ulong", "float", "double"}
 
