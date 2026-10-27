@@ -161,19 +161,25 @@ char select_help_text(void)
  * base and cover tiles [verified]: tables of tile numbers for the winter
  * tile set (bit 3 of MAP.f79) and the summer one; the larger of the two
  * masks is kept (draw_tile_mask shows the shapes). Only caller
- * 0x00404C10. */
+ * 0x00404C10. Not at 100%: VC6 gives the masks other registers (esi
+ * instead of ebx), and the original keeps the cover mask of the summer
+ * branch in edx, zeroed at the start; none of the shapes tried (index
+ * variable or not, tile pointer, parameters reused, initialisations
+ * moved) reproduces both (notes/matching.md §5). */
 // FUNCTION: MAPED 0x00404500
 void auto_mask(int x, int y)
 {
+    int i;
+    TILE *t;
     int n;
     int m;
-    int c;
     int old;
 
+    i = DAT_00410110->w * y + x;
     m = 0;
-    c = 0;
     if (DAT_00410110->f79 & 8) {
-        n = DAT_00410110->tiles[DAT_00410110->w * y + x].t0 - 1;
+        t = &DAT_00410110->tiles[i];
+        n = t->t0 - 1;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 21)
@@ -207,7 +213,7 @@ void auto_mask(int x, int y)
         if (n == 129 || n == 89)
             m = 9;
         old = m;
-        n = DAT_00410110->tiles[DAT_00410110->w * y + x].t1 - 1;
+        n = t->t1 - 1;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 21)
@@ -240,9 +246,10 @@ void auto_mask(int x, int y)
             m = 10;
         if (n == 129 || n == 89)
             m = 9;
-        DAT_00410110->tiles[DAT_00410110->w * y + x].t2 = MAX(m, old);
+        t->t2 = MAX(m, old);
     } else {
-        n = DAT_00410110->tiles[DAT_00410110->w * y + x].t0 - 1;
+        t = &DAT_00410110->tiles[i];
+        n = t->t0 - 1;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 19)
@@ -273,38 +280,39 @@ void auto_mask(int x, int y)
             m = 10;
         if (n == 129)
             m = 9;
-        n = DAT_00410110->tiles[DAT_00410110->w * y + x].t1 - 1;
+        old = 0;
+        n = t->t1 - 1;
         if (n >= 0 && n <= 6)
-            c = 4;
+            old = 4;
         if (n >= 16 && n <= 19)
-            c = 4;
+            old = 4;
         if (n == 21 || n == 22 || n == 124)
-            c = 4;
+            old = 4;
         if (n >= 40 && n <= 46)
-            c = 4;
+            old = 4;
         if (n >= 48 && n <= 52)
-            c = 4;
+            old = 4;
         if (n >= 54 && n <= 56)
-            c = 4;
+            old = 4;
         if (n == 10 || n == 15 || n == 47)
-            c = 6;
+            old = 6;
         if (n == 9 || n == 20 || n == 53)
-            c = 5;
+            old = 5;
         if (n == 29 || n == 30)
-            c = 1;
+            old = 1;
         if (n == 28)
-            c = 3;
+            old = 3;
         if (n == 31)
-            c = 2;
+            old = 2;
         if (n == 126)
-            c = 7;
+            old = 7;
         if (n == 127)
-            c = 8;
+            old = 8;
         if (n == 128)
-            c = 10;
+            old = 10;
         if (n == 129)
-            c = 9;
-        DAT_00410110->tiles[DAT_00410110->w * y + x].t2 = MAX(m, c);
+            old = 9;
+        t->t2 = MAX(m, old);
     }
 }
 
@@ -424,6 +432,8 @@ void editor_loop(void)
     int k;
     int i;
     int j;
+    int x;
+    int y;
 
     mx = mouse_x;
     my = mouse_y;
@@ -533,13 +543,13 @@ void editor_loop(void)
                 DAT_00422400 = DAT_00410110->tiles[(DAT_0042a424 + DAT_0042240c) * DAT_00410110->w + DAT_0042a420 + DAT_00422408].t3;
         }
         if (DAT_00422404 == 4) {
-            mx = DAT_0042a420 * 16 + mx;
-            my = DAT_0042a424 * 16 + my;
+            x = DAT_0042a420 * 16 + mx;
+            y = DAT_0042a424 * 16 + my;
             if (mouse_b & 1)
-                add_object(mx, my, DAT_00422400);
+                add_object(x, y, DAT_00422400);
             for (i = 0; i < 100; i++) {
                 if (DAT_00414140[i].f1a) {
-                    if (ABS(DAT_00414140[i].x - mx + 8) < 8 && ABS(DAT_00414140[i].y - my + 8) < 8)
+                    if (ABS(DAT_00414140[i].x - x + 8) < 8 && ABS(DAT_00414140[i].y - y + 8) < 8)
                         DAT_00414140[i].f14 = 1;
                     else
                         DAT_00414140[i].f14 = 0;
@@ -689,8 +699,8 @@ void editor_loop(void)
         if (key[KEY_F3])
             check_masks();
         if (key[KEY_F5]) {
-            DAT_00410110->f03 = DAT_00422408 + DAT_0042a420;
-            DAT_00410110->f04 = DAT_0042240c + DAT_0042a424;
+            DAT_00410110->f03 = DAT_0042a420 + DAT_00422408;
+            DAT_00410110->f04 = DAT_0042a424 + DAT_0042240c;
         }
         if (k == KEY_F7) {
             export_map_image(get_filename(DAT_0042a440));

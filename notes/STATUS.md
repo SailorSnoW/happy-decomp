@@ -1,5 +1,26 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 14: maped (50/50 annotated)
+
+Note: `notes/matching.md` §3, §3a, §5; `notes/maped-diffs.md`. Branch `decomp/happy`.
+
+### Done
+- [verified] **maped: 50/50 GAME functions annotated, 42 at 100% (65.6% of the bytes)**, in `src/maped/block_02.c` and `block_04.c`-`block_07.c` (+ `maped.h`, `data.c`), reusing `src/common/`. Below 100%: five end-of-array pointers only (§3; `editor_loop` 99.73%, 3,792 bytes), `set_screen_mode` 85.94%, `auto_mask` 80.54%, `pick_tile` 97.83% (register allocation, `maped-diffs.md`).
+- [verified] What maped does: background gradient and its six sliders (`colors_dialog`), screenshot `maped%03d.pcx`, 320x200 / 640x480, the editor frame (`draw_editor`: tile layers, selection, status lines), export of the whole map as an image (`show_*` options of `maped.ini`), load / revert / new / save / save as with the objects and help texts appended after the tiles, map properties dialog (name, time, happies, music, tile set, scroll/snow/wind, background), six editing modes (BASE, COVER, WALKMASK, ITEM, NPC, TILETYPE), RANDOM tile variants, automatic walk masks from tile numbers (ALT+Y, `auto_mask`), slope check (F3), shift / grow / shrink with M / INSERT / DEL and the arrows, start tile (F5). Keys in the comment of `editor_loop`.
+- Data: `file_menu` (MENU[32]), `properties_dialog` (33), `text_dialog` (6), `colors_dialog` (10), `slider_values`, the edit buffers; `DAT_004107a0` is an `int[6]` of choices per mode. The `d_*_proc` import thunks are annotated (`#if 0` in `data.c`) so that datacmp names the `proc` fields; `reccmp/maped.csv` declares the 0.0625 constant. `reccmp-datacmp`: maped 37, happy 72 variables, 0 issues.
+- Matching findings (`matching.md` §3, §3a): a `// STRING:` marker before a line without the literal drops the whole function (use `reccmp-decomplint`); separate `if`s versus `else if` (merged tails); separate locals for derived values (`editor_loop` 45% -> 99.7%); parameters reused as temporaries (`resize_map`); `i + dx` in the expression; `object_message` is inline; `chdir` is an OLDNAMES alias of `_chdir`.
+- Scratch tools (not versioned): a disassembler of the originals with names from `src/`, and an object comparator (compile one file, compare one function instruction by instruction, jump targets as indices) with a statement-order permuter; they found every shape above.
+- Ghidra: maped functions renamed with their prototypes, globals typed and named, saved (`ghidra_sync.py --save maped`). Left: the functions Ghidra does not have (`slider_changed`, `main`, the 7 thunks).
+- No regression: happy 84/84, 66 at 100%. The final link of maped (`build.py --final maped`) succeeds: 69,689 bytes (original 73,728), still with the data stubs below.
+- `layout-maped.md` §10 question 3: `0x00403140` is called on F1 and empty.
+
+### Remaining
+- Next: loader (`src/loader/`, 70 functions in the inventory, `notes/layout-loader.md`).
+- maped below 100%: `set_screen_mode`, `auto_mask`, `pick_tile` (shapes tried: `maped-diffs.md`).
+
+### Open questions
+- **maped final link**: `common/block_01.c` is compiled whole into maped and its happy-only functions reference globals maped does not define (`keys`, `buffer`, `screen_mode`, `controls`, `light_table`, `time_left`, `use_joystick`, `DAT_00414040`); `build.py` still gives them function stubs, also with `--final` (`matching.md` §2). Define them in maped's `data.c`, split the file, or guard with `#ifdef`? To decide before the final maped exe.
+
 ## 2026-10-27 — Matching, step 13: game loop (happy fully decompiled)
 
 Note: `notes/matching.md` §3a, §5; `notes/block05-diffs.md`. Branch `decomp/happy`.

@@ -345,5 +345,6 @@ Provisional answers:
 1. **A single .obj or several for `0x00401400`–`0x00405C9F`?** Same problem as happy question 1. The `.data` layout (§6) favours a single .obj after the map module, without proving it. The Rich header counts, compared with the list of `LIBC.LIB` members actually linked, could settle it (§4.2).
 2. **End of the file shared with happy block_01.** Where in maped does the file that contains `0x004016A0`/`0x004017E0` end? Is block_02, specific to maped, at the start of that file?
 3. **`0x00403140`**: empty function (`ret`) called by the editor loop. Is it leftover code, or a function whose body depends on a compiler option?
+   - [verified 2026-10-27, `src/maped/block_05.c`] The editor loop calls it when F1 is held (`key[KEY_F1]`, `0x004059AD`); an empty `void f(void) {}` compiles to the same single `ret` with the project options. [hypothesis] A help screen left empty.
 4. **`AliasObj60`: 1 in maped, 2 in happy.** Which library object accounts for this difference?
 5. **Should the 23 missing functions be created in Ghidra and the 9 truncated bodies fixed?** Same decision as for happy: it is a write, to be authorised explicitly.
