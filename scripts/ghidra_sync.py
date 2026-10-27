@@ -110,6 +110,10 @@ def prototype(defn, known):
         p = p.strip()
         if p == "void" or not p:
             continue
+        # an array parameter is a pointer: char *argv[] -> char **argv
+        am = re.match(r"^(.*?\w+)\s*\[\s*\w*\s*\]$", p)
+        if am:
+            p = re.sub(r"(\w+)$", r"*\1", am.group(1))
         pm = re.match(r"^(.*?)(\w+)$", p)
         params.append("%s %s" % (ghidra_type(pm.group(1), known, True), pm.group(2)))
     if ret is None or None in [p.split(" ")[0] for p in params]:
@@ -152,7 +156,10 @@ def sync(exe, apply):
                 print("  %s %s: no function in Ghidra, skipped" % (a, name))
                 continue
             gname, gsig = current[addr]
-            if gname != name:
+            # import thunks (maped _d_*_proc): Ghidra names them after the
+            # import, without the C decoration of the PDB name; renaming a
+            # thunk would rename the external function too
+            if gname != name and "_" + gname != name:
                 todo.append(("rename_function", dict(function_address=a, new_name=name, strict_mode="off"),
                              "%s %s -> %s" % (a, gname, name)))
             proto = prototype(text, known) if text else None
