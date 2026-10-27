@@ -13,11 +13,35 @@ typedef struct HISCORE {
     unsigned int score;
 } HISCORE;
 
+/* A particle, 24 bytes [verified: stride in 0x004021A0 and 0x00402260].
+ * Positions and speeds are fixed point. */
+typedef struct PARTICLE {
+    fixed x;
+    fixed y;
+    fixed dx;
+    fixed dy;
+    /* vertical acceleration (draw_particles only) */
+    fixed ddy;
+    unsigned char color;
+    unsigned char active;
+    /* frames left (draw_particles only) */
+    unsigned char life;
+} PARTICLE;
+
+/* 20 bytes [verified: stride in draw_objects]; one per object of
+ * DAT_00414140. */
+typedef struct T_00416d10 {
+    /* [hypothesis] upside down: the sprite is flipped vertically */
+    int f0;
+    unsigned char f04[16];
+} T_00416d10;
+
 /* data.c */
 extern int DAT_00412088;
 extern int DAT_00413b20;
 extern int DAT_00413b24;
 extern int DAT_00413b28;
+extern fixed wind;
 extern unsigned char midi_volume;
 extern HISCORE hiscores[7];
 extern fixed DAT_00414024;
@@ -32,6 +56,7 @@ extern fixed DAT_00414c98;
 extern int DAT_00414ca0;
 extern int DAT_00414ca4;
 extern DATAFILE *DAT_00415cc0;
+extern T_00416d10 DAT_00416d10[100];
 extern int scroll_end;
 extern int scroll_width;
 extern BITMAP *DAT_004274e4;
@@ -48,10 +73,12 @@ extern int scroll_y;
 extern fixed DAT_00440044;
 extern fixed DAT_004404c0;
 extern PALETTE DAT_00441c80;
+extern PARTICLE snow[512];
 extern volatile int timer_ticks;
 extern unsigned char DAT_00442088;
 extern int DAT_004450a4;
 extern unsigned char DAT_004450a8;
+extern PARTICLE particles[256];
 extern int scroll_active;
 
 /* block_02.c */
@@ -70,6 +97,12 @@ int load_settings(void);
 void default_settings(void);
 void init_game(void);
 void shutdown_game(void);
+
+/* block_03.c */
+void draw_particles(int ox, int oy);
+void draw_snow(int ox, int oy, int from, int to);
+void draw_objects(int ox, int oy);
+void init_level_palette(void);
 
 /* block_06.c */
 int wait_or_esc(int ms);

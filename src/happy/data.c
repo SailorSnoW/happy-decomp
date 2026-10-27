@@ -39,6 +39,11 @@ int DAT_00413b28;
 // GLOBAL: HAPPY 0x00413b3c
 // errno
 
+/* [hypothesis] Wind of the flakes, fixed point within [-4, 4]
+ * [verified: draw_snow]. */
+// GLOBAL: HAPPY 0x00413d3c
+fixed wind;
+
 /* [hypothesis] MIDI volume: init_game passes it to set_volume(-1, ...).
  * Saved in happy.sav; 220 by default. */
 // GLOBAL: HAPPY 0x00413d40
@@ -128,6 +133,11 @@ DATAFILE *DAT_00415cc0;
 
 // GLOBAL: HAPPY 0x00415ce0
 char help_texts[16][HELP_TEXT_SIZE];
+
+/* One entry per object of DAT_00414140 [verified: draw_objects]. 100
+ * entries: they end at light_table. */
+// GLOBAL: HAPPY 0x00416d10
+T_00416d10 DAT_00416d10[100];
 
 /* End position of the scrolling message: -20 - its width [verified]. */
 // GLOBAL: HAPPY 0x004174d0
@@ -223,6 +233,11 @@ volatile int timer_ticks;
 // GLOBAL: HAPPY 0x00442088
 unsigned char DAT_00442088;
 
+/* [hypothesis] Flakes (draw_snow, 0-511). 512 entries: the next global is
+ * at 0x004450A4. */
+// GLOBAL: HAPPY 0x004420a0
+PARTICLE snow[512];
+
 // GLOBAL: HAPPY 0x004450a4
 int DAT_004450a4;
 
@@ -237,3 +252,7 @@ int scroll_active;
 
 // GLOBAL: HAPPY 0x004450b4
 DATAFILE *map_datafile;
+
+/* Particles (draw_particles): 256 entries [verified: loop bound]. */
+// GLOBAL: HAPPY 0x004450c0
+PARTICLE particles[256];

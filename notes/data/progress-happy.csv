@@ -22,11 +22,11 @@ address,size,block,name,matching
 0x00401F00,528,block_02,init_game,100.00
 0x00402110,14,block_02,_set_errno_erange,100.00
 0x00402120,114,block_02,shutdown_game,100.00
-0x004021A0,177,block_03,,
-0x00402260,628,block_03,,
-0x004024E0,312,block_03,,
+0x004021A0,177,block_03,draw_particles,98.53
+0x00402260,628,block_03,draw_snow,100.00
+0x004024E0,312,block_03,draw_objects,99.16
 0x00402620,2166,block_03,,
-0x00402EA0,393,block_03,,
+0x00402EA0,393,block_03,init_level_palette,100.00
 0x00403030,57,block_04,,
 0x00403070,181,block_04,,
 0x00403130,62,block_04,,

@@ -1,5 +1,23 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 5: rendering and palette (happy block_03, without 0x00402620)
+
+Note: `notes/matching.md` §3, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_03.c`: `draw_particles` (`0x004021A0`, 98.53%), `draw_snow` (`0x00402260`, 100%), `draw_objects` (`0x004024E0`, 99.16%), `init_level_palette` (`0x00402EA0`, 100%). The two below 100% only differ by an end-of-array address (`matching.md` §3).
+- `0x00402620` (2,166 bytes, the level frame) is left for the end, with the other large functions (CLAUDE.md).
+- Types: `PARTICLE` (24 bytes: particles at `0x004450C0`, 256, and flakes at `0x004420A0`, 512 [hypothesis: same type]), `T_00416d10` (20 bytes, one per object); `OBJ` gets `x`, `y` (+0, +4) and `f10`. New globals `wind` (`0x00413D3C`), `snow`, `particles`, `DAT_00416d10`.
+- [verified] MAP fields: `f77` = background image (index into misc_datafile, 0-2), `f79` bit 2 = changing wind, `f7d`-`f7f` and `f81`-`f83` = the two ends (RGB) of the 16-colour gradient in palette entries 176-191.
+- `reccmp/happy.csv`: first reccmp data source (the float constant `0x004111E0`), declared in `reccmp-project.yml`.
+
+### Remaining
+- Ghidra still blocked (see step 4).
+- Next: happy block_04 (`0x00403030`–`0x0040344F`).
+
+### Open questions
+- **End-of-array pointers** (4 functions at 98-99%): would be fixed if the recompiled globals had the original neighbours. Defining the arrays in `data.c` with an initialiser (`= {0}`) would put them in `.data` in source order, but that moves them out of `.bss` and is a trick to force a match. To decide with the user; left as is meanwhile.
+
 ## 2026-10-27 — Matching, step 4: initialisation and shutdown (happy block_02)
 
 Note: `notes/matching.md` §3, §3a, §5. Branch `decomp/happy`.

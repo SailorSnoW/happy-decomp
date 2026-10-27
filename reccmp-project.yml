@@ -4,7 +4,8 @@ targets:
     source_root: src
     hash:
       sha256: c42e561678e5b968c5110e05b7e81eb28581b81bbdebaca81aa3c68502a5f4ba
-    data_sources: []
+    data_sources:
+    - reccmp/happy.csv
     encoding:
     ghidra:
       ignore_types: []

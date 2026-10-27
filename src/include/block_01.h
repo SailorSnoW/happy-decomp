@@ -12,7 +12,13 @@
  * f12/f13 of template f18 into each object]. Only the bytes used so far
  * are named. */
 typedef struct OBJ {
-    unsigned char f00[0x12];
+    /* position in pixels [verified: draw_objects, 0x004024E0] */
+    int x;
+    int y;
+    unsigned char f08[8];
+    /* [hypothesis] facing left: the sprite is flipped horizontally */
+    unsigned char f10;
+    unsigned char f11;
     unsigned char f12;
     unsigned char f13;
     unsigned char f14;
