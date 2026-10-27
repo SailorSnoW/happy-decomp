@@ -122,7 +122,8 @@ def check_system():
         report("skip", "Wine", "not needed on Windows")
         return
     if MAC and platform.machine() == "arm64":
-        rc, _ = sh(["arch", "-x86_64", "/usr/bin/true"])
+        # Full path: GNU coreutils (Nix, Homebrew) has an `arch` without -x86_64.
+        rc, _ = sh(["/usr/bin/arch", "-x86_64", "/usr/bin/true"])
         report("ok" if rc == 0 else "fail", "Rosetta 2",
                "present" if rc == 0 else "missing",
                "softwareupdate --install-rosetta --agree-to-license")
@@ -259,7 +260,47 @@ def check_vc6():
 
 # --- 5. Ghidra -----------------------------------------------------------------
 
-def ghidra_candidates():
+def nix_ghidra():
+    """Ghidra installed by Nix (nixpkgs `ghidra` or `ghidra.withExtensions`).
+
+    Returns {"inst", "ext", "java"} for the `ghidra` found in the PATH, {} otherwise.
+    The nixpkgs wrappers are compiled programs (makeCWrapper) whose strings name the
+    wrapped Ghidra, NIX_GHIDRAHOME (extensions added by withExtensions) and the JDK
+    put in the PATH by support/launch.sh. Java is not necessarily in the user's PATH.
+    """
+    exe = shutil.which("ghidra")
+    if not exe:
+        return {}
+    real = pathlib.Path(exe).resolve()
+    if not str(real).startswith("/nix/store/"):
+        return {}
+
+    def strings(p):
+        try:
+            return p.read_bytes().decode("latin-1")
+        except OSError:
+            return ""
+
+    res = {}
+    if (real.parent / "Ghidra" / "application.properties").exists():
+        res["inst"] = real.parent                      # .../lib/ghidra/ghidraRun
+    else:
+        txt = strings(real)
+        m = re.search(r"(/nix/store/[^\0\s'\"]+/bin/ghidra)(?![-\w])", txt)
+        if m:
+            res["inst"] = pathlib.Path(m.group(1)).resolve().parent
+        m = re.search(r"NIX_GHIDRAHOME=(/nix/store/[^\0\s'\"]+)", txt)
+        if m:
+            res["ext"] = pathlib.Path(m.group(1))
+    if "inst" in res:
+        m = re.search(r"(/nix/store/[^\0\s'\"]*jdk[^\0\s'\"]*)/bin",
+                      strings(res["inst"] / "support" / "launch.sh"))
+        if m:
+            res["java"] = str(pathlib.Path(m.group(1)) / "bin" / "java")
+    return res
+
+
+def ghidra_candidates(nix):
     name = "ghidra_%s_PUBLIC" % GHIDRA_VERSION
     c = []
     if os.environ.get("GHIDRA_INSTALL_DIR"):
@@ -270,28 +311,33 @@ def ghidra_candidates():
         c += [pathlib.Path(d + ":/") / name for d in "CDE"]
     if MAC:
         c += [pathlib.Path("/Applications") / name, home / "Applications" / name]
+    if "inst" in nix:
+        c.append(nix["inst"])
     return c
 
 
 def ghidra_settings_dirs():
-    name = "ghidra_%s_PUBLIC" % GHIDRA_VERSION
+    # The settings folder is named after application.release.name: NIX for nixpkgs.
+    names = ["ghidra_%s_%s" % (GHIDRA_VERSION, r) for r in ("PUBLIC", "NIX")]
     home = pathlib.Path.home()
     if WIN:
-        base = [pathlib.Path(os.environ.get("APPDATA", home)) / "ghidra" / name]
+        base = [pathlib.Path(os.environ.get("APPDATA", home)) / "ghidra" / n for n in names]
     elif MAC:
-        base = [home / "Library" / "ghidra" / name]
+        base = [home / "Library" / "ghidra" / n for n in names]
     else:
         base = [pathlib.Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
-                / "ghidra" / name]
-    return base + [home / ".ghidra" / ("." + name)]
+                / "ghidra" / n for n in names]
+    return base + [home / ".ghidra" / ("." + n) for n in names]
 
 
-def java_major():
+def java_major(nix):
     cands = []
     if os.environ.get("JAVA_HOME"):
         cands.append(str(pathlib.Path(os.environ["JAVA_HOME"]) / "bin" / "java"))
     if shutil.which("java"):
         cands.append(shutil.which("java"))
+    if "java" in nix:
+        cands.append(nix["java"])
     for j in cands:
         rc, out = sh([j, "-version"])
         m = re.search(r'version "(\d+)', out or "")
@@ -302,11 +348,12 @@ def java_major():
 
 def check_ghidra():
     section("5. Ghidra %s + GhidraMCP 7.0.0" % GHIDRA_VERSION)
-    major, j = java_major()
+    nix = nix_ghidra()
+    major, j = java_major(nix)
     report("ok" if major and major >= 21 else "fail", "Java (JDK 21 or later)",
            "%s (%s)" % (major, j) if major else "not found",
            "SKILL.md §5 (Temurin 21)")
-    inst = next((c for c in ghidra_candidates()
+    inst = next((c for c in ghidra_candidates(nix)
                  if (c / "Ghidra" / "application.properties").exists()), None)
     if inst is None:
         report("fail", "Installation", "not found",
@@ -332,7 +379,8 @@ def check_ghidra():
                    "present" if rc == 0 else "lifted",
                    "xattr -dr com.apple.quarantine '%s'" % inst)
     ext = None
-    dirs = ghidra_settings_dirs() + ([inst / "Ghidra"] if inst else [])
+    dirs = (ghidra_settings_dirs() + ([inst / "Ghidra"] if inst else [])
+            + ([nix["ext"]] if "ext" in nix else []))
     for d in dirs:
         p = d / "Extensions" / "GhidraMCP" / "extension.properties"
         if p.exists():

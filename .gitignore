@@ -15,6 +15,8 @@
 *.rep/
 *.lock
 *.lock~
+# except the Nix lock file (flake.nix)
+!/flake.lock
 *.gar
 
 # --- Toolchain (VC6: Microsoft licence, installed outside the repository) ----
@@ -37,8 +39,15 @@ reccmp-build.yml
 
 # --- Python -------------------------------------------------------------------
 .venv/
+# reccmp installed by `uv tool install` in the Nix shell (flake.nix)
+/.uv/
 __pycache__/
 *.py[cod]
+
+# --- Nix and direnv -----------------------------------------------------------
+/result
+/result-*
+.direnv/
 
 # --- Claude Code: local settings ----------------------------------------------
 .claude/settings.local.json

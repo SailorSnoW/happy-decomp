@@ -14,7 +14,7 @@ description: Installs, configures and checks the whole happy-decomp development 
 
 Platform sheets, to read when a section fails:
 - Windows: [windows.md](windows.md) (reference machine, everything there is verified);
-- macOS Apple Silicon: [macos.md](macos.md) (VC6 and reccmp's `cvdump` run under Wine; path **not yet tested end to end on a Mac**: report any discrepancy encountered to the user, and offer to fix the sheet).
+- macOS Apple Silicon: [macos.md](macos.md) (VC6 and reccmp's `cvdump` run under Wine; the Nix route, §0 of the sheet, is tested end to end, the Homebrew route is not: report any discrepancy encountered to the user, and offer to fix the sheet).
 
 ## Rules during this skill
 

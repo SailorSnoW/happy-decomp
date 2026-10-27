@@ -1,5 +1,20 @@
 # STATUS
 
+## 2026-10-27 — `dev-setup` skill run on macOS (Apple Silicon, Nix): machine ready
+
+### Done
+- First run of the skill on a Mac (macOS 27, arm64, nix-darwin + home-manager). [verified] `doctor.py --deep`: 42 ok, 0 warnings, 0 failures. `check_vc6.py` OK (CRT 145/149 + 4, `/Gy`), `smoke_reccmp.py` 5/5 at 100%.
+- [verified] VC6 under Wine (Gcenx `wine-stable-11.0_1`, through Rosetta 2): the 10 hashes as expected, `cl` 12.00.8168, `link` 6.00.8168, `LIB /DEF` for `build/alleg40.lib`. reccmp's `cvdump` under Wine: OK (smoke test).
+- [verified] Ghidra 12.1.4 from nixpkgs, with its native `mac_arm_64` decompiler and GhidraMCP 7.0.0: 205 tools. Project restored from the Windows `.gar` (option (a)): 220 / 200 / 63 functions.
+- [verified] `captures/alleg40_unpacked.dll` (upx 5.2.1 from nixpkgs): reference SHA-256. Ghidra caches and inventory regenerated (`ghidra_dump_rest.py`, `pe_allegro.py`, `inventory.py`, `shared_code.py`): `git status notes/` empty, so the CSVs are byte-for-byte identical to the Windows ones.
+- New: `flake.nix`, `flake.lock`, `.envrc` (Nix dev shell: Python 3.12, uv, upx, Wine pinned by hash, reccmp in `.uv/`). `.gitignore`: `.direnv/`, `/result`, `/.uv/`, and `!/flake.lock` (otherwise caught by `*.lock`).
+- `scripts/doctor.py`: recognises a Nix Ghidra (installation, extension in `NIX_GHIDRAHOME`, JDK named in `support/launch.sh`) and the `ghidra_12.1.4_NIX` settings folder. Rosetta check through `/usr/bin/arch`: the GNU coreutils `arch` in the PATH (Nix) has no `-x86_64` and reported Rosetta as missing although it was installed.
+- `macos.md`: new §0 "Nix route", with the pitfalls seen (Homebrew `cleanup = "zap"`, `ZDOTDIR` managed by home-manager, which makes `~/.zprofile` useless, MoltenVK `[mvk-info]` noise on stderr, silenced by `MVK_CONFIG_LOG_LEVEL=0`). `SKILL.md`: status of the macOS paths.
+
+### Remaining
+- Homebrew route of `macos.md` (§1-§6) still not run end to end.
+- The flake only covers Darwin (Gcenx's Wine). A Linux machine would need `wineWow64Packages` from nixpkgs: not done, not tested.
+
 ## 2026-10-27 — Repository translated from French to English
 
 ### Done
