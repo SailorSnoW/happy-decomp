@@ -24,7 +24,9 @@ typedef struct MAP {
     unsigned char version;
     unsigned char w;
     unsigned char h;
-    unsigned char f03[2];
+    /* [hypothesis] start tile of the player (reset_player, 0x00403350) */
+    unsigned char f03;
+    unsigned char f04;
     /* [hypothesis] map name, "unnamed" by default */
     char name[0x50];
     /* [hypothesis] datafile of the tiles, "unnamed.dat" by default */

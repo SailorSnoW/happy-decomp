@@ -1,5 +1,22 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 6: loading and resetting a level (happy block_04)
+
+Note: `notes/matching.md` §3, §3a, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_04.c`: 5/5. `FUN_00403030` 100%; `load_level_objects` (`0x00403070`, 98.15%), `FUN_00403130` (95.45%), `load_level` (`0x00403170`, 99.28%), `reset_player` (`0x00403350`, 98.39%): end-of-array address only.
+- [verified] Bug of the original in `reset_player`: the loop writes both coordinates into `DAT_00414cc0` and never writes `DAT_004154c0` (bytes `89 01` then `89 41 fc` at `0x0040340C`/`0x0040342F`, same slot).
+- [verified] `load_level`: the swap file `hland.$$$` (entry n of `DAT_00414c90` written out then read with `map_load`), sprites/tiles or xsprites/xtiles depending on bit 3 of `MAP.f79`.
+- Types: `T_00416d00` replaces `T_00416d10` (the per-object array starts at `0x00416D00`: saved `x`/`y` at +0/+4, vertical flip at +0x10); `T_0043f5c0` (335 bytes, `.map` file names at `0x0043F5C0` ×8 and `0x004404E0` ×18); `MAP.f03`/`f04` = start tile [hypothesis]. 32 new globals.
+
+### Remaining
+- Ghidra still blocked (step 4).
+- Next: happy block_05 (19 functions, gameplay), leaves first, `0x00404C50` at the end.
+
+### Open questions
+- End-of-array pointers: now 8 functions (step 5).
+
 ## 2026-10-27 — Matching, step 5: rendering and palette (happy block_03, without 0x00402620)
 
 Note: `notes/matching.md` §3, §5. Branch `decomp/happy`.

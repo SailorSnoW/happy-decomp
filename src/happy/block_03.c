@@ -68,7 +68,7 @@ void draw_snow(int ox, int oy, int from, int to)
 
 /* Draws the sprites of the active objects, offset by the camera [verified]:
  * sprite f13 + f14 of DAT_00415cc0, flipped horizontally if f10 is set,
- * vertically if DAT_00416d10[i].f0 is set. Only caller 0x00402620. */
+ * vertically if DAT_00416d00[i].f10 is set. Only caller 0x00402620. */
 // FUNCTION: HAPPY 0x004024e0
 void draw_objects(int ox, int oy)
 {
@@ -76,7 +76,7 @@ void draw_objects(int ox, int oy)
 
     for (i = 0; i < 100; i++) {
         if (DAT_00414140[i].f1a) {
-            if (DAT_00416d10[i].f0 == 0) {
+            if (DAT_00416d00[i].f10 == 0) {
                 if (DAT_00414140[i].f10)
                     draw_sprite_h_flip(buffer,
                         (BITMAP *)DAT_00415cc0[DAT_00414140[i].f13 + DAT_00414140[i].f14].dat,

@@ -33,6 +33,9 @@ int DAT_00413b24;
 // GLOBAL: HAPPY 0x00413b28
 int DAT_00413b28;
 
+// GLOBAL: HAPPY 0x00413b2c
+int DAT_00413b2c;
+
 /* errno of LIBC (single-threaded: a variable, not a function): allegro_init
  * passes &errno; read and written by the CRT (0x0040B3D7, 0x0040B645...)
  * [verified]. Annotated by name, defined by LIBC. */
@@ -127,6 +130,15 @@ int DAT_00414ca0;
 // GLOBAL: HAPPY 0x00414ca4
 int DAT_00414ca4;
 
+/* [hypothesis] x of the player's past positions (512 entries, up to
+ * DAT_004154c0), see reset_player. */
+// GLOBAL: HAPPY 0x00414cc0
+int DAT_00414cc0[512];
+
+/* [hypothesis] y of the player's past positions, see reset_player. */
+// GLOBAL: HAPPY 0x004154c0
+int DAT_004154c0[512];
+
 /* Unloaded by shutdown_game [verified]. */
 // GLOBAL: HAPPY 0x00415cc0
 DATAFILE *DAT_00415cc0;
@@ -134,10 +146,10 @@ DATAFILE *DAT_00415cc0;
 // GLOBAL: HAPPY 0x00415ce0
 char help_texts[16][HELP_TEXT_SIZE];
 
-/* One entry per object of DAT_00414140 [verified: draw_objects]. 100
- * entries: they end at light_table. */
-// GLOBAL: HAPPY 0x00416d10
-T_00416d10 DAT_00416d10[100];
+/* One entry per object of DAT_00414140 [verified: draw_objects,
+ * FUN_00403130]. 100 entries: they end at scroll_end. */
+// GLOBAL: HAPPY 0x00416d00
+T_00416d00 DAT_00416d00[100];
 
 /* End position of the scrolling message: -20 - its width [verified]. */
 // GLOBAL: HAPPY 0x004174d0
@@ -166,6 +178,25 @@ BITMAP *buffer;
 // GLOBAL: HAPPY 0x00427500
 RGB_MAP rgb_table;
 
+/* [hypothesis] Player position, fixed point (reset_player). */
+// GLOBAL: HAPPY 0x0042f500
+fixed DAT_0042f500;
+
+// GLOBAL: HAPPY 0x0042f504
+fixed DAT_0042f504;
+
+// GLOBAL: HAPPY 0x0042f508
+int DAT_0042f508;
+
+// GLOBAL: HAPPY 0x0042f510
+int DAT_0042f510;
+
+// GLOBAL: HAPPY 0x0042f514
+unsigned char DAT_0042f514;
+
+// GLOBAL: HAPPY 0x0042f515
+unsigned char DAT_0042f515;
+
 /* [hypothesis] A countdown in seconds: timer_1s decrements it down to 0. */
 // GLOBAL: HAPPY 0x0042f516
 unsigned char DAT_0042f516;
@@ -174,11 +205,56 @@ unsigned char DAT_0042f516;
 // GLOBAL: HAPPY 0x0042f51c
 fixed DAT_0042f51c;
 
+// GLOBAL: HAPPY 0x0042f520
+int DAT_0042f520;
+
 // GLOBAL: HAPPY 0x0042f52c
 int DAT_0042f52c;
 
 // GLOBAL: HAPPY 0x0042f530
 int DAT_0042f530;
+
+// GLOBAL: HAPPY 0x0042f53c
+int DAT_0042f53c;
+
+// GLOBAL: HAPPY 0x0042f540
+int DAT_0042f540;
+
+// GLOBAL: HAPPY 0x0042f544
+int DAT_0042f544;
+
+// GLOBAL: HAPPY 0x0042f548
+int DAT_0042f548;
+
+// GLOBAL: HAPPY 0x0042f54c
+unsigned char DAT_0042f54c;
+
+// GLOBAL: HAPPY 0x0042f54d
+unsigned char DAT_0042f54d;
+
+// GLOBAL: HAPPY 0x0042f54e
+unsigned char DAT_0042f54e;
+
+// GLOBAL: HAPPY 0x0042f54f
+unsigned char DAT_0042f54f;
+
+// GLOBAL: HAPPY 0x0042f550
+unsigned char DAT_0042f550;
+
+// GLOBAL: HAPPY 0x0042f554
+int DAT_0042f554;
+
+// GLOBAL: HAPPY 0x0042f558
+int DAT_0042f558;
+
+// GLOBAL: HAPPY 0x0042f55c
+int DAT_0042f55c;
+
+// GLOBAL: HAPPY 0x0042f560
+int DAT_0042f560;
+
+// GLOBAL: HAPPY 0x0042f564
+unsigned char DAT_0042f564;
 
 // GLOBAL: HAPPY 0x0042f568
 unsigned char DAT_0042f568;
@@ -198,6 +274,17 @@ fixed DAT_0042f59c;
 // GLOBAL: HAPPY 0x0042f5a0
 COLOR_MAP trans_table;
 
+/* The byte right after trans_table. */
+// GLOBAL: HAPPY 0x0043f5a0
+unsigned char DAT_0043f5a0;
+
+/* .map file names, 8 entries: the next global is at 0x00440038. */
+// GLOBAL: HAPPY 0x0043f5c0
+T_0043f5c0 DAT_0043f5c0[8];
+
+// GLOBAL: HAPPY 0x00440038
+unsigned char DAT_00440038;
+
 /* Scrolling message position [verified: start_scroll_message,
  * draw_scroll_message]. */
 // GLOBAL: HAPPY 0x0044003c
@@ -210,6 +297,9 @@ int scroll_y;
 // GLOBAL: HAPPY 0x00440044
 fixed DAT_00440044;
 
+// GLOBAL: HAPPY 0x00440048
+unsigned char DAT_00440048;
+
 /* [hypothesis] Object templates, 40 of them (the next global is at
  * 0x004404C0); FUN_00401160 fills 0 to 34. */
 // GLOBAL: HAPPY 0x00440060
@@ -219,10 +309,17 @@ OBJ DAT_00440060[40];
 // GLOBAL: HAPPY 0x004404c0
 fixed DAT_004404c0;
 
+/* .map file names, 18 entries: the next global is at 0x00441C80. */
+// GLOBAL: HAPPY 0x004404e0
+T_0043f5c0 DAT_004404e0[18];
+
 /* [hypothesis] The game palette: init_color_tables builds its three tables
  * from it. */
 // GLOBAL: HAPPY 0x00441c80
 PALETTE DAT_00441c80;
+
+// GLOBAL: HAPPY 0x00442080
+unsigned char DAT_00442080;
 
 /* Incremented every 15 ms by timer_15ms (0x004018F0), installed by
  * install_int(timer_15ms, 15) at 0x00401F6B [verified]. */
@@ -238,6 +335,9 @@ unsigned char DAT_00442088;
 // GLOBAL: HAPPY 0x004420a0
 PARTICLE snow[512];
 
+// GLOBAL: HAPPY 0x004450a0
+unsigned char DAT_004450a0;
+
 // GLOBAL: HAPPY 0x004450a4
 int DAT_004450a4;
 
@@ -249,6 +349,9 @@ unsigned char DAT_004450a8;
  * by draw_scroll_message at the end]. */
 // GLOBAL: HAPPY 0x004450ac
 int scroll_active;
+
+// GLOBAL: HAPPY 0x004450b0
+unsigned char DAT_004450b0;
 
 // GLOBAL: HAPPY 0x004450b4
 DATAFILE *map_datafile;

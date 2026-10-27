@@ -28,13 +28,24 @@ typedef struct PARTICLE {
     unsigned char life;
 } PARTICLE;
 
-/* 20 bytes [verified: stride in draw_objects]; one per object of
- * DAT_00414140. */
-typedef struct T_00416d10 {
+/* 20 bytes [verified: stride in draw_objects and FUN_00403130]; one per
+ * object of DAT_00414140. */
+typedef struct T_00416d00 {
+    /* [hypothesis] saved position (FUN_00403130 copies it back) */
+    int x;
+    int y;
+    int f08;
+    int f0c;
     /* [hypothesis] upside down: the sprite is flipped vertically */
-    int f0;
-    unsigned char f04[16];
-} T_00416d10;
+    int f10;
+} T_00416d00;
+
+/* 335 bytes [verified: stride in load_level]. f000 is a .map file name
+ * [verified: passed to map_load]. */
+typedef struct T_0043f5c0 {
+    char f000[255];
+    char f0ff[80];
+} T_0043f5c0;
 
 /* data.c */
 extern int DAT_00412088;
@@ -56,7 +67,7 @@ extern fixed DAT_00414c98;
 extern int DAT_00414ca0;
 extern int DAT_00414ca4;
 extern DATAFILE *DAT_00415cc0;
-extern T_00416d10 DAT_00416d10[100];
+extern T_00416d00 DAT_00416d00[100];
 extern int scroll_end;
 extern int scroll_width;
 extern BITMAP *DAT_004274e4;
@@ -81,6 +92,39 @@ extern unsigned char DAT_004450a8;
 extern PARTICLE particles[256];
 extern int scroll_active;
 
+extern int DAT_00413b2c;
+extern int DAT_00414cc0[512];
+extern int DAT_004154c0[512];
+extern fixed DAT_0042f500;
+extern fixed DAT_0042f504;
+extern int DAT_0042f508;
+extern int DAT_0042f510;
+extern unsigned char DAT_0042f514;
+extern unsigned char DAT_0042f515;
+extern int DAT_0042f520;
+extern int DAT_0042f53c;
+extern int DAT_0042f540;
+extern int DAT_0042f544;
+extern int DAT_0042f548;
+extern unsigned char DAT_0042f54c;
+extern unsigned char DAT_0042f54d;
+extern unsigned char DAT_0042f54e;
+extern unsigned char DAT_0042f54f;
+extern unsigned char DAT_0042f550;
+extern int DAT_0042f554;
+extern int DAT_0042f558;
+extern int DAT_0042f55c;
+extern int DAT_0042f560;
+extern unsigned char DAT_0042f564;
+extern unsigned char DAT_0043f5a0;
+extern T_0043f5c0 DAT_0043f5c0[8];
+extern unsigned char DAT_00440038;
+extern unsigned char DAT_00440048;
+extern T_0043f5c0 DAT_004404e0[18];
+extern unsigned char DAT_00442080;
+extern unsigned char DAT_004450a0;
+extern unsigned char DAT_004450b0;
+
 /* block_02.c */
 void timer_1s(void);
 void timer_15ms(void);
@@ -103,6 +147,13 @@ void draw_particles(int ox, int oy);
 void draw_snow(int ox, int oy, int from, int to);
 void draw_objects(int ox, int oy);
 void init_level_palette(void);
+
+/* block_04.c */
+void FUN_00403030(void);
+void load_level_objects(char *filename);
+void FUN_00403130(void);
+void load_level(int n, int keep, int custom);
+void reset_player(int full);
 
 /* block_06.c */
 int wait_or_esc(int ms);
