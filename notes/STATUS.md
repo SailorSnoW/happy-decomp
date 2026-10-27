@@ -1,5 +1,21 @@
 # STATUS
 
+## 2026-10-28 — Matching, step 18: bonus_room at 100%, play_level left
+
+Note: `notes/block05-diffs.md`, `notes/matching.md` §3a, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `bonus_room` (`0x00405DB0`) 99.78% -> 100%: the first walk and the fall share one variable (`pos`); VC6 then reloads it before `x` after the inner loop of the fall, as the original does.
+- [verified] **happy: 83/84 GAME functions at 100% (88.8% of the bytes)**. maped 47/50, loader 2/2 unchanged; `reccmp-datacmp` 0 issues.
+- `play_level` (`0x00404C50`): about sixty more forms tried, in the whole function and in a reduced test of the movement block (scratch); none gives the original `add eax, ecx` (`block05-diffs.md`).
+
+### Remaining
+- happy: `play_level` 99.84%, one instruction (`0x004050DA`, operands of an `add` swapped, "effective match" for reccmp).
+- maped: `set_screen_mode` 85.94%, `auto_mask` 80.54%, `pick_tile` 97.83%.
+
+### Open questions
+- `play_level`: which C shape makes VC6 keep `player.f0c` in `ecx` at `0x004050D4` and add into the `fixmul` result? Only a register variable does it in the tests, which the original's stores rule out.
+
 ## 2026-10-27 — Matching, step 17: end-of-array pointers compared by offset
 
 Note: `notes/matching.md` §3, §5; `scripts/reccmp_run.py`. Branch `decomp/happy`.

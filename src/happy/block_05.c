@@ -941,7 +941,10 @@ int play_level(void)
  * to 174), then the bonus level DAT_004450a4 is started (start_level(...,
  * 0, 1)) with DAT_00442080 = 1 and played (0x00404C50), whose result it
  * returns [verified: play_game reads eax after the call]. Only caller
- * 0x00409640. */
+ * 0x00409640.
+ * pos is one variable for the x of the first walk and the y of the fall,
+ * as in the original: with separate variables, VC6 reloads x and y in the
+ * other order after the inner loop of the fall (notes/block05-diffs.md). */
 // FUNCTION: HAPPY 0x00405db0
 int bonus_room(void)
 {
@@ -953,7 +956,7 @@ int bonus_room(void)
     int frame;
     int i;
     int j;
-    int y;
+    int pos;
 
     play_midi(NULL, 0);
     n = -1;
@@ -963,14 +966,14 @@ int bonus_room(void)
     }
     clear_bitmap(screen);
     set_palette(DAT_00441c80);
-    x = -16;
+    pos = -16;
     player.f2c = 0;
     player.f20 = 0;
-    while (x < 144) {
+    while (pos < 144) {
         timer_ticks = 0;
-        x++;
+        pos++;
         clear_bitmap(buffer);
-        draw_sprite(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, x, 70);
+        draw_sprite(buffer, (BITMAP *)DAT_00415cc0[player.f2c + 64].dat, pos, 70);
         FUN_00403a40();
         blit_to_screen(buffer);
         while (!timer_ticks)
@@ -1025,7 +1028,7 @@ int bonus_room(void)
     blit_to_screen(buffer);
     while (timer_ticks < 180)
         ;
-    y = 70;
+    pos = 70;
     do {
         timer_ticks = 0;
         clear_bitmap(buffer);
@@ -1037,13 +1040,13 @@ int bonus_room(void)
             if (c == 0 && ++frame > 1)
                 frame = 0;
         }
-        draw_sprite_v_flip(buffer, (BITMAP *)DAT_00415cc0[65].dat, 144, y);
+        draw_sprite_v_flip(buffer, (BITMAP *)DAT_00415cc0[65].dat, 144, pos);
         blit_to_screen(buffer);
-        y++;
+        pos++;
         x -= 4;
         while (!timer_ticks)
             ;
-    } while (y < 156);
+    } while (pos < 156);
     vsync();
     clear_bitmap(buffer);
     for (i = 0; i < 30; i++) {
