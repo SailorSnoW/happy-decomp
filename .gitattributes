@@ -1,0 +1,6 @@
+# Third-party files copied as is from their original archive (CRLF line endings):
+# git must not convert them.
+3rdparty/** -text
+# Written by Python's csv module (CRLF): same line endings on every platform,
+# otherwise CSVs regenerated on macOS show up as modified.
+notes/data/*.csv text eol=crlf

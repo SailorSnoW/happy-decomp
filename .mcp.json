@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "ghidra": {
+      "command": "bridge-mcp-ghidra",
+      "args": ["--transport", "stdio"],
+      "env": {
+        "GHIDRA_MCP_URL": "http://127.0.0.1:8089",
+        "GHIDRA_MCP_REQUIRE_PROGRAM_SELECTORS": "1"
+      }
+    },
+    "x64dbg": {
+      "type": "http",
+      "url": "http://127.0.0.1:9095/",
+      "headers": {
+        "Authorization": "Bearer ${X64DBG_MCP_TOKEN}"
+      }
+    }
+  }
+}

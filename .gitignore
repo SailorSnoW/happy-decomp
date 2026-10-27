@@ -1,0 +1,54 @@
+# --- Original files (protected, never published) -----------------------------
+# Each contributor supplies their own copy of the game.
+/game/
+# Working copies, extracted data, unpacked DLL, Ghidra caches
+# (can be regenerated with scripts/ghidra_dump_rest.py and scripts/inventory.py).
+/captures/
+# Safety nets in case a game binary or data file lies around elsewhere.
+*.exe
+*.dll
+*.dat
+*.clv
+
+# --- Ghidra project (contains the imported binaries) -------------------------
+*.gpr
+*.rep/
+*.lock
+*.lock~
+*.gar
+
+# --- Toolchain (VC6: Microsoft licence, installed outside the repository) ----
+/tools/
+
+# --- Build outputs ------------------------------------------------------------
+/build/
+*.obj
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.idb
+*.pch
+*.res
+
+# --- reccmp: per-machine configuration ----------------------------------------
+reccmp-user.yml
+reccmp-build.yml
+
+# --- Python -------------------------------------------------------------------
+.venv/
+__pycache__/
+*.py[cod]
+
+# --- Claude Code: local settings ----------------------------------------------
+.claude/settings.local.json
+
+# --- Editors and OS -----------------------------------------------------------
+.vs/
+.vscode/
+*.swp
+*~
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log

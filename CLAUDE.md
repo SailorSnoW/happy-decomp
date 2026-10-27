@@ -1,0 +1,120 @@
+\# happy-decomp project
+
+
+
+\## Target
+
+\- Windows game from 2003, written in C, compiled with Visual C++ 6.0 (cl 12.00.8168; linker 6.00, build unknown: entry 8447 of the Rich header comes from Allegro's import library, see `notes/toolchain-vc6.md`).
+
+\- Original binaries in `game/`: `happy.exe` (the game, 84 KB), `maped.exe` (map editor, 72 KB), `loader.exe` (launcher, 32 KB).
+
+\- `game/alleg40.dll`: Allegro 4.0.3 library, MSVC build (open source), UPX-packed. We do not decompile it. Details in `notes/allegro.md`. Its headers and its `.def` are versioned in `3rdparty/allegro-4.0.3/` (see "Tools").
+
+\- VC6 C library (CRT) statically linked into the exes. We do not decompile it.
+
+
+
+\## Final goal
+
+1\. "Matching" decompilation: C89 that, recompiled with VC6, produces the same machine code function by function (verified with reccmp).
+
+2\. Port of this code to modern C17, verified by comparing behaviour with the matching version.
+
+
+
+\## Current phase: inventory (no C code written)
+
+Understand and map the binaries. \*\*Ghidra is read-only during this phase\*\*: no renaming, no types applied, no comments, unless explicitly requested.
+
+
+
+\## Tools
+
+\- MCP server `ghidra`: GhidraMCP 7.0.0 (usage guide below). The three exes are open in the same Ghidra project (`happy-decomp`).
+
+\- VC6 (CD 1 of Visual Studio 6.0 Enterprise) in `C:\RE\tools\vc6`, outside the repository: cl 12.00.8168, link 6.00.8168, `LIBC.LIB` identical to the game's. No usable `VCVARS32.BAT`: set `PATH`, `INCLUDE` and `LIB` (`notes/toolchain-vc6.md` §1). From Git Bash, export `MSYS2_ARG_CONV_EXCL='*'`. `scripts/vc6.py` runs the tools with the right environment, natively on Windows or through Wine on macOS (root: `VC6_ROOT`, otherwise `tools/vc6` next to the repository).
+- **Setting up a machine** (Windows or macOS Apple Silicon): skill `dev-setup` (`.claude/skills/dev-setup/`). Diagnostics: `python scripts/doctor.py [--deep]`, standard library only. On macOS, the venv's Python is `.venv/bin/python` instead of `.venv/Scripts/python`.
+- Allegro 4.0.3 in `3rdparty/allegro-4.0.3/`: `include/` and `lib/msvc/allegro.def`, copied byte for byte from the official archive (`all403.zip`), configured for MSVC. Only modification: `alplatf.h` contains `#define ALLEGRO_MSVC`, as after `fix.bat msvc`. Provenance, SHA-256 and the command that generates `alleg40.lib` (`LIB /DEF`, import by ordinal like the game): `3rdparty/allegro-4.0.3/README.md`. `.gitattributes` prevents git from converting their CRLF line endings. The full archive stays in `captures/allegro-4.0.3/`, for reference; do not compile with that copy, which is configured for DJGPP.
+- reccmp **0.1.7**, installed in the global Python 3.12 (not in `.venv`): `reccmp-project`, `reccmp-reccmp`, `reccmp-datacmp`. Tested on 5 functions of happy, at 100% (`notes/toolchain-vc6.md` §6). **`reccmp-ghidra-import` writes to Ghidra**: do not use it without explicit approval.
+- MCP server `x64dbg` (port 9095): configured in `.mcp.json`, to be started separately. Not used during the inventory.
+
+\- PowerShell shell, Python 3.12, `upx`.
+
+
+
+\## Ghidra MCP: usage guide
+
+- **Versions**: Ghidra **12.1.4** (`D:\ghidra_12.1.4_PUBLIC`), GhidraMCP 7.0.0 extension built for 12.1.4, bridge `bridge-mcp-ghidra` (stdio) to `http://127.0.0.1:8089`. **Do not upgrade to Ghidra 12.2**: under 12.2, everything that decompiles fails with the error `ghidra/program/model/lang/SleighLanguageDescription` (observed on 2026-10-27).
+- **Program**: always pass `program="happy.exe"` (or `maped.exe`, `loader.exe`), without `/`. Without this parameter, the call is refused (`GHIDRA_MCP_REQUIRE_PROGRAM_SELECTORS=1`). Do not use `switch_program`.
+- **Tool groups**: 205 tools split into groups. Loaded at startup: `function`, `listing`, `program`. For another tool: `search_tools("keyword")`, then `load_tool_group("<group>")`. The group's tools then appear as deferred tools, to be loaded through ToolSearch. Never load `all`, which costs too much context. Useful groups here:
+  - `xref`: `get_xrefs_to` and `get_xrefs_from` (several addresses per call with `addresses=`), call graphs;
+  - `analysis`: `find_code_gaps` (code outside functions), `search_byte_patterns`, `search_instructions`, `get_function_pcode`, `find_similar_functions`;
+  - `documentation`: `get_function_hash`, `diff_functions`, `find_similar_functions_fuzzy`, `bulk_fuzzy_match`, to compare happy, maped and loader.
+- **Main tool: `get_functions`**. In batch mode, up to 20 functions per call (`functions="0x...,0x..."`). Always restrict with `fields=`: without `decompiled_code` or `call_context`, nothing is decompiled. Set `include_call_context=false`, unless really needed (one decompilation per caller). Pitfalls [verified 2026-10-27 on happy]:
+  - the `disassembly` field stops at **200 instructions**. For the full listing, use `disassemble_function`, which also bounds degenerate bodies (`body_degenerate`);
+  - `body_start`/`body_end` give the extremities (`body_end` inclusive) and flatten bodies split into several chunks (`0x0040B9F0`, `0x0040F1F0`, `0x0040FC24`, `0x0040FD6D`). The `size` field gives the real body size, chunks included. For the exact union of bodies, take the complement of `find_code_gaps`;
+  - in batch mode, the response keys repeat the references as they were passed, case included (`0x004014a0` ≠ `0x004014A0`);
+  - `callers` also counts a function that contains a mere DATA reference (e.g. `0x0040B377` to `0x0040CA3A`). To tell a real call apart, read the `type` in `get_xrefs_to`.
+- **Counts**: `find_functions` only lists internal functions (happy: 220, maped: 200, loader: 63). `get_function_count` and `list_open_programs` add the imported functions (happy: 324 = 220 + 104, maped: 295 = 200 + 95, loader: 118 = 63 + 55). Ghidra misses functions (happy 19, maped 23, loader 7, including the whole `main` of loader): the reference counts are those of the CSVs `notes/data/functions-*.csv` (239, 223, 70).
+- **Pagination**: `limit`/`offset`, and the response gives `total`. `limit=0` returns everything, except for `search_strings` and `find_code_gaps`, where 0 returns an empty page.
+- **Read-only**: the groups loaded by default contain write tools (`rename_*`, `set_*`, `create_*`, `delete_*`, `add_function_tag`, `set_bookmark`, `clear_flow_and_repair`, `reanalyze`, `save_program`, `import_file`, `close_program`, `exit_ghidra`...). They are forbidden unless explicitly requested. `run_script_inline` and `run_ghidra_script` are disabled server-side (`GHIDRA_MCP_ALLOW_SCRIPTS` not set) and must not be enabled without approval.
+- **Scripts**: every tool is also an HTTP endpoint that returns JSON (`GET http://127.0.0.1:8089/<tool>?program=happy.exe&...`). `GET /mcp/schema` describes the 205 endpoints: method, parameters, `read_only`, `destructive`. For any bulk processing, use `scripts/ghidra_rest.py`, which only allows `read_only` GETs. `scripts/ghidra_mcp.py` and `scripts/ghidra_dump.py` targeted the old GhidrAssistMCP server (port 8080) and are obsolete. The cache `captures/ghidra-cache/happy_exe.json` they produced is now only read by `inventory_happy.py`, kept for the record.
+- **Inventory scripts** (in `scripts/`, to be run with `.venv/Scripts/python`, which contains `capstone` 5.0.9):
+  - `ghidra_dump_rest.py <exe>`: JSON copy of Ghidra in `captures/ghidra-cache/<exe>_exe_rest.json`. Rerun only if the Ghidra project changes;
+  - `inventory.py <exe>...`: function inventory (method from `notes/layout-happy.md` §1, additions in `notes/layout-maped.md` §1). It writes `notes/data/functions-*.csv`, `notes/data/datarefs-*.csv` and `captures/inventory-*.json`. The per-exe parameters (game/CRT boundary, blocks, proposed CRT names) are in `CONFIGS`. For maped and loader, it also reanalyses happy, to carry over the CRT names, and therefore needs happy's REST cache;
+  - `build_traits.py`: PE and Rich headers, CRT type, code traits of the three exes. It reads `captures/inventory-*.json`: run `inventory.py` first;
+  - `check_vc6.py`: checks the local VC6 toolchain (versions, Rich header, CRT, `/Gy`) with test programs compiled in `captures/vc6-check/`;
+  - `smoke_reccmp.py`: end-to-end test of VC6 + Allegro + reccmp on the 5 reference functions, in `captures/smoke/` (expected: 5/5 at 100%);
+  - `doctor.py`: diagnostics of the whole toolchain (`--deep` also runs the two previous ones);
+  - `pe_allegro.py`: PE headers, Rich header, exports of `alleg40.dll` and imports of the exes (`notes/data/alleg40-*.csv`);
+  - `shared_code.py`: game code shared by the three exes (`notes/shared-code.md`, `notes/data/shared-functions.csv`);
+  - `decompme_candidates.py`: GAME functions of 15 to 60 instructions and their traits, `--dump` for the disassembly (`notes/decompme-candidates.md`).
+
+
+
+\## Rules
+
+\- Never modify anything in `game/`. Working copies go to `captures/`.
+
+\- Every claim about the binary cites its address (`0x00401A30`) or its source (file, string, import).
+
+\- Explicitly distinguish \*\*\[verified]\*\* (directly observed: string, import, bytes, xref) and \*\*\[hypothesis]\*\* (deduced). Never present a hypothesis as a fact.
+
+\- Do not invent function or source file names. A proposed name remains a hypothesis with its justification.
+
+\- CRT or Allegro functions recognised by Ghidra (Function ID, imports) are \[verified]; those recognised by deduction are \[hypothesis].
+
+\- Prefer writing a script (Python or PowerShell, stored in `scripts/`) over chaining dozens of MCP calls by hand when a task covers all functions.
+
+\- In case of an ambiguity that changes the result, stop and ask the question.
+
+
+
+\## Output files
+
+\- `notes/`: one Markdown file per topic, in English.
+
+\- `notes/STATUS.md`: to be updated at the end of each task (what is done, what remains, open questions).
+
+\- Tabular data (function lists) as CSV in `notes/data/`.
+
+
+
+\## Next phase (for information, do not start)
+
+C89 decompilation with VC6 + reccmp. Annotations `// FUNCTION: HAPPY 0x...`. No inline assembly \*\*in the game code\*\*, no artificial tricks to force a match.
+
+\- Compiler and options chosen on 2026-10-27: **VC 6.0 without service pack, `cl /O2`**, without any `/G` option. Five functions out of five match at 100% on decomp.me (`notes/decompme-candidates.md` §10-11).
+  - `/G6` and SP5 + Processor Pack do not match.
+  - The other service packs produce the same code on these functions. The "no SP" choice rests on the Rich header (cl 12.00.8168) [hypothesis].
+  - [verified locally] `/O2` implies `/Gy` (one COMDAT section per function, 16-byte aligned, `0x90` padding) and does not inline small functions on its own (`notes/toolchain-vc6.md` §5).
+
+- Linking and reccmp [verified on a test exe, `notes/toolchain-vc6.md` §6]:
+  - compile with `/Zi` and link with `/DEBUG /INCREMENTAL:NO /OPT:REF`: the code and addresses do not change;
+  - name the produced exe `happy.exe` (resp. `maped.exe`, `loader.exe`), since `reccmp-project detect` looks for the target's name;
+  - annotate the CRT as `// LIBRARY: HAPPY 0x...` with its name (`// _free`), otherwise every CRT call counts as a mismatch. The names come from `notes/data/functions-*.csv`.
+
+\- Exception decided on 2026-10-27: the official Allegro 4.0.3 headers are included as is, including their inline assembly (`al386vc.h`: `fixmul`, `fixdiv`, etc.). MSVC configuration of Allegro, without `ALLEGRO_NO_ASM` or `ALLEGRO_USE_C`, with `/I 3rdparty/allegro-4.0.3/include`. The code coming from these headers (e.g. `0x00402110`) is annotated as library code, not decompiled.
+
+\- In the C17 phase, these functions are replaced by exact C equivalents (64-bit integer arithmetic), and not by Allegro's C versions, whose rounding may differ.
+

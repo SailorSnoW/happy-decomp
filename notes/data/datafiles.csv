@@ -1,0 +1,656 @@
+file,name,type,size,date,orig
+LEVELS.DAT,BONUS01,DATA,8233,"3-14-2000, 11:37",c:\djgpp\fld\happy\maps\bonus1.map
+LEVELS.DAT,BONUS02,DATA,4233,"3-14-2000, 12:12",c:\djgpp\fld\happy\maps\bonus2.map
+LEVELS.DAT,BONUS03,DATA,4233,"3-14-2000, 11:57",c:\djgpp\fld\happy\maps\bonus3.map
+LEVELS.DAT,BONUS04,DATA,4233,"3-14-2000, 11:38",c:\djgpp\fld\happy\maps\bonus4.map
+LEVELS.DAT,LEVEL00,DATA,14133,"6-21-2000, 17:16",d:\djgpp\fld\happy\maps\level0.map
+LEVELS.DAT,LEVEL01,DATA,18333,"6-21-2000, 17:16",d:\djgpp\fld\happy\maps\level1.map
+LEVELS.DAT,LEVEL02,DATA,21933,"6-21-2000, 17:16",d:\djgpp\fld\happy\maps\level2.map
+LEVELS.DAT,LEVEL03,DATA,29033,"6-21-2000, 17:17",d:\djgpp\fld\happy\maps\level3.map
+LEVELS.DAT,LEVEL04,DATA,25703,"6-21-2000, 17:17",d:\djgpp\fld\happy\maps\cave1.map
+LEVELS.DAT,LEVEL05,DATA,28420,"9-15-2003, 16:55",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\cave2.map
+LEVELS.DAT,LEVEL06,DATA,39130,"9-15-2003, 16:55",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\CAVE3.MAP
+LEVELS.DAT,SECRET00,DATA,4233,"3-14-2000, 22:42",c:\djgpp\fld\happy\maps\happy.map
+LEVELS.DAT,TITLELEV,DATA,4233,"4-12-2000, 23:28",c:\djgpp\fld\happy\maps\title.map
+LEVELS.DAT,X_HELP,DATA,4233,"5-18-2000, 8:46",c:\djgpp\fld\happy\maps\info.map
+LEVELS.DAT,GrabberInfo,info,32,,
+misc.dat,BG1,BMP ,64006,"4-12-2000, 22:57",c:\djgpp\fld\happy\images\bg.pcx
+misc.dat,BG2,BMP ,64006,"10-22-2000, 23:24",c:\program\micros~3\myproj~1\happy\images\bg2.pcx
+misc.dat,BG3,BMP ,64006,"11-12-2000, 9:04",c:\program\micros~3\myproj~1\happy\images\bg3.pcx
+misc.dat,FINAL,BMP ,64006,"5-27-2000, 23:09",c:\djgpp\fld\happy\images\final.pcx
+misc.dat,HAPPY,FONT,39918,"3-09-2000, 22:24",c:\djgpp\ttf2pcx\fonter\freefont.pcx
+misc.dat,HERO1,RLE ,1445,"11-14-2000, 18:06",c:\program\micros~3\myproj~1\happy\images\heads.pcx
+misc.dat,HERO2,RLE ,1959,"11-14-2000, 18:06",c:\program\micros~3\myproj~1\happy\images\heads.pcx
+misc.dat,HERO3,RLE ,2330,"11-14-2000, 18:06",c:\program\micros~3\myproj~1\happy\images\heads.pcx
+misc.dat,M_0,MIDI,44745,"11-28-1999, 13:46",c:\djgpp\fld\happy\sounds\messa.mid
+misc.dat,M_1,MIDI,40893,"11-29-1996, 9:43",c:\program\micros~3\myproj~1\happy\sounds\music\other\12days.mid
+misc.dat,M_2,MIDI,18620,"11-23-1996, 13:29",c:\program\micros~3\myproj~1\happy\sounds\music\other\frosty.mid
+misc.dat,M_3,MIDI,28053,"11-23-1996, 14:37",c:\program\micros~3\myproj~1\happy\sounds\music\other\ismksc.mid
+misc.dat,M_4,MIDI,10682,"11-23-1996, 14:39",c:\program\micros~3\myproj~1\happy\sounds\music\other\itsbegin.mid
+misc.dat,M_5,MIDI,24459,"11-23-1996, 14:28",c:\program\micros~3\myproj~1\happy\sounds\music\other\jingle.mid
+misc.dat,M_6,MIDI,16846,"11-23-1996, 15:19",c:\program\micros~3\myproj~1\happy\sounds\music\other\meriest.mid
+misc.dat,M_7,MIDI,9330,"12-03-1995, 7:19",c:\program\micros~3\myproj~1\happy\sounds\music\cosy\chestnut.mid
+misc.dat,M_8,MIDI,14561,"9-30-1998, 13:54",c:\program\micros~3\myproj~1\happy\sounds\music\cosy\havexmas.mid
+misc.dat,M_9,MIDI,9487,"11-23-1996, 14:39",c:\program\micros~3\myproj~1\happy\sounds\music\cosy\letitsno.mid
+misc.dat,M_A,MIDI,16594,"11-23-1996, 14:05",c:\program\micros~3\myproj~1\happy\sounds\music\fast\jbells.mid
+misc.dat,MIDI_TITLE,MIDI,22935,"11-28-1999, 13:46",c:\djgpp\fld\happy\sounds\pasa.mid
+misc.dat,MIDI_XINTRO,MIDI,8322,"11-23-1996, 14:31",c:\program\micros~3\myproj~1\happy\sounds\music\night\spfairy.mid
+misc.dat,MIDI_XTITLE,MIDI,60696,"11-23-1996, 13:16",c:\program\micros~3\myproj~1\happy\sounds\music\fast\coming.mid
+misc.dat,SANTA1,RLE ,1754,"11-14-2000, 18:06",c:\program\micros~3\myproj~1\happy\images\heads.pcx
+misc.dat,SANTA2,RLE ,2876,"11-14-2000, 18:09",c:\program\micros~3\myproj~1\happy\images\heads.pcx
+misc.dat,SANTA3,RLE ,3258,"11-14-2000, 18:06",c:\program\micros~3\myproj~1\happy\images\heads.pcx
+misc.dat,SMALL,FONT,12282,"7-27-1999, 18:12",c:\djgpp\ttf2pcx\fonter\font_sml.bmp
+misc.dat,SND_CATCH,SAMP,4528,"4-26-2000, 15:56",c:\djgpp\fld\happy\sounds\chipmunk.wav
+misc.dat,SND_DOOR,SAMP,23030,"3-09-2000, 15:49",c:\djgpp\fld\happy\sounds\dooropen.wav
+misc.dat,SND_DROP,SAMP,14042,"3-09-2000, 15:48",c:\djgpp\fld\happy\sounds\bongsq.wav
+misc.dat,SND_FINAL,SAMP,77224,"9-01-1997, 0:00",c:\djgpp\fld\happy\sounds\applad.wav
+misc.dat,SND_GAMEOVER,SAMP,28694,"3-09-2000, 15:49",c:\djgpp\fld\happy\sounds\headshk1.wav
+misc.dat,SND_LEVEL,SAMP,19464,"3-09-2000, 15:49",c:\djgpp\fld\happy\sounds\yehaw.wav
+misc.dat,SND_TAKE,SAMP,3732,"3-14-2000, 16:03",c:\djgpp\fld\happy\sounds\plopp.wav
+misc.dat,SND_TICTOC,SAMP,12924,"3-13-2000, 13:42",c:\djgpp\fld\happy\sounds\ticktock.wav
+misc.dat,SND_WOUND,SAMP,4608,"3-09-2000, 15:49",c:\djgpp\fld\happy\sounds\hiccup.wav
+misc.dat,TITLE,BMP ,8798,"10-22-2000, 22:19",c:\program\micros~3\myproj~1\happy\images\title.pcx
+misc.dat,XMAS,BMP ,4062,"10-22-2000, 22:19",c:\program\micros~3\myproj~1\happy\images\title.pcx
+misc.dat,ZPOINT,BMP ,186,"11-12-2000, 10:59",c:\program\micros~3\myproj~1\happy\images\title.pcx
+misc.dat,GrabberInfo,info,32,,
+SPRITES.DAT,BAD000,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD001,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD002,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD003,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD004,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD005,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD006,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD007,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD008,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD009,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD010,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD011,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD012,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD013,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD014,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD015,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD016,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD017,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD018,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD019,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD020,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD021,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD022,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD023,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD024,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD025,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD026,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD027,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD028,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD029,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD030,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD031,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD032,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD033,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD034,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD035,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD036,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD037,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD038,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD039,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD040,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD041,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD042,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD043,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD044,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD045,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD046,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD047,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD048,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD049,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD050,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD051,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD052,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD053,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD054,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD055,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD056,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD057,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD058,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD059,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD060,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD061,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD062,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,BAD063,BMP ,326,"3-13-2000, 22:29",c:\djgpp\fld\happy\images\baddies.pcx
+SPRITES.DAT,GOOD000,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD001,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD002,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD003,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD004,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD005,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD006,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD007,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD008,BMP ,374,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD009,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD010,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD011,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD012,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD013,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD014,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD015,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,GOOD016,BMP ,326,"10-25-2000, 23:06",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+SPRITES.DAT,HAPPY000,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY001,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY002,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY003,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY004,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY005,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY006,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY007,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY008,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY009,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY010,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY011,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY012,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY013,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY014,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY015,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY016,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY017,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY018,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY019,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY020,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY021,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY022,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY023,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY024,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY025,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY026,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY027,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY028,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY029,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY030,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY031,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY032,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY033,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY034,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY035,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY036,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY037,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY038,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY039,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY040,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY041,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY042,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY043,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY044,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY045,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY046,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY047,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY048,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY049,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY050,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,HAPPY051,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\happers.pcx
+SPRITES.DAT,PICKUP,BMP ,7,,
+SPRITES.DAT,PICKUP000,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP001,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP002,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP003,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP004,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP005,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP006,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP007,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP008,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP009,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP010,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP011,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP012,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP013,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP014,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP015,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP016,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,PICKUP017,BMP ,262,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\pickup.pcx
+SPRITES.DAT,GrabberInfo,info,32,,
+tiles.DAT,PAL,PAL ,1024,"3-13-2000, 22:28",c:\djgpp\fld\happy\images\tiles.pcx
+tiles.DAT,TILE000,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE001,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE002,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE003,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE004,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE005,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE006,RLE ,255,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE007,RLE ,170,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE008,RLE ,170,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE009,RLE ,202,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE010,RLE ,202,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE011,RLE ,121,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE012,RLE ,121,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE013,RLE ,121,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE014,RLE ,121,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE015,RLE ,235,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE016,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE017,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE018,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE019,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE020,RLE ,235,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE021,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE022,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE023,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE024,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE025,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE026,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE027,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE028,RLE ,207,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE029,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE030,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE031,RLE ,223,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE032,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE033,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE034,RLE ,170,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE035,RLE ,170,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE036,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE037,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE038,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE039,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE040,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE041,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE042,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE043,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE044,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE045,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE046,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE047,RLE ,234,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE048,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE049,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE050,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE051,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE052,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE053,RLE ,240,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE054,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE055,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE056,RLE ,263,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE057,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE058,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE059,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE060,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE061,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE062,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE063,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE064,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE065,RLE ,129,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE066,RLE ,156,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE067,RLE ,74,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE068,RLE ,140,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE069,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE070,RLE ,145,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE071,RLE ,234,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE072,RLE ,234,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE073,RLE ,129,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE074,RLE ,220,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE075,RLE ,213,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE076,RLE ,189,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE077,RLE ,90,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE078,RLE ,122,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE079,RLE ,255,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE080,RLE ,276,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE081,RLE ,255,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE082,RLE ,276,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE083,RLE ,255,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE084,RLE ,276,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE085,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE086,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE087,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE088,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE089,RLE ,194,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE090,RLE ,223,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE091,RLE ,251,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE092,RLE ,174,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE093,RLE ,238,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE094,RLE ,152,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE095,RLE ,145,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE096,RLE ,198,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE097,RLE ,66,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE098,RLE ,179,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE099,RLE ,205,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE100,RLE ,171,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE101,RLE ,240,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE102,RLE ,176,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE103,RLE ,208,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE104,RLE ,244,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE105,RLE ,186,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE106,RLE ,153,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE107,RLE ,175,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE108,RLE ,162,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE109,RLE ,176,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE110,RLE ,167,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE111,RLE ,172,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE112,RLE ,183,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE113,RLE ,227,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE114,RLE ,197,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE115,RLE ,233,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE116,RLE ,177,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE117,RLE ,154,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE118,RLE ,205,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE119,RLE ,213,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE120,RLE ,174,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE121,RLE ,207,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE122,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE123,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE124,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE125,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE126,RLE ,193,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE127,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE128,RLE ,298,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,TILE129,RLE ,193,"10-23-2000, 0:15",c:\program\micros~3\myproj~1\happy\images\tiles.pcx
+tiles.DAT,GrabberInfo,info,32,,
+xlevels.dat,BONUS01,DATA,13045,"9-09-2003, 15:20",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\b1.map
+xlevels.dat,BONUS02,DATA,9385,"9-09-2003, 15:20",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\b2.map
+xlevels.dat,BONUS03,DATA,8345,"9-09-2003, 15:20",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\b3.map
+xlevels.dat,BONUS04,DATA,9545,"9-09-2003, 15:20",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\b4.map
+xlevels.dat,LEVEL01,DATA,47545,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\intro1.map
+xlevels.dat,LEVEL11,DATA,11735,"5-11-2002, 12:14",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mount0.map
+xlevels.dat,LEVEL12,DATA,21545,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mount1.map
+xlevels.dat,LEVEL13,DATA,25495,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mount2.map
+xlevels.dat,LEVEL14,DATA,45325,"5-11-2002, 12:13",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mount3.map
+xlevels.dat,LEVEL21,DATA,20965,"8-25-2002, 12:47",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\village1.map
+xlevels.dat,LEVEL22,DATA,31045,"5-11-2002, 12:16",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\village2.map
+xlevels.dat,LEVEL23,DATA,33995,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\village3.map
+xlevels.dat,LEVEL2a,DATA,21145,"5-11-2002, 12:45",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\60.map
+xlevels.dat,LEVEL31,DATA,19545,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mines1.map
+xlevels.dat,LEVEL32,DATA,31545,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mines2.map
+xlevels.dat,LEVEL33,DATA,50270,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mines3.map
+xlevels.dat,LEVEL34,DATA,10755,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\mines4.map
+xlevels.dat,LEVEL41,DATA,23445,"4-06-2002, 17:17",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\tops1.map
+xlevels.dat,LEVEL42,DATA,32720,"9-09-2003, 16:55",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\tops2.map
+xlevels.dat,LEVEL43,DATA,33130,"9-15-2003, 16:56",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\tops3.map
+xlevels.dat,SECRET00,DATA,8345,"9-09-2003, 15:21",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\sec.map
+xlevels.dat,TITLELEV,DATA,8345,"9-09-2003, 15:21",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\title.map
+xlevels.dat,X_HELP,DATA,8345,"9-09-2003, 15:21",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\help.map
+xlevels.dat,X_OUTRO,DATA,8345,"9-09-2003, 15:21",c:\Documents and Settings\Johan\My Documents\game development\projects\happy\maps\xmaps\done.map
+xlevels.dat,GrabberInfo,info,32,,
+XSPRITES.DAT,BAD000,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD001,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD002,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD003,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD004,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD005,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD006,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD007,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD008,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD009,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD010,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD011,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD012,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD013,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD014,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD015,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD016,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD017,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD018,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD019,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD020,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD021,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD022,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD023,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD024,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD025,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD026,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD027,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD028,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD029,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD030,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD031,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD032,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD033,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD034,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD035,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD036,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD037,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD038,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD039,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD040,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD041,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD042,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD043,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD044,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD045,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD046,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD047,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD048,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD049,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD050,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD051,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD052,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD053,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD054,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD055,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD056,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD057,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD058,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD059,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD060,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD061,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD062,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,BAD063,BMP ,326,"11-10-2000, 16:17",c:\program\micros~3\myproj~1\happy\images\baddies.pcx
+XSPRITES.DAT,GOOD000,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD001,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD002,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD003,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD004,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD005,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD006,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD007,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD008,BMP ,374,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD009,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD010,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD011,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD012,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD013,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD014,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD015,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,GOOD016,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,HAPPY000,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY001,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY002,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY003,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY004,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY005,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY006,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY007,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY008,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY009,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY010,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY011,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY012,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY013,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY014,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY015,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY016,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY017,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY018,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY019,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY020,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY021,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY022,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY023,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY024,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY025,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY026,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY027,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY028,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY029,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY030,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY031,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY032,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY033,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY034,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY035,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY036,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY037,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY038,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY039,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY040,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY041,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY042,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY043,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY044,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY045,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY046,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY047,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY048,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY049,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY050,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,HAPPY051,BMP ,262,"11-11-2000, 16:36",c:\program\micros~3\myproj~1\happy\images\helpers.pcx
+XSPRITES.DAT,PICKUP,BMP ,7,,
+XSPRITES.DAT,PICKUP000,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP001,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP002,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP003,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP004,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP005,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP006,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP007,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP008,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP009,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP010,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP011,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP012,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP013,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP014,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP015,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP016,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP017,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,PICKUP018,BMP ,262,"11-16-2000, 20:55",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,SANTA001,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,SANTA002,BMP ,326,"12-16-2000, 16:40",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,SANTA003,BMP ,326,"12-16-2000, 17:38",c:\program\micros~3\myproj~1\happy\images\goodguys.pcx
+XSPRITES.DAT,SANTA004,BMP ,3398,"12-16-2000, 17:38",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,SANTA005,BMP ,3398,"12-16-2000, 17:38",c:\program\micros~3\myproj~1\happy\images\xpick.pcx
+XSPRITES.DAT,GrabberInfo,info,32,,
+xtiles.dat,PAL,PAL ,1024,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE000,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE001,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE002,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE003,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE004,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE005,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE006,RLE ,255,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE007,RLE ,170,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE008,RLE ,170,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE009,RLE ,202,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE010,RLE ,202,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE011,RLE ,121,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE012,RLE ,121,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE013,RLE ,121,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE014,RLE ,121,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE015,RLE ,231,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE016,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE017,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE018,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE019,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE020,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE021,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE022,RLE ,231,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE023,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE024,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE025,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE026,RLE ,274,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE027,RLE ,266,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE028,RLE ,211,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE029,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE030,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE031,RLE ,188,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE032,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE033,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE034,RLE ,191,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE035,RLE ,181,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE036,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE037,RLE ,263,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE038,RLE ,243,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE039,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE040,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE041,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE042,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE043,RLE ,288,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE044,RLE ,285,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE045,RLE ,286,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE046,RLE ,252,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE047,RLE ,273,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE048,RLE ,285,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE049,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE050,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE051,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE052,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE053,RLE ,282,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE054,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE055,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE056,RLE ,263,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE057,RLE ,102,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE058,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE059,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE060,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE061,RLE ,87,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE062,RLE ,136,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE063,RLE ,136,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE064,RLE ,87,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE065,RLE ,231,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE066,RLE ,248,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE067,RLE ,168,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE068,RLE ,192,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE069,RLE ,56,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE070,RLE ,55,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE071,RLE ,196,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE072,RLE ,206,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE073,RLE ,228,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE074,RLE ,237,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE075,RLE ,138,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE076,RLE ,143,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE077,RLE ,274,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE078,RLE ,274,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE079,RLE ,274,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE080,RLE ,274,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE081,RLE ,62,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE082,RLE ,63,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE083,RLE ,184,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE084,RLE ,185,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE085,RLE ,284,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE086,RLE ,154,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE087,RLE ,230,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE088,RLE ,158,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE089,RLE ,184,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE090,RLE ,114,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE091,RLE ,114,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE092,RLE ,184,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE093,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE094,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE095,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE096,RLE ,94,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE097,RLE ,90,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE098,RLE ,198,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE099,RLE ,138,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE100,RLE ,148,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE101,RLE ,228,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE102,RLE ,237,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE103,RLE ,196,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE104,RLE ,206,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE105,RLE ,272,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE106,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE107,RLE ,272,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE108,RLE ,281,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE109,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE110,RLE ,287,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE111,RLE ,126,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE112,RLE ,256,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE113,RLE ,255,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE114,RLE ,125,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE115,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE116,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE117,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE118,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE119,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE120,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE121,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE122,RLE ,207,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE123,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE124,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE125,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE126,RLE ,193,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE127,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE128,RLE ,298,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,TILE129,RLE ,193,"12-11-2000, 15:09",c:\program\micros~3\myproj~1\happy\images\xtiles.pcx
+xtiles.dat,GrabberInfo,info,32,,

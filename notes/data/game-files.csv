@@ -1,0 +1,19 @@
+path,size,ext,head32_hex,head32_ascii
+data/LEVELS.DAT,45528,.dat,03 1c 09 1a 96 29 2d 3c 5e 92 98 6e 00 02 c6 07 11 34 31 2d 2d 8a 80 60 86 5b 4c 41 44 54 5a 51,.....)-<^..n.....41--..`.[LADTZQ
+data/misc.dat,416045,.dat,03 1c 09 30 87 41 4c 4c 2e eb f0 27 70 72 de 6f 70 44 41 54 45 eb f0 10 8f 34 2d 31 32 2d 32 30,...0.ALL...'pr.opDATE....4-12-20
+data/SPRITES.DAT,16801,.dat,03 1c 09 30 87 41 4c 4c 2e eb f0 99 70 72 de 6f 70 44 41 54 45 eb f0 10 8f 33 2d 31 33 2d 32 30,...0.ALL....pr.opDATE....3-13-20
+data/tiles.DAT,17835,.dat,03 1c 09 30 87 41 4c 4c 2e eb f0 84 70 72 de 6f 70 44 41 54 45 eb f0 10 8f 33 2d 31 33 2d 32 30,...0.ALL....pr.opDATE....3-13-20
+data/xlevels.dat,108502,.dat,03 1c 09 1a 96 29 2d 3c 5e 92 98 78 00 02 c6 07 11 34 31 2d 2d 8a 80 60 86 51 4c 40 49 54 5a 51,.....)-<^..x.....41--..`.QL@ITZQ
+data/XSPRITES.DAT,19474,.dat,03 1c 09 30 87 41 4c 4c 2e eb f0 9f 70 72 de 6f 70 44 41 54 45 eb f0 11 8f 31 31 2d 31 30 2d 32,...0.ALL....pr.opDATE....11-10-2
+data/xtiles.dat,18540,.dat,03 1c 09 30 87 41 4c 4c 2e eb f0 84 70 72 de 6f 70 44 41 54 45 eb f0 11 8f 31 32 2d 31 31 2d 32,...0.ALL....pr.opDATE....12-11-2
+maps/examples/bonus_1.map,9385,.map,02 24 0d 01 03 42 4f 4e 55 53 52 4f 4f 4d 21 00 80 4d f4 43 e9 7b 01 00 00 8d 76 00 8a 45 f8 24,.$...BONUSROOM!..M.C.{....v..E.$
+maps/examples/bonus_2.map,8345,.map,02 14 0d 01 03 42 4f 4e 55 53 52 4f 4f 4d 21 00 80 4d f4 43 e9 7b 01 00 00 8d 76 00 8a 45 f8 24,.....BONUSROOM!..M.C.{....v..E.$
+maps/examples/jungle.map,27065,.map,02 8f 1c 87 04 52 75 6d 62 6c 65 20 69 6e 20 74 68 65 20 4a 75 6e 67 6c 65 00 00 00 00 00 00 00,.....Rumble in the Jungle.......
+maps/examples/stix.map,16945,.map,02 2d 2c 03 1d 53 74 69 78 6c 61 6e 64 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00,".-,..Stixland!.................."
+maps/examples/winter.map,34405,.map,02 ab 20 19 0a 57 69 6e 74 65 72 6c 61 6e 64 21 00 61 70 70 79 6c 61 6e 64 00 00 00 00 00 00 00,.. ..Winterland!.appyland.......
+maps/rolling_hills/rh_bonus_1.map,8345,.map,02 14 0d 01 03 42 4f 4e 55 53 52 4f 4f 4d 21 00 80 4d f4 43 e9 7b 01 00 00 8d 76 00 8a 45 f8 24,.....BONUSROOM!..M.C.{....v..E.$
+maps/rolling_hills/rh_bonus_2.map,9045,.map,02 14 14 09 01 42 4f 4e 55 53 52 4f 4f 4d 21 00 80 4d f4 43 e9 7b 01 00 00 8d 76 00 8a 45 f8 24,.....BONUSROOM!..M.C.{....v..E.$
+maps/rolling_hills/rolling_hills.txt,413,.txt,3a 3a 20 52 6f 6c 6c 69 6e 67 20 68 69 6c 6c 73 20 0d 0a 0d 0a 4a 75 73 74 20 64 72 61 67 20 61,:: Rolling hills ....Just drag a
+maps/rolling_hills/rolling_hills_1.map,21845,.map,02 50 25 02 1c 52 6f 6c 6c 69 6e 67 20 48 69 6c 6c 73 20 31 00 00 00 00 00 00 00 00 00 00 00 00,.P%..Rolling Hills 1............
+maps/rolling_hills/rolling_hills_2.map,29920,.map,02 4b 3d 04 32 52 6f 6c 6c 69 6e 67 20 48 69 6c 6c 73 20 32 00 00 00 00 00 00 00 00 00 00 00 00,.K=.2Rolling Hills 2............
+maps/rolling_hills/rolling_hills_3.map,27700,.map,02 51 33 0a 28 52 6f 6c 6c 69 6e 67 20 48 69 6c 6c 73 20 33 00 00 00 00 00 00 00 00 00 00 00 00,.Q3.(Rolling Hills 3............
