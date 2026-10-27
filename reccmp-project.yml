@@ -22,7 +22,8 @@ targets:
     source_root: src
     hash:
       sha256: 789ee11e62e1a2b1241f60e3a060f0bd2ac926d15a6762e6b2b31946cac74f92
-    data_sources: []
+    data_sources:
+    - reccmp/maped.csv
     encoding:
     ghidra:
       ignore_types: []

@@ -1,0 +1,7 @@
+# reccmp data source for MAPED (reccmp-project.yml, data_sources): entities
+# of the original that no annotation of src/ can describe.
+# Floating-point constants of .rdata: reccmp names them by value on both
+# sides only if the original address is declared here.
+address,type,size
+# 0.0625, used by FUN_00401400 [verified]
+0x0040d1c8,float,8
