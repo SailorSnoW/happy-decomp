@@ -1,5 +1,25 @@
 # STATUS
 
+## 2026-10-27 — Matching, step 9: menus, scores, ending and game flow (happy block_07)
+
+Note: `notes/matching.md` §3, §3a, §5. Branch `decomp/happy`.
+
+### Done
+- [verified] `src/happy/block_07.c`: 12/12. At 100%: `enter_password` (`0x00408500`), `show_hiscores` (`0x00408930`), `game_over` (`0x00408A40`), `game_completed` (`0x00408B90`), `anim_tick`. Only the calls to `0x00402620` / `0x00404C50`, not decompiled yet, differ in `show_instructions` (`0x00407500`), `main_menu` (`0x00407B30`), `main_menu_password` (`0x00407E80`), `ending_frames` (`0x00408E00`), `play_ending` (`0x00409080`) and `play_game` (`0x00409640`). `enter_hiscore` (`0x00408200`) 99.55%: the address `hiscores[0].name - 1`, which reccmp cannot name (`matching.md` §3).
+- [verified] Cheats (`enter_password`): `passwords[16]`-`[20]` are "HAXE-SPLITSECONDS" (clock stopped, `DAT_00412088` = 0), "HAXE-CANTTOUCHME" (`DAT_00413b30`), "HAXE-OPENSESAME" (`DAT_00413b34`), "HAXE-GOHOMEBADDIE" (`DAT_0041208c` = 0), "HAXE-FULLCAPACITY" (`DAT_00412090` = 10); "HAXE-RESET" restores them. Comments of `data.c` updated (one comment was above the wrong global).
+- [verified] `hiscores[7]`: six entries are shown, the seventh only receives the entry shifted down when a score is inserted (`game_over`, `game_completed`, `play_ending`). `game_over` draws sprite 65 upside down (`draw_sprite_v_flip`).
+- `bonus_room` now returns `int` (the result of `0x00404C50`, read by `play_game`); `FUN_00404c50` declared `int`. Same code, still 99.34%.
+- Matching findings (`matching.md` §3a): `MID(0, 18, i)` argument order, a reused loop variable in `play_game`, the position of `old = sel` in the menus, vtable offsets of Allegro's inline sprite functions.
+- No regression: happy 78/84 annotated, 54 at 100%; maped 9/50, 9 at 100%; `reccmp-datacmp` 71 variables, 0 issues.
+- Ghidra: 11 functions renamed with their prototypes, `bonus_room` retyped, saved (`ghidra_sync.py --save`). `passwords` and `player` still refused (`type_would_evict`, step 7).
+
+### Remaining
+- Next: happy block_08 (`0x00409870`–`0x0040A99F`: `0x00409E40`, then `main` `0x0040A830`; `0x00409870` and `0x00409F30` are among the large functions left for the end), then the four large functions (`0x00404C50`, `0x00409F30`, `0x00402620`, `0x00409870`).
+
+### Open questions
+- `show_instructions` waits for `timer_ticks` without resetting it (no store to `0x00442084` in `0x00407500`): after the first tick the demonstration runs unthrottled [verified in the code, effect not observed]. Bug of the original?
+- `DAT_00413b2c` is set to 1 at the end of `play_ending`; its readers are not decompiled yet (block_08?).
+
 ## 2026-10-27 — Matching, step 8: menus and introduction (happy block_06)
 
 Note: `notes/matching.md` §3, §5. Branch `decomp/happy`.

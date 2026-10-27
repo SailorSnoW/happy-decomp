@@ -700,10 +700,11 @@ void pause_game(void)
  * you." and "Here's a special treat!"; the player falls (sprite 65
  * upside down), sprite 71 flashes 30 times (draw_character, colours 145
  * to 174), then the bonus level DAT_004450a4 is started (start_level(...,
- * 0, 1)) with DAT_00442080 = 1 and played (0x00404C50). Only caller
+ * 0, 1)) with DAT_00442080 = 1 and played (0x00404C50), whose result it
+ * returns [verified: play_game reads eax after the call]. Only caller
  * 0x00409640. */
 // FUNCTION: HAPPY 0x00405db0
-void bonus_room(void)
+int bonus_room(void)
 {
     int list[5];
     int c;
@@ -830,5 +831,5 @@ void bonus_room(void)
     player.f08 = 0;
     DAT_00442080 = 1;
     time_left = DAT_00414130->f7a;
-    FUN_00404c50();
+    return FUN_00404c50();
 }

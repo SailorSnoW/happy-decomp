@@ -221,8 +221,8 @@ void FUN_00404770(void);
 void FUN_00404920(void);
 void drop_item(void);
 void pause_game(void);
-void FUN_00404c50(void);
-void bonus_room(void);
+int FUN_00404c50(void);
+int bonus_room(void);
 
 /* block_06.c */
 void draw_title(void);
@@ -235,6 +235,17 @@ int intro_caption(char *text, int ms);
 void play_intro(void);
 
 /* block_07.c */
+void show_instructions(void);
+int main_menu(void);
+int main_menu_password(void);
+void enter_hiscore(int n);
+int enter_password(void);
+void show_hiscores(void);
+void game_over(void);
+void game_completed(void);
+void ending_frames(int x1, int x2, int y, int frames, int flip1, int flip2, int y3, int alt);
 void anim_tick(int a, int b);
+void play_ending(void);
+void play_game(void);
 
 #endif

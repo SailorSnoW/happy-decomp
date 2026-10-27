@@ -65,18 +65,21 @@ char *passwords[21] = {
 };
 
 /* [hypothesis] Clock running: timer_1s decrements time_left only when it
- * is set. Initial value 1 [verified]. */
+ * is set. Initial value 1 [verified]. The cheat "HAXE-SPLITSECONDS" sets
+ * it to 0 (enter_password) [verified]. */
 // GLOBAL: HAPPY 0x00412088
 int DAT_00412088 = 1;
 
-/* [hypothesis] Number of objects that can follow the player
- * (FUN_00403f60 compares player.f58 with it). Initial value 5
- * [verified]. */
 /* [hypothesis] Enemies kept: start_level removes the objects with bit 2
- * of f19 when it is 0. Initial value 1 [verified]. */
+ * of f19 when it is 0. Initial value 1 [verified]. The cheat
+ * "HAXE-GOHOMEBADDIE" sets it to 0 (enter_password) [verified]. */
 // GLOBAL: HAPPY 0x0041208c
 int DAT_0041208c = 1;
 
+/* [hypothesis] Number of objects that can follow the player
+ * (FUN_00403f60 compares player.f58 with it). Initial value 5
+ * [verified]. The cheat "HAXE-FULLCAPACITY" sets it to 10
+ * (enter_password) [verified]. */
 // GLOBAL: HAPPY 0x00412090
 int DAT_00412090 = 5;
 
@@ -94,14 +97,18 @@ int DAT_00413b24;
 // GLOBAL: HAPPY 0x00413b28
 int DAT_00413b28;
 
+/* Set to 1 at the end of play_ending [verified]. */
 // GLOBAL: HAPPY 0x00413b2c
 int DAT_00413b2c;
 
+/* [hypothesis] Enemies harmless: FUN_00403f60 skips the contacts with the
+ * objects of f19 bit 2 when it is set. Set by the cheat
+ * "HAXE-CANTTOUCHME" (enter_password) [verified]. */
 // GLOBAL: HAPPY 0x00413b30
 int DAT_00413b30;
 
 /* [hypothesis] Exit always open: start_level calls open_exit when it is
- * set. */
+ * set. Set by the cheat "HAXE-OPENSESAME" (enter_password) [verified]. */
 // GLOBAL: HAPPY 0x00413b34
 int DAT_00413b34;
 
