@@ -66,7 +66,13 @@ void FUN_004019b0(void)
  * autosave.map); 320x200 if mode is set or the screen is not 320 wide.
  * Windowed if run_in_a_window is set in maped.ini. Then the view size in
  * tiles and the clamped scroll and cursor positions [hypothesis], and the
- * palette. Callers 0x00401C20 (mode 1) and 0x00404C10. */
+ * palette. Callers 0x00401C20 (mode 1), 0x004032C0 (-1) and 0x00404C10
+ * (0, F12: toggle). [verified] Shape: the two 320x200 cases written as
+ * separate calls, which VC6 merges into one; with a single else
+ * (!mode && SCREEN_W == 320), VC6 keeps the map pointer of the 640x480
+ * test in ebp for the clamps and reloads it after the call. The nested
+ * form (if (!mode) { if (SCREEN_W == 320) ... else ... } else ...) gives
+ * the same code. */
 // FUNCTION: MAPED 0x00401a20
 void set_screen_mode(int mode)
 {
@@ -74,7 +80,9 @@ void set_screen_mode(int mode)
 
     // STRING: MAPED 0x0040f1ec
     card = get_config_int(NULL, "run_in_a_window", 0) ? GFX_AUTODETECT_WINDOWED : GFX_AUTODETECT_FULLSCREEN;
-    if (!mode && SCREEN_W == 320) {
+    if (mode) {
+        set_gfx_mode(card, 320, 200, 0, 0);
+    } else if (SCREEN_W == 320) {
         // STRING: MAPED 0x0040f1dc
         map_save("autosave.map", DAT_00410110);
         if (DAT_00410110->w > 40 && DAT_00410110->h > 30)

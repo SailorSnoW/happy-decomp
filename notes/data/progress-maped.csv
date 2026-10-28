@@ -13,7 +13,7 @@ address,size,block,name,matching
 0x004017E0,227,block_03,init_help_texts,100.00
 0x004018D0,215,block_04,take_screenshot,100.00
 0x004019B0,102,block_04,FUN_004019b0,100.00
-0x00401A20,365,block_04,set_screen_mode,85.94
+0x00401A20,365,block_04,set_screen_mode,100.00
 0x00401B90,94,block_04,init_color_tables,100.00
 0x00401BF0,36,block_04,load_data,100.00
 0x00401C20,245,block_04,init_editor,100.00

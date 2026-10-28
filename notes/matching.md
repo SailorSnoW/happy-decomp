@@ -1,6 +1,6 @@
 # Matching setup
 
-How the decompiled C is built and compared with the originals. Toolchain choices: `notes/toolchain-vc6.md` §6 and §7 (VC 6.0 without SP, `cl /O2`). Current scores: §5; functions below 100%: `notes/open-diffs.md`.
+How the decompiled C is built and compared with the originals. Toolchain choices: `notes/toolchain-vc6.md` §6 and §7 (VC 6.0 without SP, `cl /O2`). Current scores: §5; functions below 100% (none since 2026-10-28): `notes/open-diffs.md`.
 
 ## 1. Layout of `src/`
 
@@ -105,7 +105,7 @@ Code-generation clues met so far, to try first when a function is close:
   - `m = MAX(m, old); t->t2 = m;` rather than `t->t2 = MAX(m, old);`: the maximum is computed in the mask's register and stored from it (`cmp ebx, ecx` / `jg` / `mov ebx, ecx` / `mov [t + 2], bl`); a variable zeroed at the top of the function (`old = 0;` next to `m = 0;`) is what puts `xor edx, edx` before the `imul` of the index (`auto_mask` 80.54% -> 96.86%, 2026-10-28);
   - VC6 merges identical instruction sequences at the start (and the end) of the two branches of an `if`/`else` **after** register allocation: when both branches give a pointer the same register, its computation moves above the `je` (and the stores share one tail); the original keeps them apart only because the registers differ (`auto_mask`);
   - the position of a copy relative to a load changes the registers of the whole branch: in `auto_mask`'s winter branch, `n = tiles[i].t1 - 1; old = m;` gives the tile address `edx` (the original), `old = m; n = tiles[i].t1 - 1;` gives it `esi`, with the same instructions otherwise (96.86% -> 100%, 2026-10-28). About 1,200 combinations of which variable each chain writes (scratch generator) never gave both the original pointer and the original mask registers; the order of these two statements did. Try moving copies across neighbouring loads when a branch has the right instructions in the wrong registers;
-  - a global loaded in a branch and again after a merge whose other paths go through a call is kept in a callee-saved register on the path without the call and reloaded right after the call (partial redundancy elimination): `set_screen_mode`, where the original reloads it after the merge; an unrelated store through a pointer between the two (a kill) gives the original registers, no natural shape found yet (`notes/open-diffs.md`).
+  - a global loaded in a branch and again after a merge whose other paths go through a call is kept in a callee-saved register on the path without the call and reloaded right after the call (partial redundancy elimination), but only when every path into the merge either loads it or goes through a call [verified: without the `else`, no reload]. Two identical calls written as separate branches (`if (mode) f(320); else if (SCREEN_W == 320) {...} else f(320);`) give VC6 one more path when it makes that choice; it merges the two calls afterwards, so the extra test leaves no code, and the global is reloaded after the merge as in the original (`set_screen_mode` 85.94% -> 100%, 2026-10-28). The nested `if (!mode) { if (SCREEN_W == 320) ... else f(320); } else f(320);` gives the same code; a single `else` after `!mode && SCREEN_W == 320`, about 120 other shapes, kept the register. Found by a re-test that cannot be removed (`else if (mode || SCREEN_W != 320)`), which gave the original registers plus 4 instructions. A second test on a local set to a constant (`big = 1; ... if (!big)`) changes nothing [hypothesis: VC6 threads it before that choice].
 - the shapes found in loader (2026-10-27):
   - `num_bonus = num_normal = 0;` rather than two assignments: the stores keep the order of the assignments (`num_normal` first), but the order in which VC6 reloads the cached `num_bonus` and the import pointer of `pack_fgets` at the exit of the first loop follows the first variable written in the source; two assignments gave 99.44% in either order (`main` `0x00401000`);
   - `""` is emitted by cl 12 as a 1-byte COMDAT in `.bss` (all zero), so the linker places it at the start of `.bss`, before `errno` (loader `0x00406708`), away from the other strings of the function.
@@ -157,10 +157,9 @@ Named = annotated in `src/crt/<exe>.h` (aliases included): 152 + 163 + 66 = 381 
 | exe | GAME functions | at 100% | bytes at 100% | below 100% |
 |---|---:|---:|---:|---|
 | happy | 84 | 84 | 100% | — |
-| maped | 50 | 49 | 98.1% | `set_screen_mode` 85.94% |
+| maped | 50 | 50 | 100% | — |
 | loader | 2 | 2 | 100% | — |
 
-- The function left: `notes/open-diffs.md`.
 - `reccmp-datacmp`: happy 72, maped 37, loader 1 variables, 0 issues. reccmp reports no `[ERROR]` on the 381 `LIBRARY` annotations.
 - `build.py --final happy maped loader` links the three exes without stubs (happy 81,977 bytes, original 86,016; maped 69,689, original 73,728). happy's game code ends at `0x0040AD50`, as in the original. loader linked again without `/DEBUG`: `.text`, `.rdata`, `.data` byte-identical (§3).
 - Ghidra is in sync with `src/` (`scripts/ghidra_sync.py`, 0 differences in the three programs).

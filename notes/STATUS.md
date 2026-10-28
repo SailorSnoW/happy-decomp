@@ -4,12 +4,12 @@ Last updated: 2026-10-28. The detailed log of each step is in the git history (c
 
 ## Current state
 
-Matching decompilation: **the three exes are fully annotated and build without stubs**; 135 of 136 GAME functions match at 100% (`scripts/progress.py`, `notes/matching.md` §5).
+Matching decompilation: **the three exes are fully annotated and build without stubs**; **all 136 GAME functions match at 100%** (`scripts/progress.py`, `notes/matching.md` §5).
 
 | exe | GAME functions | at 100% | bytes at 100% | below 100% |
 |---|---:|---:|---:|---|
 | happy | 84 | 84 | 100% | — |
-| maped | 50 | 49 | 98.1% | `set_screen_mode` 85.94% |
+| maped | 50 | 50 | 100% | — |
 | loader | 2 | 2 | 100% | — |
 
 - `reccmp-datacmp`: happy 72, maped 37, loader 1 variables, 0 issues. The CRT is annotated as `LIBRARY` (381 annotations, `scripts/crt_names.py`).
@@ -19,13 +19,9 @@ Matching decompilation: **the three exes are fully annotated and build without s
 
 ## Remaining
 
-- The function below 100% (maped `set_screen_mode`): `notes/open-diffs.md` (shapes already tried).
 - Next phase per `CLAUDE.md`: the C17 port, verified by comparing its behaviour with the matching build.
 
 ## Open questions
-
-Matching:
-- `set_screen_mode`: which construct makes VC6 drop the partial redundancy between the branch's and the clamps' loads of `DAT_00410110` without emitting code?
 
 Whole-exe layout (no effect on the function scores):
 - happy's OLDNAMES aliases: the original has two (`AliasObj60 ×2`), the sources call three (`itoa`, `stricmp`, `strcmpi`); which spelling is wrong is not observable (`notes/matching.md` §3).
@@ -48,3 +44,4 @@ Behaviour found in the code, worth keeping in mind for the C17 port (details in 
 | 2026-10-28 | Repository cleanup: removed the one-off inventory scripts and notes (decomp.me candidates, shared-code analysis, the resolved diff notes); the remaining diffs are in `notes/open-diffs.md`. |
 | 2026-10-28 | `play_level` at 100% (the products through Allegro 3.x's `fmul` alias): happy 84/84. |
 | 2026-10-28 | `auto_mask` at 100% (the winter base mask saved after the cover tile is read): maped 49/50. |
+| 2026-10-28 | `set_screen_mode` at 100% (the two 320x200 cases as separate calls): maped 50/50, 136/136 GAME functions. |
