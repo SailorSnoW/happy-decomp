@@ -163,9 +163,10 @@ char select_help_text(void)
  * masks is kept (draw_tile_mask shows the shapes). Only caller
  * 0x00404C10. [verified] Shape: old zeroed at the start with m (the
  * original zeroes edx there, the summer cover mask), m = MAX(m, old)
- * before the store, the tile indexed in each access. Not at 100%: VC6
- * gives the winter tile address esi instead of edx, then merges the
- * identical heads of the two branches (notes/open-diffs.md). */
+ * before the store, the tile indexed in each access, and in the winter
+ * branch the base mask saved in old after the cover tile is read (before
+ * it, VC6 gives the winter tile address esi instead of edx, then merges
+ * the identical heads of the two branches). */
 // FUNCTION: MAPED 0x00404500
 void auto_mask(int x, int y)
 {
@@ -211,8 +212,8 @@ void auto_mask(int x, int y)
             m = 10;
         if (n == 129 || n == 89)
             m = 9;
-        old = m;
         n = DAT_00410110->tiles[i].t1 - 1;
+        old = m;
         if (n >= 0 && n <= 6)
             m = 4;
         if (n >= 16 && n <= 21)

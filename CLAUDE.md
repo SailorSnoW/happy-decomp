@@ -24,7 +24,7 @@
 
 \## Current phase: matching decompilation (started 2026-10-27), almost complete
 
-C89 decompilation of happy, maped and loader, verified with reccmp. State on 2026-10-28: the three exes are fully annotated and build without stubs; 134/136 GAME functions at 100% (happy 84/84, maped 48/50, loader 2/2). Left: maped `set_screen_mode` (`0x00401A20`) and `auto_mask` (`0x00404500`), with the shapes already tried in `notes/open-diffs.md`. Current state and open questions: `notes/STATUS.md`. One commit per batch of functions, with the reccmp scores in the message. The inventory (`notes/layout-*.md`, `notes/data/functions-*.csv`) is the map: blocks = source files.
+C89 decompilation of happy, maped and loader, verified with reccmp. State on 2026-10-28: the three exes are fully annotated and build without stubs; 135/136 GAME functions at 100% (happy 84/84, maped 49/50, loader 2/2). Left: maped `set_screen_mode` (`0x00401A20`), with the shapes already tried in `notes/open-diffs.md`. Current state and open questions: `notes/STATUS.md`. One commit per batch of functions, with the reccmp scores in the message. The inventory (`notes/layout-*.md`, `notes/data/functions-*.csv`) is the map: blocks = source files.
 
 Per function: full listing (`disassemble_function`), Ghidra's pseudo-C as a starting point only (it can be wrong, e.g. a lost `volatile` in `0x00406C80`), C89, `scripts/build.py`, `python scripts/reccmp_run.py --target HAPPY --verbose 0x...` (reccmp-reccmp with the end-of-array operands compared by offset, `notes/matching.md` §3), iterate. A function stuck below 100% is documented with its diff in `notes/open-diffs.md` and left for later.
 

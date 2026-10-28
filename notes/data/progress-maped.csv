@@ -43,7 +43,7 @@ address,size,block,name,matching
 0x004042B0,26,block_07,rand_range,100.00
 0x004042D0,162,block_07,add_object,100.00
 0x00404380,370,block_07,select_help_text,100.00
-0x00404500,1087,block_07,auto_mask,96.86
+0x00404500,1087,block_07,auto_mask,100.00
 0x00404940,446,block_07,check_masks,100.00
 0x00404B00,267,block_07,pick_tile,100.00
 0x00404C10,3792,block_07,editor_loop,100.00
