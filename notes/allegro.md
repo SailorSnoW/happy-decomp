@@ -229,7 +229,7 @@ Active unless `ALLEGRO_NO_CLEAR_BITMAP_ALIAS` or `ALLEGRO_NO_FIX_ALIASES` is def
 
 - [verified] The official 4.0.3 headers, configured for MSVC, are in `3rdparty/allegro-4.0.3/` (provenance: its `README.md`); the import library is generated from `lib/msvc/allegro.def` by `LIB /DEF` (`scripts/build.py`) and imports **by ordinal**, like the exes (`notes/toolchain-vc6.md` §6).
 - [verified] The inline functions of §5 compiled from these headers give the code of the exes: the functions that use them match at 100% (`play_level` since 2026-10-28, through Allegro 3.x's `fmul` alias: `notes/matching.md` §3a). The out-of-line copy `0x00402110` (`_set_errno_erange`) is annotated as library code.
-- **Decided on 2026-10-27** (`CLAUDE.md`): the "no inline assembly" rule targets the game's code; the Allegro headers are included as is, asm included. In the C17 port, `fixmul`/`fixdiv` etc. will be rewritten with 64-bit integer arithmetic, to reproduce the asm's truncation (`imul`/`shrd`) exactly. [verified in the sources] The C versions of Allegro 4.0.3 go through `double`s and round to nearest: `fixmul` = `ftofix(fixtof(x) * fixtof(y))`, and `ftofix` adds ±0.5 (`fmaths.inl:33-46,105-108`), hence possible differences of 1 LSB.
+- **Decided on 2026-10-27** (`CLAUDE.md`): the "no inline assembly" rule targets the game's code; the Allegro headers are included as is, asm included. The asm truncates (`imul`/`shrd`). [verified in the sources] The C versions of Allegro 4.0.3 go through `double`s and round to nearest: `fixmul` = `ftofix(fixtof(x) * fixtof(y))`, and `ftofix` adds ±0.5 (`fmaths.inl:33-46,105-108`), hence possible differences of 1 LSB.
 
 ## Open questions
 

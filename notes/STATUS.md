@@ -19,7 +19,7 @@ Matching decompilation: **the three exes are fully annotated and build without s
 
 ## Remaining
 
-- Next phase per `CLAUDE.md`: the C17 port, verified by comparing its behaviour with the matching build.
+- Nothing: the matching decompilation is the end goal of the project (`CLAUDE.md`; the C17 port was dropped on 2026-10-28). Only the open questions below remain, none of which affects a function score.
 
 ## Open questions
 
@@ -28,7 +28,7 @@ Whole-exe layout (no effect on the function scores):
 - maped `__ld12tod` (`0x0040A81F` in the original, `0x0040A809` rebuilt): the only CRT function of maped not at its original address.
 - One .c file or several per block, the `"OK"` string of happy, `0x0040B376` (`__fpclear` or `__rttosnpop`): `notes/layout-happy.md` §9, `notes/matching.md` §4.
 
-Behaviour found in the code, worth keeping in mind for the C17 port (details in the comments of `src/`):
+Behaviour found in the code (details in the comments of `src/`):
 - the `-fps` option of happy has no effect: its global is written and never read (`src/happy/data.c`, `DAT_00413b10`);
 - `show_instructions` waits for `timer_ticks` without resetting it, so after the first tick the demonstration runs unthrottled [verified in the code, effect not observed] (`src/happy/block_07.c`);
 - `controls[2]` and `controls[3]` are compared by `set_controls` but set by neither `default_settings` nor `set_controls` (`src/happy/block_06.c`);
@@ -45,3 +45,4 @@ Behaviour found in the code, worth keeping in mind for the C17 port (details in 
 | 2026-10-28 | `play_level` at 100% (the products through Allegro 3.x's `fmul` alias): happy 84/84. |
 | 2026-10-28 | `auto_mask` at 100% (the winter base mask saved after the cover tile is read): maped 49/50. |
 | 2026-10-28 | `set_screen_mode` at 100% (the two 320x200 cases as separate calls): maped 50/50, 136/136 GAME functions. |
+| 2026-10-28 | Clean rebuild (`build.py --final`) checked: 136/136 at 100%, datacmp 0 issues. C17 port dropped: the matching decompilation is the end goal. |
