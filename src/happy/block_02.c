@@ -1,5 +1,5 @@
 /* Initialisation and shutdown: happy block_02 (0x004018B0-0x0040219F).
- * notes/layout-happy.md §8. Timers, screenshot, high scores, colour tables,
+ * notes/layout-happy.md §5. Timers, screenshot, high scores, colour tables,
  * scrolling message, yes/no box, data files, happy.sav, init_game and
  * shutdown_game. happy only. */
 #include <stdio.h>

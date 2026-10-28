@@ -1,6 +1,6 @@
 /* Game globals of maped.exe, in address order.
  * [hypothesis] Defined here until the .obj that owns each one is known
- * (notes/layout-maped.md §6), as in src/happy/data.c. */
+ * (notes/layout-maped.md §4), as in src/happy/data.c. */
 #include "maped.h"
 
 /* [hypothesis] Read by 0x00402900 and 0x00404940; initial value -1
@@ -32,7 +32,7 @@ MENU file_menu[32] = {
 };
 
 /* Import thunks of alleg40.lib for the dialog procedures named in the
- * initialisers below (notes/layout-maped.md §5) [verified: jmp [IAT]].
+ * initialisers below (notes/layout-maped.md §5, block_08) [verified: jmp [IAT]].
  * Annotated so that reccmp-datacmp can name the proc fields; never
  * compiled, like src/crt/. */
 #if 0
@@ -173,7 +173,7 @@ int DAT_00410118;
 int DAT_00410120;
 
 /* CRT variable, passed by allegro_init in main [verified: 15 CRT functions
- * use it, notes/layout-maped.md §4.3]. Annotated by name like happy's. */
+ * use it, notes/layout-maped.md §3]. Annotated by name like happy's. */
 // GLOBAL: MAPED 0x00410134
 // errno
 

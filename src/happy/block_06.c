@@ -1,5 +1,5 @@
 /* happy block_06: 0x004063A0-0x004074FF, title screen, controls, options,
- * introduction (notes/layout-happy.md §8). Functions in address order. */
+ * introduction (notes/layout-happy.md §5). Functions in address order. */
 #include <stdlib.h>
 #include <allegro.h>
 #include "happy.h"

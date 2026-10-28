@@ -1,9 +1,9 @@
 /* Shared utilities: happy block_01 (0x00401000-0x004018AF, first .obj of
  * .text), maped block_03 (0x004016A0-0x004018CF).
- * notes/layout-happy.md §8, notes/layout-maped.md §8.
+ * notes/layout-happy.md §5, notes/layout-maped.md §5.
  * [hypothesis] A single source file linked into both exes, like block_09:
  * maped keeps only FUN_00401160 and init_help_texts, which are adjacent
- * there (notes/layout-maped.md §9). Tables, input, screen display, message box,
+ * there (notes/layout-maped.md §6). Tables, input, screen display, message box,
  * help texts.
  * The happy-only functions are inside #ifdef HAPPY (macro set by
  * scripts/build.py; its name is ours) [hypothesis, notes/matching.md §2]:

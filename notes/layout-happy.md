@@ -1,345 +1,125 @@
 # Layout of `happy.exe`
 
-Inventory of 2026-10-27, written before the decompilation (Ghidra read-only at the time). Since then, `src/` holds the names, types and code; the facts below still hold, and the open questions (end of the note) carry their current status.
+Reference map of the game exe for reading or modifying `src/`. Names are those of `src/` (descriptive names are hypotheses justified in the source comments; `FUN_`/`DAT_` otherwise). CRT names are [verified] by byte identity with the game's `LIBC.LIB` (`notes/data/crt-happy.csv`, annotations in `src/crt/happy.h`).
 
-Data produced:
-- `notes/data/functions-happy.csv`: one row per function (239). Columns: address, size, padding, Ghidra name and size, proposed name, block, class, status, callers, callees, Allegro and Win32 imports, CRT calls, strings, copies in `maped.exe`/`loader.exe`, reason.
-- `notes/data/datarefs-happy.csv`: every `.rdata`/`.data` address referenced by the code, with its kind (string, memory, immediate) and the functions that reference it.
-- `captures/ghidra-cache/happy_exe_rest.json`: raw Ghidra responses (GhidraMCP 7.0.0).
-- `captures/inventory-happy.json`: full graph.
+## 1. Summary
 
-Scripts: `scripts/ghidra_dump_rest.py happy.exe` (Ghidra cache), then `scripts/inventory.py happy.exe` (analysis and classification, `capstone` in `.venv/`). The first inventory was made with an earlier script for the old GhidrAssistMCP server; `inventory.py` reproduces its CSVs (`layout-maped.md` §1).
+| Range | Contents |
+|---|---|
+| `0x00401000`–`0x0040AD4F` | game code: 84 functions in 9 blocks (§5), all 16-byte aligned with `0x90` padding (`/Gy` COMDATs, `notes/toolchain-vc6.md` §5) |
+| `0x0040AD50`–`0x00410D34` | static `LIBC.LIB` (154 functions, unaligned) and the `RtlUnwind` thunk `0x00410C10`; not decompiled. End of `.text` (VirtualSize `0xFD35`) |
+| `0x004111E0` (`.rdata`) | the game's only `.rdata` datum: the `double` 0.0625 of `init_level_palette` (declared in `reccmp/happy.csv`) |
+| `0x00412000`–`0x00447C43` | `.data`, `.bss` and COMMON (§4) |
 
-## 1. Method
+- [verified] Game/CRT boundary `0x0040AD50`: first CRT function `_rand`; no function after it imports Allegro; in `.data`, the game's last string (`"unnamed"`, `0x00412F88`) is followed by `rand`'s seed (`0x00412F90`), the first CRT datum.
+- [verified] Two of the 84 game functions are Allegro header code, annotated as library: the `END_OF_MAIN()` stub `WinMain` (`0x0040A970`) and the out-of-line `_set_errno_erange` (`0x00402110`, from `al386vc.h`).
+- [verified] The 72 `alleg40.dll` imports are all used by game code; no game function calls a Win32 import directly. The game calls these CRT functions: `rand`, `fopen`, `fclose`, `fread`, `fwrite`, `fseek` (`0x0040B3D7`), `exit`, `__strcmpi` (`0x00410C20`, called as `strcmpi`/`stricmp`), `free`, `_malloc`, `_itoa` (called as `itoa`), `__ftol`.
+- [verified] No `__FILE__`, `assert` message or source file name in the strings: blocks have neutral names (`block_NN`).
 
-1. Entry points and names come from Ghidra (220 functions, 15 of them named by Function ID, plus `entry`).
-2. [verified] **Ghidra missed 19 functions**: its analysis disassembled the code but did not create a function there (§7). The script adds them according to two rules:
-   - a `.text` address that is not reached by the flow of any function, but is called, jumped to, or referenced by an immediate or by a pointer in `.data`/`.rdata`;
-   - dead code, placed after a `ret` or padding, that decodes up to a `ret`/`jmp`.
-3. Contiguous model: a function extends from its entry to the next entry, minus the trailing padding (`0x90`/`0xCC`). VC6 does not split functions into chunks. The `size` column follows this model; `ghidra_size` gives the body computed by Ghidra. Ghidra gives a shorter body for 8 functions. In particular, it does not count jump tables at the end of a function, SEH handlers (`0x0040B5F1`), or code following a non-returning call.
-4. Recursive disassembly with capstone from the entry point, the targets of jump tables (`jmp [reg*4+T]`) and the filters and handlers of SEH scope tables.
-5. Cross-check against Ghidra's `get_callers`/`get_callees`. Over the 220 common functions, there are 28 discrepancies, all explained by three causes:
-   - functions missing from Ghidra: for example, `main` at `0x0040A830` calls 11 functions that Ghidra believes have no caller;
-   - truncated bodies (SEH handler of the entry point, `0x0040EF60`);
-   - indirect calls that Ghidra resolves through an initialised pointer: `call [0x00413220]` → `0x0040B35F` in `0x0040B1AF`, `[0x0041322C]` → `__exit`.
-6. Cross-executable comparison. Each function of 16 bytes or more is searched for in `maped.exe` and `loader.exe`, with identical instruction bytes once `rel32` and absolute addresses are masked (column `also_in`).
+## 2. From the entry point to `main`
 
-## 2. Summary
+All steps [verified] (disassembly; CRT names from `crt-happy.csv`):
 
-| Class | Functions | of which [verified] | Size (bytes) |
-|---|---:|---:|---:|
-| GAME | 84 | 0 | 39,634 (incl. 51 of Allegro header code) |
-| CRT | 154 | 16 | 24,444 |
-| THUNK | 1 | 1 | 6 |
-| UNKNOWN | 0 | – | 0 |
-| Padding between functions | – | – | 737 |
-| **Total** | **239** | | **64,821** = VirtualSize of `.text` (`0xFD35`) [verified] |
+1. `AddressOfEntryPoint` → `_WinMainCRTStartup` `0x0040B506`: SEH frame (scope table `0x004111E8`, `__except_handler3` `0x0040DF44`); `GetVersion` → `0x00413B48`–`0x00413B54`.
+2. `0x0040B55D`: `__heap_init(0)` (`0x0040CCA2`); on failure `_fast_error_exit(0x1C)` (`0x0040B621`, R6028).
+3. `__ioinit` (`0x0040C233`); `GetCommandLineA` → `[0x00446C24]`; `___crtGetEnvironmentStringsA` (`0x0040DD1A`), `__setargv` (`0x0040DACD`), `__setenvp` (`0x0040DA14`), `__cinit` (`0x0040B1AF`).
+4. `GetStartupInfoA`, `__wincmdln` (`0x0040D9BC`); `nCmdShow` = `wShowWindow` if `STARTF_USESHOWWINDOW`, else `SW_SHOWDEFAULT`.
+5. `0x0040B5CF`: `WinMain(GetModuleHandleA(NULL), NULL, lpCmdLine, nCmdShow)`; its result goes to `exit` (`0x0040B1DC`).
 
-- **GAME** [hypothesis]: functions in the range `0x00401000`–`0x0040AD4F` reachable from `WinMain` (§3). None is recognised by Function ID.
-  - The 72 imports from `alleg40.dll` are all used by GAME functions. No GAME function calls a Win32 import directly. [verified]
-  - Subclass `allegro-header`: the `WinMain` stub (`0x0040A970`, 37 bytes) and `_set_errno_erange` (`0x00402110`, 14 bytes). This is Allegro header code, to be annotated as library code (`CLAUDE.md`).
-- **CRT**:
-  - [verified] 15 functions named by Function ID (`flsall`, `__exit`, `__ftol`, `_malloc`, `__nh_malloc`, `__freebuf`, `__fassign`, `__cfltcvt`, `__global_unwind2`, `__local_unwind2`, `_memset`, `_strlen`, `_strncpy`, `___add_12`, `__strcmpi`), plus the PE entry point `0x0040B506`.
-  - [hypothesis] 138 others, all located after `0x0040AD50`. Reasons for their classification:
-    - 26 reachable only from the PE entry point, not through `WinMain`;
-    - 51 reachable only through data pointers (init and term tables, `_cfltcvt_tab`);
-    - 56 reachable from `WinMain`, i.e. called by the game or by another CRT function;
-    - 5 unreferenced, recognised by pattern (`__aulldiv`, `__aullrem`, `_abnormal_termination`, `_NLG_Notify1`, `_seh_longjmp_unwind`).
-  - [verified] 142 of the 154 CRT functions exist identically (addresses masked) in `maped.exe` and/or `loader.exe`, 62 of them in both. `loader.exe` contains no game function in common with `happy.exe`: only the `WinMain` stub appears there.
-- **THUNK** [verified]: `0x00410C10` = `jmp [IAT RtlUnwind]` (6 bytes), the function's only instruction.
-- Direct calls from the game to the CRT [verified by the call sites]: `rand?` (21 functions), `fopen?` and `fclose?` (6), `fread?` (4), `fwrite?` (3), `exit?`, `__strcmpi`, `free?` (2), `_itoa?`, `__ftol`, `_malloc`, `0x0040B3D7` (1). Names followed by `?` are [hypotheses]; their justification is in the `proposed_name`/`reason` column of the CSV.
-- [verified] `get_program_function_statistics` now counts 220 functions. The figure of 324 recorded in STATUS (environment check) does not reproduce.
-- [verified] `Max Address: ffdfffff` comes from the `tdb` block (`0xFFDFF000`–`0xFFDFFFFF`), which Ghidra creates for `FS:` accesses (`list_memory_blocks`).
+`WinMain` = `0x0040A970` (37 bytes, `src/happy/block_08.c`): Allegro's `END_OF_MAIN()` (`platform/alwin.h:44-48`, `notes/allegro.md` §5.4). It calls `_WinMain` (IAT `0x00411120`, ordinal 748) with `_mangled_main` = `main`; `ret 0x10`.
 
-## 3. From the entry point to `main`
+`main` = `0x0040A830` (`src/happy/block_08.c`; `allegro.h` renames it `_mangled_main`):
+- command line, compared with `strcmpi`: `-widescreen` (`0x00412F70`) sets `screen_mode = 1`; `-fps` (`0x00412F68`) sets `DAT_00413b10`, which nothing reads [verified];
+- `init_game`, then `start_menu` until a game is chosen (`custom_game` for a custom set);
+- `play_intro` if `DAT_00413b20` (the band picked in `start_menu`) is 0, otherwise `show_logo`;
+- menu loop: `main_menu` / `main_menu_password` → `play_game` (with `enter_password` first for the password entry), `show_instructions`, or exit;
+- `shutdown_game`, `return 0`.
 
-Call path, every step [verified] (disassembly, Ghidra imports):
+## 3. Compiler, linker, CRT
 
-1. `AddressOfEntryPoint` → `0x0040B506` (`entry`). This function sets up an SEH frame:
-   - `push -1`;
-   - `push 0x004111E8` (scope table);
-   - `push 0x0040DF44` (`__except_handler3` [hypothesis], preceded by the `VC20XC00` signature at `0x0040DF3C`);
-   - `FS:[0]`.
-2. `0x0040B52C`: `call [GetVersion]`, results stored at `0x00413B48`–`0x00413B54`.
-3. `0x0040B55D`–`0x0040B560`: `xor esi,esi`; `push esi`; `call 0x0040CCA2`. If the result is 0, `push 0x1C`; `call 0x0040B621`. 0x1C = 28, as in the message `"R6028\r\n- unable to initialize heap"` (`0x004112FC`). Hence `_heap_init(0)` [hypothesis].
-4. `0x0040B575`: `call 0x0040C233` (`_ioinit` [hypothesis]); `0x0040B57A`: `GetCommandLineA` → `[0x00446C24]`; then `call 0x0040DD1A`, `0x0040DACD`, `0x0040DA14`, `0x0040B1AF`.
-5. `0x0040B5A5`: `GetStartupInfoA`. `0x0040B5AB`: `call 0x0040D9BC` → `lpCmdLine` in `[ebp-0x64]`.
-6. `0x0040B5B3`–`0x0040B5C2`: if `dwFlags & 1` (`STARTF_USESHOWWINDOW`), `nCmdShow = wShowWindow`, otherwise `push 0xA` (`SW_SHOWDEFAULT`).
-7. `0x0040B5C2`–`0x0040B5C8`: `push eax` (`nCmdShow`), `push [ebp-0x64]` (`lpCmdLine`), `push esi` (0 = `hPrevInstance`), `push esi` then `call [GetModuleHandleA]` → `push eax` (`hInstance`).
-8. **`0x0040B5CF`: `call 0x0040A970` = `WinMain(hInstance, NULL, lpCmdLine, nCmdShow)`**. The result goes to `0x0040B1DC` (`exit` [hypothesis], which calls `0x0040B1FE(code, 0, 0)`). The `__exit` path (Function ID, `0x0040B1ED`) starts from the SEH handler `0x0040B5F1`.
+Shared facts for the three exes (PE and Rich headers, `/ML` evidence, options): `notes/layout-loader.md` §3; toolchain: `notes/toolchain-vc6.md`. Specific to happy [verified]:
+- PE `TimeDateStamp` 2003-10-27 18:16:21 UTC. Rich header: `Utc12_C ×81`, `AliasObj60 ×2`, `Import0 ×120`.
+- `/ML` evidence: no TLS, critical-section or thread import among the 45 KERNEL32 imports; `FS:[0]` (SEH) only, in `0x0040B506`, `0x0040DE8E`, `0x0040DEF6`, `0x0040FC24`, `0x0040FD6D`; no `lock` prefix; `__heap_init(0)` directly followed by `__ioinit`; `errno` is a global (`0x00413B3C`, pushed as an immediate by `allegro_init` at `0x00401F0E`).
+- 9 game functions keep an `ebp` frame: `0x00401F00`, `0x004021A0`, `0x00402260`, `0x00402620`, `0x00403350`, `0x00403F60`, `0x004041F0`, `0x00404480`, `0x00404C50`. [hypothesis] VC6 drops `/Oy` in functions that contain the inline asm of `al386vc.h` (`fixmul`, `fixdiv`, `fixfloor`, …); six of them show such code.
+- CRT: 152 named functions, plus one alias. Not named: `0x0040B376` (1-byte `ret`, `__fpclear` or `__rttosnpop`, ambiguous) and `0x0040DF22` (34 bytes after `__local_unwind2`, not found in `LIBC.LIB`) (`notes/matching.md` §4).
 
-This path is the `WinMainCRTStartup` form (step 6, `SW_SHOWDEFAULT`), not `mainCRTStartup` [hypothesis based on steps 6 to 8].
+## 4. Data layout
 
-**`WinMain` = `0x0040A970`** (37 bytes). It copies the 4 arguments, does `push 0x0040A830`, then `call [0x00411120]`. This IAT slot is `_WinMain`, ordinal 748 of `alleg40.dll` (`alleg40-imports.csv`). The function ends with `add esp,0x14`; `ret 0x10` (`__stdcall`, 4 arguments). This is exactly Allegro's `END_OF_MAIN()` (`alwin.h:44-48`, see `notes/allegro.md` §5.4).
-
-**The game's `main` = `0x0040A830`** (313 bytes, `_mangled_main`), missing from Ghidra's list. Allegro calls it as `main(argc, argv)`: `mov eax,[esp+4]` (`argc`), `cmp eax,1`, then a loop over `argv[1..argc-1]` with `__strcmpi` (Function ID, `0x00410C20`). [verified]
-- `"-widescreen"` (`0x00412F70`) → `[0x00412030] = 1`;
-- `"-fps"` (`0x00412F68`) → `[0x00413B10] = 1`.
-
-Then:
-- `call 0x00401F00` (initialisation);
-- loop on `0x00409870`, then depending on the case `0x00409F30`, `0x00406D60`/`0x00406BA0`, `0x00407B30`/`0x00407E80`, `0x00408500`, `0x00409640`, `0x00407500`;
-- `call 0x00402120` (shutdown);
-- `xor eax,eax`; `ret`.
-
-## 4. CRT type: single-threaded (`LIBC.LIB`, `/ML`)
-
-Conclusion: **[strong hypothesis] LIBC (single-threaded, static)**. Evidence:
-
-1. [verified] **No TLS or synchronisation imports.** The 45 KERNEL32 imports (`list_imports`) include neither `TlsAlloc`/`TlsGetValue`/`TlsSetValue`/`TlsFree`, nor `InitializeCriticalSection`/`EnterCriticalSection`/`LeaveCriticalSection`/`DeleteCriticalSection`, nor `CreateThread`/`ExitThread`. Yet LIBCMT's `_mtinit` and `_lock` need them.
-2. [verified] **No `FS:` access outside SEH.** There are only `FS:[0]` accesses, in `0x0040B506`, `0x0040DE8E`, `0x0040DEF6`, `0x0040FC24` and `0x0040FD6D`. No `FS:[0x2C]` or `FS:[0x18]`.
-3. [verified] **No `lock`-prefixed instruction** in `.text`.
-4. [verified] **No call between `_heap_init` and `_ioinit`**: the entry point goes straight from `0x0040B560` (`0x0040CCA2(0)`) to `0x0040B575` (`0x0040C233`). [hypothesis, based on VC6's `crt0.c` quoted from memory] The `_MT` version calls `_heap_init(1)` then `_mtinit()` at this point; the single-threaded version calls `_heap_init(0)`, as here.
-5. [verified] **`errno` is a global variable**: `allegro_init()` pushes the immediate `0x00413B3C` (`&errno`) at `0x00401F0E`. [hypothesis] With LIBCMT, `errno` is `(*_errno())` and its address would be computed by a call.
-6. Not discriminating: the strings `"R6016 … thread data"` and `"R6017 … multithread lock error"` (`0x00411474`, `0x00411444`) are present. [hypothesis] They are part of the message table shared by both variants.
-
-## 5. Game / CRT boundary: `0x0040AD50`
-
-- [verified] The 84 functions located before `0x0040AD50` all start at a multiple of 16, with `0x90` padding (0 to 15 bytes). After this address, entries are no longer aligned, except for some asm routines (`_memset` `0x0040E700`, `_strlen` `0x0040E760`), followed by `0xCC` padding.
-- [verified] `0x0040AD50`: `holdrand = holdrand*0x343FD + 0x269EC3 ; return (holdrand>>16) & 0x7FFF` (`[0x00412F90]`). This is the Microsoft CRT `rand()` [hypothesis on the identification].
-- [verified] No function located after `0x0040AD50` imports Allegro.
-- [verified] In `.data`, the game's last string (`"unnamed"`, `0x00412F88`) is followed by `holdrand` (`0x00412F90`), the first datum referenced by the CRT.
-
-## 6. Data layout (used to place the blocks)
-
-Address ranges of `.data`/`.bss` (`datarefs-happy.csv`, column `classes`) [verified]:
-
-| Range | Referenced by | Contents |
+| Range | Owner | Contents |
 |---|---|---|
-| `0x00412000`–`0x0041202F` | CRT | Pointer tables: `0x0040B0F6`, `0x0040B330`, `0x0040F934` (init), `0x0040B19B` (term). [hypothesis] `__xi_a…__xt_z`. |
-| `0x00412030`–`0x0041208F` | game | Initialised globals: `[0x00412030]=0x20`, array of 20 pointers (`0x00412034`), `1`, `1`, `5`. |
-| `0x00412094`–`0x0041221B` | game (via the array) | 20 strings pointed to by `0x00412034`, stored in the reverse order of the array. These are the passwords encrypted with a +1 shift: `"IBYF.GVMMDBQBDJUZ"` → `"HAXE-FULLCAPACITY"`. |
-| `0x0041221C`–`0x00412F8F` | game | String literals of the functions, plus a few 1- to 3-character literals and a local array (`0x00412C5C`, used by `0x00409080`). |
-| `0x00412F90`–`0x004139B0` | CRT | CRT `.data`. Last non-zero byte of `.data`: `0x00413B0B`. |
-| `0x00413B10`–`0x00413B37` | game | 10 zeroed dwords. [hypothesis] `.bss` of the game's .obj files (statics or globals `= 0`). |
-| `0x00413B38`–`0x00413D3B` | CRT | CRT `.bss` (`errno` at `0x00413B3C`). |
-| `0x00413D3C`–`0x004468BF` | game | Large uninitialised arrays. [hypothesis] COMMON symbols (uninitialised C globals), allocated by the linker after the `.bss` sections. |
-| `0x004468C0`–`0x00447C43` | CRT | CRT COMMON [hypothesis]. |
+| `0x00412000`–`0x0041202F` | CRT | init/term pointer tables (`__xi_a`…`__xt_z` [hypothesis]) |
+| `0x00412030`–`0x00412093` | game | initialised globals: `screen_mode` (= 32), `passwords[21]` (`0x00412034`), `DAT_00412088` (1), `DAT_0041208c` (1), `DAT_00412090` (5) |
+| `0x00412094`–`0x0041221B` | game | the 21 password strings, in reverse order of the array, each character + 1 (`"IBYF.GVMMDBQBDJUZ"` = `"HAXE-FULLCAPACITY"`) |
+| `0x0041221C`–`0x00412F8F` | game | string literals, starting with the help texts of `init_help_texts`; local array `0x00412C5C` of `play_ending` |
+| `0x00412F90`–`0x00413B0F` | CRT | CRT `.data` |
+| `0x00413B10`–`0x00413B37` | game | game `.bss` (globals `= 0` or `static`): `DAT_00413b10` (`-fps`), `use_joystick`, `DAT_00413b20` (band picked in `start_menu`)… |
+| `0x00413B38`–`0x00413D3B` | CRT | CRT `.bss` (`errno` `0x00413B3C`) |
+| `0x00413D3C`–`0x004468BF` | game | COMMON (uninitialised globals): `hiscores`, `keys`, `player` (`0x0042F500`), `buffer`, `help_texts`, `particles`, `snow`, `map_datafile` (`0x004450B4`), colour tables… |
+| `0x004468C0`–`0x00447C43` | CRT | CRT COMMON [hypothesis] |
 
-Observations on strings, which matter for the boundaries:
-- [verified] From one function to the next, strings strictly follow the address order of the functions that use them first.
-- [verified] Within a function, they are **in the reverse order of their use**. Examples: the intro story of `0x00406D60` starts with `"It's the night before Christmas..."`, stored last (`0x00412A04`); the ending dialogues of `0x00409080` are reversed in the same way.
-- [verified] Identical strings are merged across the whole program, between distant functions. Examples: `"wb"` (`0x004124FC`), `"rb"` (`0x00412500`), `"%s"` (`0x00412644`), `"EXIT"` (`0x00412B38`), `"data/tiles.dat"`.
-- [hypothesis] These are literals in `.data` pooled by `/Gf`: writable strings, unlike `/GF`. VC6 enables it with `/O1`/`/O2`.
-- Consequence: the position of a shared string follows its first user. Strings therefore show no break from one .obj to the next.
-- [verified] Anomaly: `"OK"` (`0x004124AC`) lies between the strings of `0x004017C0` and those of `0x00401900`, whereas only `0x00409F30` references it (question 5).
+- [verified with test programs, `notes/matching.md` §3] The linker places COMMON symbols in an order that depends on their (unknown) names, so the COMMON layout cannot be reproduced; `src/happy/data.c` defines every game global in address order and `scripts/reccmp_run.py` compares end-of-array operands by offset.
+- [verified] String literals are pooled across the whole program (`/Gf`, writable, in `.data`): a shared string (`"rb"` `0x00412500`, `"wb"` `0x004124FC`, `"%s"`, `"EXIT"`, `"data/tiles.dat"`) sits with its first user. From one function to the next, strings follow function order; within a function they are in **reverse** order of use (`play_intro`: `"It's the night before Christmas..."` is last, `0x00412A04`). Exception: `"OK"` (§7, question 2).
 
-## 7. Functions missing from Ghidra (19)
+## 5. Blocks (source files)
 
-The three GAME functions were created in Ghidra on 2026-10-28 (`timer_1s`, `timer_15ms`, `main`, by `scripts/ghidra_sync.py`); the CRT ones are still missing.
+Blocks were cut before decompilation from single-caller chains (a `static`-like helper sits just before its only caller), themes (strings, imports) and two strong anchors (`END_OF_MAIN` and the map module shared with maped). Only the boundaries marked strong are evidenced; the others are a change of theme. `scripts/build.py` links the blocks in this order; with `--final` the game code ends at `0x0040AD50`, as in the original (`notes/matching.md` §5).
 
-| Address | Size | Class | Reason for adding | Role [hypothesis] |
-|---|---:|---|---|---|
-| `0x004018B0` | 59 | GAME | `push` at `0x00401F58` (argument of `install_int`) | timer callback |
-| `0x004018F0` | 12 | GAME | `push` at `0x00401F6D` (`install_int`) | timer callback (`++[0x00442084]`) |
-| `0x0040A830` | 313 | GAME | `push` at `0x0040A984` (argument of `_WinMain`) | the game's `main` |
-| `0x0040B080` | 9 | CRT | `call` from `0x0040B19B` | `_flushall` = `flsall(1)` |
-| `0x0040B0F6` | 165 | CRT | pointer `0x0041200C` | `__initstdio` |
-| `0x0040B19B` | 20 | CRT | pointer `0x00412020` | `__endstdio` |
-| `0x0040B31E` | 18 | CRT | `push` at `0x00401F09` (`allegro_init`) | `atexit` |
-| `0x0040B330` | 47 | CRT | pointer `0x00412010` | `__onexitinit` |
-| `0x0040B376` | 1 | CRT | pointers `0x00413224`, `0x00413228` | `ret` stub |
-| `0x0040C45B` | 88 | CRT | `jmp` from `0x0040B1A9` | `_fcloseall` |
-| `0x0040C6CF` | 78 | CRT | `mov` at `0x0040B37C` (`_fpmath` fills `_cfltcvt_tab`) | floating-point conversion |
-| `0x0040C71D` | 24 | CRT | `mov` at `0x0040B39F` | floating-point conversion |
-| `0x0040DE6C` | 34 | CRT | `push` at `0x0040DE98`, `cmp` at `0x0040DEFF` | SEH unwind handler |
-| `0x0040DEF6` | 35 | CRT | dead code | `_abnormal_termination` |
-| `0x0040DF19` | 9 | CRT | dead code | `_NLG_Notify1` |
-| `0x0040DF44` | 189 | CRT | `push` at `0x0040B510`, `0x0040FC2E`, `0x0040FD77` | `_except_handler3` |
-| `0x0040E7E0` | 104 | CRT | dead code | `__aulldiv` |
-| `0x0040E850` | 117 | CRT | dead code | `__aullrem` |
-| `0x0040F525` | 9 | CRT | 6 pointers starting at `0x00413250` | `_fptrap` (`_amsg_exit(2)` = R6002) |
-
-## 8. Blocks (source file boundaries)
-
-No `__FILE__` string, no `assert` message and no source file name appears in the strings [verified, `list_strings` and `datarefs-happy.csv`]. No block is therefore named.
-
-Available clues, and what they are worth:
-- **Alignment and padding** are useless in the game code: every function is 16-byte aligned with `0x90`, whether or not the .obj changes. They only mark the game/CRT boundary.
-- Neither are **strings** (§6), because of pooling.
-- **Initialised globals** are all at the start (`0x00412030`–`0x0041221B`), before all strings. This fits a single .obj, or a linker that would place string COMDATs after the other contributions. I could not decide (question 1).
-- **Usable clues**:
-  - small functions with a single caller placed just before their caller (probably `static` functions: a boundary cannot fall between them and the caller);
-  - the theme (strings, Allegro imports);
-  - two strong anchors: the `END_OF_MAIN` stub and the map module, which is also found in `maped.exe`.
-
-Strength of each block's **start** boundary: **strong** (direct evidence), **medium**, **weak** (change of theme only).
-
-| Block | Range | Funcs | Bytes | Probable theme | Start |
-|---|---|---:|---:|---|---|
-| block_01 | `0x00401000`–`0x004018AF` | 7 | 2,148 | shared utilities: tables, input, screen display, dialog box, help texts | strong (start of `.text`) |
-| block_02 | `0x004018B0`–`0x0040219F` | 16 | 2,195 | initialisation and shutdown, data, options, small screens | weak |
-| block_03 | `0x004021A0`–`0x0040302F` | 5 | 3,676 | level and HUD rendering, palette | weak |
-| block_04 | `0x00403030`–`0x0040344F` | 5 | 1,030 | loading and resetting a level | weak |
-| block_05 | `0x00403450`–`0x0040639F` | 19 | 11,970 | gameplay (loop, objects, events, pause, bonus room) | weak |
-| block_06 | `0x004063A0`–`0x004074FF` | 8 | 4,389 | title screen, controls, options, introduction | weak |
-| block_07 | `0x00407500`–`0x0040986F` | 12 | 8,977 | menus, passwords, scores, game over, game flow | weak |
-| block_08 | `0x00409870`–`0x0040A99F` | 5 | 4,360 | start menu, custom game, `main`, `WinMain` | weak (end: strong) |
-| block_09 | `0x0040A9A0`–`0x0040AD4F` | 7 | 889 | map module (shared with `maped.exe`) | **strong** |
-| block_10_crt | `0x0040AD50`–`0x00410D34` | 155 | 24,450 | LIBC CRT (several dozen .obj files, not split) | **strong** |
+| Block | Source | Range | Funcs | Theme | Start |
+|---|---|---|---:|---|---|
+| block_01 | `src/common/block_01.c` | `0x00401000`–`0x004018AF` | 7 | tables, input, screen display, message box, help texts | strong (start of `.text`) |
+| block_02 | `src/happy/block_02.c` | `0x004018B0`–`0x0040219F` | 16 | timers, init and shutdown, settings, small screens | weak |
+| block_03 | `src/happy/block_03.c` | `0x004021A0`–`0x0040302F` | 5 | level and HUD rendering, palette | weak |
+| block_04 | `src/happy/block_04.c` | `0x00403030`–`0x0040344F` | 5 | loading and resetting a level | weak |
+| block_05 | `src/happy/block_05.c` | `0x00403450`–`0x0040639F` | 19 | gameplay, game loop, bonus room | weak |
+| block_06 | `src/happy/block_06.c` | `0x004063A0`–`0x004074FF` | 8 | title, controls, options, intro | weak |
+| block_07 | `src/happy/block_07.c` | `0x00407500`–`0x0040986F` | 12 | menus, passwords, scores, game over, ending, game flow | weak |
+| block_08 | `src/happy/block_08.c` | `0x00409870`–`0x0040A99F` | 5 | start menu, custom game, `main`, `WinMain` | weak (end: strong) |
+| block_09 | `src/common/block_09.c` | `0x0040A9A0`–`0x0040AD4F` | 7 | map module | strong |
 
 ### block_01 — `0x00401000`–`0x004018AF`
-Functions:
-- `0x00401000`: writes constants to 46 addresses in `0x00414044`–`0x0041412C`; called by `0x00401F00`.
-- `0x00401160`: `rand`.
-- `0x004012A0`: `poll_joystick`/`joy`.
-- `0x00401350`: `key`.
-- `0x00401380`: `blit`/`stretch_blit`/`vsync` to `screen`, depending on `[0x00412030]`; 25 callers.
-- `0x004014F0`: text box (`rect`, `textout`, `text_length`).
-- `0x004017C0`: copies 10 help texts (`"Green shoes will make you jump really high!"`…) into `0x00415CE0`–`0x00416BEF`.
-
-Evidence:
-- [verified] The game's first 10 strings (`0x0041221C`–`0x004124A8`) belong to `0x004017C0`.
-- [verified] `0x00401160` and `0x004017C0` exist identically in `maped.exe` (`0x004016A0` and `0x004017E0`, adjacent), but their neighbours in `happy.exe` do not.
-- [verified] `0x00401350` has only one caller, `0x004014F0`, two functions further on.
-- [hypothesis] A file shared by the game and the editor, of which each exe keeps only what it uses (see question 4).
+`FUN_00401000` (fills the table `DAT_00414040`), `FUN_00401160` (object slots and templates), `read_joystick`, `read_keyboard`, `blit_to_screen` (25 callers; mode from `screen_mode`), `message_box`, `init_help_texts` (`0x004017C0`, the 10 default help texts, the game's first strings `0x0041221C`–`0x004124A8`). Shared with maped, which keeps `FUN_00401160` and `init_help_texts` (§6). The happy-only functions are under `#ifdef HAPPY`.
 
 ### block_02 — `0x004018B0`–`0x0040219F`
-Functions:
-- `0x004018B0` and `0x004018F0`: timer callbacks.
-- `0x00401900`: screenshot (`create_sub_bitmap`, `get_palette`, `save_bitmap`, `packfile_password("happy")`); called by `0x00404C50`, which contains `"happy.pcx"`.
-- `0x00401970`: `"Johan Peitz"` and two references into the middle of this string (+4, +8).
-- `0x004019C0`.
-- `0x00401A30`: `create_rgb_table`, `create_light_table`, `create_trans_table`.
-- `0x00401AA0` and `0x00401B20`: messages.
-- `0x00401BE0`: `"Yes / No"`.
-- `0x00401D60`: `load_datafile("data/tiles.dat" / "data/misc.dat")`.
-- `0x00401DA0` and `0x00401E10`: writing and reading `"happy.sav"`.
-- `0x00401EA0`: `set_volume`.
-- `0x00401F00`: initialisation (`install_allegro`, `install_*`, `"Failed to load data."`, inline `fixdiv`).
-- `0x00402110`: `_set_errno_erange`.
-- `0x00402120`: shutdown (`fade_out`, `unload_datafile`, `allegro_exit`).
-
-Evidence:
-- [verified] `0x004018B0`, `0x004018F0`, `0x00401D60`, `0x00401E10` and `0x00401EA0` have only one caller, `0x00401F00`, located 1 to 13 functions further on.
-- [verified] `0x00401DA0` has only one caller, `0x00402120`.
-- [verified] Contiguous strings `0x004124B0`–`0x00412504`.
-- The `0x004018B0` boundary remains weak: `0x004017C0` has only one caller, `0x00401F00`, 14 functions away. It is justified only by the sharing with `maped`.
+`timer_1s`, `timer_15ms` (callbacks of `install_int`), `save_screenshot` (`packfile_password("happy")`, `"happy.pcx"`), `init_hiscores` (`"Johan Peitz"`), `FUN_004019c0` (counts the levels of `DAT_00414c90`), `init_color_tables`, `start_scroll_message`, `draw_scroll_message`, `yes_no_box`, `load_data` (`data/misc.dat`, `data/tiles.dat`), `save_settings` / `load_settings` (`happy.sav`: volumes, controls, high scores, `screen_mode`), `default_settings`, `init_game` (`0x00401F00`), `_set_errno_erange` (`0x00402110`, library), `shutdown_game` (`0x00402120`).
+- [verified] The timers, `load_data`, `load_settings` and `default_settings` have `init_game` as only caller; `save_settings` has `shutdown_game`.
+- [verified] `_set_errno_erange` is the out-of-line copy of an `al386vc.h` inline, called by `init_game` and `play_level` (`fixdiv`/`fixmul`); the rebuild places it in block_02's object, at its original address (`build/happy/happy.map`).
+- The start is weak: `init_help_texts` (block_01) also has `init_game` as only caller; the cut rests on the sharing with maped.
 
 ### block_03 — `0x004021A0`–`0x0040302F`
-Functions:
-- `0x004021A0`: 3 callers.
-- `0x00402260` (`rand`) and `0x004024E0`: sole caller `0x00402620`, 1 to 2 functions further on [verified].
-- `0x00402620` (2,166 bytes): `blit`, `stretch_sprite`, `textprintf`, `"%d"`, `_itoa`; 9 callers.
-- `0x00402EA0`: `get_palette`/`set_palette`, `__ftol`, the game's only floating-point constant in `.rdata` (`0x004111E0`); calls `0x00401A30`.
+`draw_particles`, `draw_snow`, `draw_objects`, `draw_level` (`0x00402620`, 2,166 bytes, 9 callers), `init_level_palette` (`0x00402EA0`, the `.rdata` constant `0x004111E0`). [verified] `draw_snow` and `draw_objects` have `draw_level` as only caller.
 
 ### block_04 — `0x00403030`–`0x0040344F`
-Functions:
-- `0x00403030`: resets `0x0042F540`…; called by `0x00409640`.
-- `0x00403070` (`fopen "rb"`, `fread`, `0x0040B3D7`, `fclose`) and `0x00403130`: sole caller `0x00403170`, which follows them [verified].
-- `0x00403170`: loading of `data/tiles.dat`, `data/sprites.dat`, `data/xtiles.dat` and `data/xsprites.dat`, swap file `"hland.$$$"`, `"Swapfile could not be created…"`; calls the map module (`0x0040AB30`, `0x0040AC10`).
-- `0x00403350`: called by `0x00403820` and `0x00405DB0`.
+`FUN_00403030` (resets game variables; caller `play_game`), `load_level_objects` (objects and help texts that follow the tiles of a `.map`), `FUN_00403130` (puts carried objects back), `load_level` (`data/tiles.dat`/`sprites.dat` or the `x` variants, swap file `"hland.$$$"`, calls `map_load`, `map_load_datafile`), `reset_player`. [verified] `load_level_objects` and `FUN_00403130` have `load_level` as only caller.
 
 ### block_05 — `0x00403450`–`0x0040639F`
-Functions:
-- `0x00403450`: inline `fixsin`/`fixcos`, `rand`; 6 callers.
-- `0x004035B0`: `"Level exit is now open!"`.
-- `0x004036C0`.
-- `0x00403820`: level start (`fade_from`, `play_midi`, calls `0x00403170`).
-- `0x00403A40`.
-- `0x00403A80`: `"You found five magic spheres!"`, `"E X T R A   L I F E !"`.
-- `0x00403CE0`, `0x00403DA0` and `0x00403E00`, then `0x00403F60`, which calls `0x004014F0` (dialog).
-- `0x00404110` (`"All Happylanders have been saved!"`), then `0x004041F0`.
-- `0x00404480`: `"TIME OUT!"`.
-- `0x00404770`: `"You earned a password!"`.
-- `0x00404920`: `"Level complete!"`.
-- `0x00404A70`.
-- `0x00404B80`: `"GAME PAUSED"`.
-- `0x00404C50` (4,443 bytes): game loop (inline `fixmul`, `"Quit?"`, `"HURRY UP!"`, `"happy.pcx"`).
-- `0x00405DB0`: bonus room (`"Here's a special treat!"`).
-
-Evidence [verified]:
-- `0x00403CE0`, `0x00403DA0` and `0x00403E00` have `0x00403F60` as their sole caller, which follows them;
-- `0x00404110` has `0x004041F0` as its sole caller, which follows it;
-- `0x00404A70` and `0x00404B80` have `0x00404C50` as their sole caller, 1 to 2 functions further on;
-- `0x00404C50` calls 17 game functions, 9 of them in this block;
-- the in-game messages are contiguous, `0x004125A4`–`0x004126D4`.
+`spawn_particle`, `open_exit` (`"Level exit is now open!"`), `FUN_004036c0` (switches), `start_level` (`0x00403820`), `FUN_00403a40` (player animation), `take_item` (`"E X T R A   L I F E !"`), `FUN_00403ce0` (object follows the player), `FUN_00403da0` (player hurt), `FUN_00403e00` (pixel-perfect collision [hypothesis: PPCol]), `FUN_00403f60` (player/object contacts), `FUN_00404110` (all Happylanders saved), `update_objects`, `kill_player` (`"TIME OUT!"`), `FUN_00404770` (`"You earned a password!"`), `FUN_00404920` (`"Level complete!"`), `drop_item`, `pause_game` (`"GAME PAUSED"`), `play_level` (`0x00404C50`, 4,443 bytes, game loop), `bonus_room` (`0x00405DB0`).
+- [verified] Single-caller chains: `FUN_00403ce0`/`FUN_00403da0`/`FUN_00403e00` → `FUN_00403f60`; `FUN_00404110` → `update_objects`; `drop_item`, `pause_game` → `play_level`.
 
 ### block_06 — `0x004063A0`–`0x004074FF`
-Functions:
-- `0x004063A0`: `"v1.3"`, `"SpriteLib license number: …"`, `"written by Johan Peitz (c) 2000"`, `"* HAPPYLAND ADVENTURES *"`; called by 4 menus.
-- `0x00406560`: controls (`"Select for"`, `talk`/`slide`/`jump`…).
-- `0x00406850`: options (`"sound volume: %d"`, `"set controls"`).
-- `0x00406B80` (19 bytes).
-- `0x00406BA0`: `"Free Lunch Design"`, `"presents"`.
-- `0x00406C80`.
-- `0x00406CD0`.
-- `0x00406D60`: introduction (`"Hi! It's Santa."`…).
-
-Evidence [verified]: `0x00406560` has `0x00406850` as its sole caller, which follows it; `0x00406CD0` has `0x00406D60` as its sole caller, which follows it.
+`draw_title` (`"v1.3"`, credits; 4 menus), `set_controls`, `options_menu`, `clear_objects`, `show_logo` (`"Free Lunch Design"`), `wait_or_esc`, `intro_caption`, `play_intro` (`0x00406D60`). [verified] `set_controls` → `options_menu` and `intro_caption` → `play_intro` are single-caller pairs.
 
 ### block_07 — `0x00407500`–`0x0040986F`
-Functions:
-- `0x00407500`: `"HAPPYLAND INSTRUCTIONS"`.
-- `0x00407B30` and `0x00407E80`: main menus (`"PLAY"`, `"OPTIONS"`, `"HELP ME"`, `"EXIT"`, plus `"PASSWORD"` in `0x00407E80`).
-- `0x00408200`: `"You achieved a top score!"`.
-- `0x00408500`: passwords and cheats (table `0x00412034`, `"HAXE-RESET"`, `__strcmpi`).
-- `0x00408930`: `"Hall of Fame"`, `"%8ld"`.
-- `0x00408A40`: `"GAME OVER"`.
-- `0x00408B90`: `"You completed the game!"`.
-- `0x00408E00`, `0x00409010`.
-- `0x00409080`: ending dialogue.
-- `0x00409640`: game flow (`"Continue?"`, calls `0x00404C50`, `0x00405DB0`, `0x00408A40`, `0x00408B90`, `0x00409080`).
-
-Evidence [verified]:
-- `0x00408E00` and `0x00409010` have `0x00409080` as their sole caller, which follows them;
-- `0x00409080` has `0x00409640` as its sole caller, which follows it;
-- `0x00408A40` and `0x00408B90` have `0x00409640` as their sole caller, 4 to 5 functions further on.
+`show_instructions`, `main_menu`, `main_menu_password` (adds `"PASSWORD"`), `enter_hiscore`, `enter_password` (table `passwords`, cheats `"HAXE-…"`), `show_hiscores`, `game_over`, `game_completed`, `ending_frames`, `anim_tick`, `play_ending` (`0x00409080`), `play_game` (`0x00409640`, game flow, `"Continue?"`). [verified] `ending_frames`, `anim_tick` → `play_ending` → `play_game`; `game_over`, `game_completed` → `play_game`.
 
 ### block_08 — `0x00409870`–`0x0040A99F`
-Functions:
-- `0x00409870`: `"HAPPYLAND ADVENTURES"`, `"THE ORIGINAL GAME"`, `"CREATE CUSTOM GAME"`, `data/levels.dat`, `data/xlevels.dat`, `"WIDESCREEN IS %s (PRESS 'W' TO TOGGLE)"`, mouse.
-- `0x00409E40`: `"RIGHT CLICK A SLOT"`; sole caller `0x00409F30`, which follows it [verified].
-- `0x00409F30` (2,296 bytes): `file_select`, `"Add a level map. (*.MAP)"`, `"happy.clv"`, `"./maps/"`, `alert`.
-- `0x0040A830`: `main`.
-- `0x0040A970`: `WinMain` stub.
-
-Evidence for the **end**:
-- [verified in the Allegro sources] `END_OF_MAIN()` defines `WinMain` where the macro is written, right after `main`. `0x0040A830` and `0x0040A970` are therefore in the same file, in this order.
-- The next block is the map module, which is another file (block_09).
+`start_menu` (`data/levels.dat` / `data/xlevels.dat`, widescreen toggle), `draw_slot_panel` (only caller `custom_game`), `custom_game` (`0x00409F30`, 2,296 bytes: reads and writes `happy.clv`, `file_select`, `"./maps/"`), `main`, `WinMain`. [verified in the Allegro sources] `END_OF_MAIN()` defines `WinMain` right after `main`, in the same file: the end of the block is strong.
 
 ### block_09 — `0x0040A9A0`–`0x0040AD4F` (map module)
-Functions:
-- `0x0040A9A0`: zeroes W·H·5 bytes at `[map+0x88]`.
-- `0x0040AA30`: `malloc(0x8C)` and `malloc(W·H·5)`, default values, `"unnamed.dat"`/`"unnamed"`.
-- `0x0040AB00`: release; 7 callers.
-- `0x0040AB30`: `fopen "rb"`, `fread` of 0x85 bytes, W and H at bytes 1 and 2 of this header, as in `notes/game-docs.md`.
-- `0x0040AC10`: `unload_datafile`/`load_datafile` into `[0x004450B4]`.
-- `0x0040AC40` and `0x0040AD20`: reading a tile `((y>>4)·W + (x>>4))·5 + 2` (resp. `+4`).
+`map_clear`, `map_create` (`"unnamed.dat"`, `"unnamed"`), `map_destroy` (7 callers), `map_load` (`0x0040AB30`: 0x85-byte header, then the 5-byte tiles), `map_load_datafile` (into `map_datafile`), `map_collision_at`, `map_t4_at` (tile byte 2, resp. 4, at pixel `(x, y)`). Structure `MAP`/`TILE`: `src/include/map.h`. Shared with maped (§6).
 
-Evidence:
-- [verified] `0x0040A9A0`, `0x0040AA30`, `0x0040AB00`, `0x0040AB30` and `0x0040AC10` exist identically in `maped.exe`, in the same order, at `0x00401000`, `0x00401090`, `0x00401260`, `0x00401290` and `0x00401370`. This is the **start of `maped.exe`'s `.text`**, hence its first .obj. Between `create` and `destroy`, `maped.exe` contains one more function (`0x00401160`), absent from `happy.exe`.
-- [hypothesis] A single source file compiled for both exes. The linker removed the unused functions from `happy.exe` (`/OPT:REF` with `/Gy`).
-- [verified] These functions use no game global, except `0x004450B4`.
-- [hypothesis] `0x0040AC40` and `0x0040AD20`, absent from `maped.exe`, belong to the same file: they are placed after `0x0040AC10` and before the CRT.
+## 6. Code shared with the other exes
 
-### block_10_crt — `0x0040AD50`–`0x00410D34`
-Functions identified:
-- [hypothesis] stdio: `rand`, `fclose`, `fwrite`, `fopen`, `fread`.
-- `flsall` [verified], `_flushall`, `__initstdio`/`__endstdio`.
-- `_cinit`, `exit`, `__exit` [verified], `doexit`, `atexit`/`_onexit`.
-- `_fpmath`, `__ftol` [verified].
-- `free`, `_malloc` [verified].
-- `entry` `0x0040B506`, `_amsg_exit`/`fast_error_exit`.
-- Heap management `0x0040CCA2`–`0x0040D81D` (`_heap_init` [hypothesis]).
-- `__XcptFilter`, `_wincmdln`, `_setenvp`, `_setargv`.
-- SEH `0x0040DE4C`–`0x0040E01B`.
-- `_memset`, `_strlen` [verified], `__aulldiv`, `__aullrem`.
-- `_strncpy`, `___add_12`, `__strcmpi` [verified], `_itoa`.
+- **Map module** (`src/common/block_09.c`): maped's first object (`0x00401000`–`0x004013FF`), happy's last game object. [verified] Five functions are byte-identical (addresses masked) and in the same order; maped also has `map_copy` and `map_save`, happy `map_collision_at` and `map_t4_at`. [hypothesis] One source in both exes, trimmed by `/OPT:REF`; the relative order of `map_save` and of the two happy-only functions is not observable.
+- **Utilities** (`src/common/block_01.c`): `FUN_00401160` and `init_help_texts` are identical in maped (`0x004016A0`, `0x004017E0`, adjacent there). [hypothesis] Same shared-source mechanism; the happy-only functions are under `#ifdef HAPPY` because they reference globals maped lacks (`notes/matching.md` §2).
+- **`END_OF_MAIN` stub**: identical in the three exes (maped `0x00405C70`, loader `0x004014A0`).
+- Look-alike but different code (written once per exe): `notes/layout-maped.md` §6.
+- `happy.clv` (the custom game, `custom_game`, `start_menu`) is produced by loader: format in `notes/layout-loader.md` §2.
 
-These functions are arranged in the order of the LIBC .obj files pulled in by the linker. They will not be decompiled and are not split further here.
+## 7. Open questions
 
-## 9. The 10 most important open questions
+None affects a function score.
 
-Status on 2026-10-28.
-
-1. **One .c file or several for `0x00401000`–`0x0040A99F`?** Still open, and not observable in the code: `src/` has one file per block (`build.py` links them in the order of the blocks) and every function matches. The globals are all in `happy/data.c` (`notes/matching.md` §1).
-2. **Exact compiler options.** Answered: VC 6.0 without SP, `cl /O2` without a `/G` option, which implies `/Gy` (`notes/toolchain-vc6.md` §5, §7); `/OPT:REF` at link time [hypothesis].
-3. **Order of the .obj files at link time.** Answered for what the code needs: the order of the blocks (`build.py`); with `--final`, the game code ends at `0x0040AD50` as in the original (`notes/matching.md` §5).
-4. **Code shared with `maped.exe`.** Answered: a shared source trimmed by `/OPT:REF` for the map module and the utilities (`src/common/`, with `#ifdef HAPPY`, `notes/matching.md` §2); copied then rewritten for the initialisation group (`layout-maped.md` §9).
-5. **`"OK"` (`0x004124AC`)** between the strings of `0x004017C0` and `0x00401900`, used only by `0x00409F30`: still open. loader's `""` turned out to be a `.bss` COMDAT (`layout-loader.md` §10), which does not apply to a non-empty string.
-6. **Placement of `_set_errno_erange` (`0x00402110`)**: not re-examined. It is annotated as library code and matches (`notes/matching.md` §3).
-7. **Nature of the game's two `.bss` areas.** Answered [verified with test programs]: `0x00413B10`–`0x00413B34` are the `.bss` of game objects (globals initialised to 0 or `static`), the rest is COMMON, whose order depends on the names, which are unknown (`notes/matching.md` §3).
-8. **CRT identification.** Answered for the names: `scripts/crt_names.py`, by byte identity with `LIBC.LIB` (`notes/matching.md` §4). Why `__aulldiv` and `__aullrem` are linked although unreferenced: open ([hypothesis] CRT members pulled in by game code that `/OPT:REF` then discarded, `notes/matching.md` §3).
-9. **Functions missing from Ghidra.** The GAME ones were created on 2026-10-28 (§7); the 16 CRT ones are not.
-10. **Map module shared by `happy` and `maped`**: answered, a single source, `src/common/block_09.c`.
+1. **One `.c` file or several per block** for `0x00401000`–`0x0040A99F`: not observable in the code. `src/` has one file per block and every function matches; globals all live in `src/happy/data.c` until their owner is known. [hypothesis] Clue: the Rich header counts 81 `Utc12_C` objects, CRT included; subtracting the C members of `LIBC.LIB` actually linked (`notes/data/crt-happy.csv`, column `member`) would give the number of game objects.
+2. **`"OK"` (`0x004124AC`)** lies between the strings of `init_help_texts` and of `save_screenshot`, whereas only `custom_game` uses it. Loader's `""` was explained as a `.bss` COMDAT (`notes/layout-loader.md` §4), which does not apply to a non-empty string.
+3. **OLDNAMES aliases and CRT member order**: the original has `AliasObj60 ×2`, the sources call three old names (`itoa`, `stricmp` in `enter_password`, `strcmpi` in `main`); which spelling is wrong is not observable. The CRT objects of the rebuild come in a different order from `fflush.obj` on, and `__aulldiv`/`__aullrem` (`0x0040E7E0`, `0x0040E850`) are linked although nothing calls them. [hypothesis] The original game objects referenced CRT symbols in code later dropped by `/OPT:REF` (`notes/matching.md` §3).
+4. **Two unnamed CRT functions**: `0x0040B376` (`__fpclear` or `__rttosnpop`) and `0x0040DF22` (§3).

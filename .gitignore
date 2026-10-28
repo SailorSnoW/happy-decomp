@@ -1,14 +1,15 @@
 # --- Original files (protected, never published) -----------------------------
 # Each contributor supplies their own copy of the game.
 /game/
-# Working copies, extracted data, unpacked DLL, Ghidra caches
-# (can be regenerated with scripts/ghidra_dump_rest.py and scripts/inventory.py).
+# Local working copies (archives, extracted data, unpacked DLL): never published.
 /captures/
 # Safety nets in case a game binary or data file lies around elsewhere.
 *.exe
 *.dll
 *.dat
 *.clv
+*.map
+*.pcx
 
 # --- Ghidra project (contains the imported binaries) -------------------------
 *.gpr

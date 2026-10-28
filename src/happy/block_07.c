@@ -1,5 +1,5 @@
 /* happy block_07: 0x00407500-0x0040986F, menus, passwords, scores, game over,
- * game flow (notes/layout-happy.md §8). Functions in address order.
+ * game flow (notes/layout-happy.md §5). Functions in address order.
  * The call to 0x00404C50 (game loop), not decompiled yet, is the only
  * difference of play_game. */
 #include <stdlib.h>

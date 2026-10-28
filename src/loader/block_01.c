@@ -1,5 +1,5 @@
 /* The whole game code of loader.exe: block_01 (0x00401000-0x004014CF).
- * notes/layout-loader.md §8. main reads a list of maps and writes
+ * notes/layout-loader.md §5. main reads a list of maps and writes
  * happy.clv next to the exe; END_OF_MAIN() writes WinMain right after it.
  * loader only. */
 #include <direct.h>
@@ -23,7 +23,7 @@ typedef struct MAPSLOT {
  * next '#' names a regular map (at most 18), then each line up to a third
  * '#' a bonus map (at most 8). Each name is taken relative to the folder
  * of the list and must exist. The 26 slots and the two counts go to
- * happy.clv in the folder of the exe (layout-loader.md §3, format of
+ * happy.clv in the folder of the exe (layout-loader.md §2, format of
  * happy.clv). Errors: 2 the list cannot be opened, 3 a map does not
  * exist, 4 too many maps, 5 end of file before the closing '#'; the
  * list is not closed on these paths, and the result of pack_fopen of

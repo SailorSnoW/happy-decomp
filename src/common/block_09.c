@@ -1,6 +1,6 @@
 /* Map module: happy block_09 (0x0040A9A0-0x0040AD4F, last .obj before the
  * CRT), maped block_01 (0x00401000-0x004013FF, first .obj of .text).
- * notes/layout-happy.md §8, notes/layout-maped.md §8.
+ * notes/layout-happy.md §5, notes/layout-maped.md §5.
  * [hypothesis] A single source file linked into both exes; /OPT:REF drops
  * the functions an exe does not use. Functions are in address order; the
  * relative order of map_save (maped only) and of the last two functions

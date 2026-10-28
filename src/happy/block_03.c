@@ -1,5 +1,5 @@
 /* Level and HUD rendering, palette: happy block_03 (0x004021A0-0x0040302F).
- * notes/layout-happy.md §8. Particles, flakes, object sprites, the level
+ * notes/layout-happy.md §5. Particles, flakes, object sprites, the level
  * frame (draw_level) and the level palette. happy only. */
 #include <stdlib.h>
 #include <allegro.h>

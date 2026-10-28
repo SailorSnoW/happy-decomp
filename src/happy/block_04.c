@@ -1,5 +1,5 @@
 /* Loading and resetting a level: happy block_04 (0x00403030-0x0040344F).
- * notes/layout-happy.md §8. happy only. */
+ * notes/layout-happy.md §5. happy only. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro.h>

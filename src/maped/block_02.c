@@ -1,5 +1,5 @@
 /* Background gradient and its sliders: maped block_02
- * (0x00401400-0x0040169F). notes/layout-maped.md §8. The palette entries
+ * (0x00401400-0x0040169F). notes/layout-maped.md §5. The palette entries
  * of the gradient, the callback of the colour sliders and the dialog
  * procedure that redraws a slider when its value changes. maped only. */
 #include <allegro.h>
@@ -65,7 +65,7 @@ int slider_changed(void *dp3, int d2)
 }
 
 /* Dialog procedure of the colour sliders [hypothesis: stored as proc of
- * the DIALOG entry 0x0040ED38, notes/layout-maped.md §7]: a d_slider_proc
+ * the DIALOG entry 0x0040ED38, notes/layout-maped.md §4]: a d_slider_proc
  * whose d2 follows the int that dp3 points at. On MSG_START it takes the
  * value; on MSG_IDLE, if the value changed, it redraws the slider. */
 // FUNCTION: MAPED 0x004015d0

@@ -1,5 +1,5 @@
 /* happy block_08: 0x00409870-0x0040A99F, start menu, custom game, main,
- * WinMain (notes/layout-happy.md §8). Functions in address order. */
+ * WinMain (notes/layout-happy.md §5). Functions in address order. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

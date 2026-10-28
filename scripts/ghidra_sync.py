@@ -33,7 +33,7 @@ such a type keeps its Ghidra type and only gets its name. `fixed` becomes
 `int`. A two-dimensional array `char x[N][NAME_SIZE]` gets a typedef NAME
 (`char[NAME_SIZE]`), as `help_texts` (HELP_TEXT[16]).
 
-Usage: .venv/Scripts/python scripts/ghidra_sync.py [--apply | --save] [happy] [maped] [loader]
+Usage: python scripts/ghidra_sync.py [--apply | --save] [happy] [maped] [loader]
 """
 import json
 import pathlib

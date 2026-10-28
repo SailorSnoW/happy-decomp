@@ -1,8 +1,8 @@
 /* Initialisation and shutdown: maped block_04 (0x004018D0-0x00401D8F).
- * notes/layout-maped.md §8. Screenshot, datafile counts, graphics mode,
+ * notes/layout-maped.md §5. Screenshot, datafile counts, graphics mode,
  * colour tables, data files, initialisation and shutdown; same sequence
  * as happy block_02 [hypothesis: skeleton copied, notes/layout-maped.md
- * §9]. maped only. */
+ * §6]. maped only. */
 #include <stdio.h>
 #include <string.h>
 #include <allegro.h>

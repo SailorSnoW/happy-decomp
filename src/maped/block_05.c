@@ -1,5 +1,5 @@
 /* Map and interface display: maped block_05 (0x00401D90-0x004031FF).
- * notes/layout-maped.md §8. Tile mask shapes and type labels, background,
+ * notes/layout-maped.md §5. Tile mask shapes and type labels, background,
  * objects, export of the map as an image, the editor frame and the
  * background colours dialog. maped only. */
 #include <stdio.h>

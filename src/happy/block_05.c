@@ -1,5 +1,5 @@
 /* Gameplay: happy block_05 (0x00403450-0x0040639F).
- * notes/layout-happy.md §8. Particles, objects and the player, events of a
+ * notes/layout-happy.md §5. Particles, objects and the player, events of a
  * level, pause, end of a level, the game loop (play_level) and the bonus
  * room. happy only. */
 #include <stdlib.h>

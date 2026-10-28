@@ -1,6 +1,6 @@
 /* Game globals of happy.exe, in address order.
  * [hypothesis] They are defined here until the .obj that owns each one is
- * known (notes/layout-happy.md §6 and §9, questions 1 and 7): this file only
+ * known (notes/layout-happy.md §4 and §7, question 1): this file only
  * decides where the recompiled exe puts them, not the code that uses them.
  * Uninitialised ones are tentative definitions (COMMON), like the large
  * arrays at 0x00413D3C-0x004468BF [hypothesis]. */

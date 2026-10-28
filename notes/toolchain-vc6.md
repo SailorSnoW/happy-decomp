@@ -1,100 +1,53 @@
-# Local VC6 toolchain
+# VC6 toolchain
 
-Date: 2026-10-27. Script: `scripts/check_vc6.py` (`.venv/Scripts/python scripts/check_vc6.py`, about 20 s). It compiles test programs in `captures/vc6-check/` and does not touch `game/`.
+What is needed to rebuild the three exes, and the facts behind the choice of compiler and options. Build procedure: `notes/matching.md`; machine setup: skill `dev-setup`; diagnostics: `python scripts/doctor.py`.
 
 ## 1. Installation
 
-- Location: `C:\RE\tools\vc6`, outside the repository (`/tools/` is in `.gitignore`). It is a full copy of CD 1 of Visual Studio 6.0 Enterprise (`VS98ENT.MIF`), without going through the installer.
-- Files used:
-  - `VC98\BIN`: `CL.EXE`, `C1.DLL`, `C2.DLL`, `LINK.EXE`, `LIB.EXE`, `CVTRES.EXE`, `DUMPBIN.EXE`, `NMAKE.EXE`;
-  - `VC98\INCLUDE`;
-  - `VC98\LIB`: `LIBC.LIB`, `OLDNAMES.LIB`, `KERNEL32.LIB`...;
-  - `COMMON\MSDEV98\BIN\MSPDB60.DLL`.
-- [verified] `VC98\BIN\VCVARS32.BAT` only contains `Placeholder vcvars32.bat`: the installer generates it. The environment must therefore be set up by hand:
-  - `PATH`: `VC98\BIN` and `COMMON\MSDEV98\BIN`;
-  - `INCLUDE`: `VC98\INCLUDE`;
-  - `LIB`: `VC98\LIB`.
-
-  `check_vc6.py` does this for its own calls.
-- From Git Bash, the `/O2` and `/c` options get converted into paths. Export `MSYS2_ARG_CONV_EXCL='*'`, or go through PowerShell or Python.
+- A full copy of **CD 1 of Visual Studio 6.0 Enterprise** (`VS98ENT.MIF`), **without any service pack**, copied as is (the installer is not needed), outside the repository. `scripts/vc6.py` looks for it in `VC6_ROOT`, then `<repo>/tools/vc6` (ignored by git), then `<repo>/../tools/vc6` (e.g. `C:\RE\tools\vc6`). It accepts lowercase copies of the CD.
+- Files used: `VC98\BIN` (`CL.EXE`, `C1.DLL`, `C2.DLL`, `LINK.EXE`, `LIB.EXE`, `CVTRES.EXE`, `DUMPBIN.EXE`), `VC98\INCLUDE`, `VC98\LIB` (`LIBC.LIB`, `OLDNAMES.LIB`, `KERNEL32.LIB`), `COMMON\MSDEV98\BIN\MSPDB60.DLL`. `scripts/doctor.py` checks their SHA-256 against the reference copy.
+- [verified] `VC98\BIN\VCVARS32.BAT` on the CD is a placeholder (the installer generates the real one). The environment is set by hand: `PATH` = `VC98\BIN` + `COMMON\MSDEV98\BIN`, `INCLUDE` = `VC98\INCLUDE`, `LIB` = `VC98\LIB`. `scripts/vc6.py` does it for every call (`python scripts/vc6.py cl /nologo ...`).
+- **macOS / Linux**: `scripts/vc6.py` runs every tool through `wine`, with `INCLUDE`/`LIB` as Windows paths, `MSPDB60.DLL` reached through `WINEPATH`, `WINEDEBUG=-all` and Mono/Gecko disabled. Paths passed to the tools must be relative to the working directory or converted to `Z:\...` (`VC6.path()`). reccmp also needs `wine` and `winepath` in the `PATH`.
+- **Git Bash on Windows**: export `MSYS2_ARG_CONV_EXCL='*'`, otherwise `/O2`, `/c`... are converted into paths.
 
 ## 2. Versions
 
-| Tool | Local version | Game exe (Rich header) |
+| Tool | Local (CD 1, no SP) | Game exes (Rich header) |
 |---|---|---|
-| `cl` | 12.00.8168 | Utc12_C and Utc12_CPP 8168 [verified]: **identical** |
-| `link` | 6.00.8168 | no entry for the linker (see §3); PE header: 6.00 |
-| `lib` | 6.00.8168 | — |
-| `cvtres` | 5.00.1720.1 | Cvtres500 1720 [verified]: **identical** |
-| `KERNEL32.LIB` | import objects Linker512 8034 | Linker512 8034 [verified]: **identical** |
-| `OLDNAMES.LIB` | objects AliasObj60 7291 | AliasObj60 7291 [verified]: **identical** |
-| MASM of the `LIBC.LIB` objects | Masm613 7299 | Masm613 7299 [verified]: **identical** |
+| `cl` | 12.00.8168 | Utc12_C / Utc12_CPP 8168: identical [verified] |
+| `link` | 6.00.8168 | no entry for the linker (§3); PE header: 6.00 |
+| `cvtres` | 5.00.1720 | Cvtres500 1720: identical [verified] |
+| `KERNEL32.LIB` import objects | Linker512 8034 | Linker512 8034: identical [verified] |
+| `OLDNAMES.LIB` | AliasObj60 7291 | AliasObj60 7291: identical [verified] |
+| MASM objects of `LIBC.LIB` | Masm613 7299 | Masm613 7299: identical [verified] |
 
-## 3. Correction: the game was not "linked with link 6.00.8447"
+- [verified] `Utc12_CPP 8168 ×1` appears in every test exe, even without C++: it comes from `LIBC.LIB`. The game is entirely C.
+- [verified] The Rich headers of happy, maped and loader show the same builds: no tool differs between the three exes.
 
-Until now, `CLAUDE.md` and several notes read the `Linker600 8447 ×3` entry of the Rich header as the version of the game's linker. That is wrong:
+## 3. Linker build
 
-- [verified] Test exes linked with the local `link` 6.00.8168 have **no** entry for their own linker. The VC6 Rich header only counts the objects received as input.
-- [verified] A test exe that imports only `KERNEL32` carries `Linker512 8034 ×3`. These three import objects are the DLL descriptor, its `NULL_THUNK_DATA` and the shared `NULL_IMPORT_DESCRIPTOR`.
-- [verified] The game exes import two DLLs, `alleg40.dll` and `KERNEL32.dll`, and carry `Linker512 8034 ×2` and `Linker600 8447 ×3`.
-- [strong hypothesis] The 8447 entry therefore designates the objects of the **Allegro import library**, together with the shared `NULL_IMPORT_DESCRIPTOR`, taken from the first library read. That library was produced by the link 6.00.8447 that linked `alleg40.dll`: the DLL itself carries a `Linker600 8447` entry (`notes/allegro.md` §2).
-- **Consequence**: the build of the game's linker is **unknown**. The PE header only says 6.00. The local `link` 6.00.8168 is a compatible candidate: same version 6.00 and same file alignments (raw sections in multiples of `0x1000`, [verified] on the tests as on the game).
-- Reproducing the Rich header exactly would require the original Allegro 4.0.3 import library, produced by link 8447. A library generated locally with `lib` 8168 would give `Linker600 8168 ×3`. This changes nothing in the code: reccmp compares functions, not the Rich header.
+[verified] A VC6 Rich header counts only the input objects, not the linker itself, so the `Linker600 8447 ×3` entry of the game exes is not the game's linker: it is the import objects of `alleg40.lib` (the DLL itself was linked by link 6.00.8447, `notes/allegro.md` §2) [strong hypothesis]. The game's linker build is therefore unknown; the local link 6.00.8168 has the same version and the same alignments, and the locally generated `alleg40.lib` gives `Linker600 8168` instead, which does not affect the code.
 
-## 4. CRT: the local `LIBC.LIB` is identical to the game's
+## 4. CRT
 
-[verified] The 149 CRT functions of happy that are 16 bytes or larger (`notes/data/functions-happy.csv`) are found in the test exes, identical up to addresses:
-- 145 by masked signature (the `inventory.py` method);
-- `0x0040B9F0` and `0x0040F1F0` (copies of `memcpy`/`memmove`, same code), and `0x0040E8C5`: whole body identical in masked bytes;
-- `0x0041015D`: 417 instructions identical up to addresses, up to its internal jump table (data).
+[verified] The local `LIBC.LIB` is the game's: all 149 CRT functions of happy of 16 bytes or more are found in test exes linked with it, identical up to addresses (`0x0041015D` up to its internal jump table). The CRT is linked statically (`LIBC.LIB`, the single-threaded library of cl's default `/ML`): the exes import only `KERNEL32.dll` besides `alleg40.dll`. CRT functions are annotated `LIBRARY` from byte identity with `LIBC.LIB` (`src/crt/<exe>.h`, `notes/data/crt-*.csv`, method in `notes/matching.md`).
 
-The 5 CRT functions smaller than 16 bytes were not compared.
+## 5. What the compiler options produce
 
-## 5. Other results
+- [verified] **`/O2` implies `/Gy`**: one COMDAT `.text` section per function (flags `0x60501020`), 16-byte aligned, gaps filled with `0x90`. This is the alignment of the game functions; the CRT functions (assembled or compiled differently) are not aligned on 16. `/Gy` is also what lets `/OPT:REF` drop unreferenced functions, so that a source file shared by happy and maped keeps only the functions each exe uses (`notes/layout-maped.md`).
+- [verified] `/O2` does not inline small functions of the same file on its own (consistent with `/Ob1`): only the Allegro header functions are inlined.
+- [verified] **AliasObj60** counts the `OLDNAMES.LIB` aliases actually used (`itoa`, `chdir`, `strcmpi`...). maped and loader have one, `chdir`; happy has two, while its sources call three (`itoa`, `stricmp`, `strcmpi`), and which spelling differs from the original is not observable (`notes/matching.md` §3).
 
-- [verified] **`/O2` implies `/Gy`**: each function is a COMDAT `.text` section (flags `0x60501020`) aligned on 16 bytes. The linker fills the gaps with `0x90` (`t_comdat.exe`: `f1` at `0x00401000`, `f2` at `0x00401010`, `f3` at `0x00401030`). This explains the 16-byte alignment with `0x90` of the game's functions (`notes/layout-happy.md`). The CRT functions, assembled or compiled differently, are not aligned on 16. It also makes possible the elimination of unreferenced functions by `/OPT:REF`, enabled by default without `/DEBUG`: the condition for the shared source files to keep only a subset of their functions in each exe (`notes/layout-maped.md` §9).
-- [verified] `/O2` does not inline small functions of the same file on its own (`t_comdat.exe`: `main` calls `f1`, `f2` and `f3`). This is consistent with `/Ob1`.
-- [verified] **AliasObj60** counts the `OLDNAMES.LIB` aliases actually used: `itoa`, `chdir` and `strcmpi` give `AliasObj60 ×3`. [hypothesis] happy therefore calls two functions by their old name, without `_` (`strcmpi` for `__strcmpi` at `0x00408500`?), maped and loader only one. **Identified for maped and loader** [verified 2026-10-27]: `chdir`, from the CRT layout it produces (`notes/matching.md` §3). happy's two are still to identify: the rebuilt happy calls three (`itoa`, `stricmp`, `strcmpi`, `AliasObj60 ×3`), so one spelling differs from the original; the CRT layout does not settle it (`notes/matching.md` §3).
-- [verified] `Utc12_CPP 8168 ×1` appears in all tests, even without C++. That object therefore comes from `LIBC.LIB`: the game is entirely in C.
+## 6. Linking, PDB and reccmp
 
-## 6. End-to-end test (2026-10-27)
+- `scripts/build.py` compiles with `cl /nologo /O2 /Zi /W3 /c` (plus `/I src/include`, `/I src/<exe>`, `/I 3rdparty/allegro-4.0.3/include`, `/D<EXE>`) and links with `link /nologo /SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /MAP` + `/OPT:NOREF` (default) or `/OPT:REF` (`--final`), against `alleg40.lib` and `kernel32.lib`.
+- [verified] **`/Zi` and `/DEBUG /INCREMENTAL:NO /OPT:REF` change neither the code nor the addresses** (same bytes as without them). `/DEBUG` disables `/OPT:REF` unless it is passed explicitly [documentation].
+- [verified] Same layout as the originals: base `0x00400000`, section and file alignment `0x1000`, `KERNEL32.dll` IAT before that of `alleg40.dll`, linker version 6.00.
+- [verified] `alleg40.lib`, generated by `LIB /DEF:3rdparty/allegro-4.0.3/lib/msvc/allegro.def /MACHINE:IX86 /NAME:alleg40.dll`, imports **by ordinal**, like the game (`3rdparty/allegro-4.0.3/README.md`).
+- [verified] The PDB is in the "Microsoft C/C++ program database 2.00" format; reccmp 0.1.7 reads it, with source lines in the diffs. The produced exe must be named like the target (`happy.exe`...) for `reccmp-project detect`.
+- [verified] Without `LIBRARY` annotations for the CRT, every call into the CRT counts as a mismatch (§4).
 
-Done in the session scratchpad, outside the repository. Nothing was written to `captures/` or `game/`.
-
-Setup:
-- headers: copy of `captures/allegro-4.0.3/src/allegro/include`. **Caution**: in `captures/`, `include/allegro/platform/alplatf.h` contains `#define ALLEGRO_DJGPP` (generated by `fix.sh`, the default state of the zip). In the test copy it was replaced by `#define ALLEGRO_MSVC`, which is what `fix.bat msvc` would do. → Since then, the headers configured for MSVC are versioned in `3rdparty/allegro-4.0.3/`, and the test was redone with them, with the same results;
-- import library: `LIB /DEF:lib/msvc/allegro.def /MACHINE:IX86 /NAME:alleg40.dll /OUT:alleg40.lib`;
-- source: the 5 functions matched on decomp.me (§7), as is, with `#include <allegro.h>` instead of hand-written declarations, plus a `main` and `END_OF_MAIN()`;
-- `cl /O2 /c`, then `link /SUBSYSTEM:WINDOWS ... alleg40.lib kernel32.lib`. Variant with `/Zi` at compile time and `/DEBUG /INCREMENTAL:NO /OPT:REF` at link time.
-
-Results:
-- [verified] The Allegro 4.0.3 headers compile with cl 8168 without errors or warnings (default level).
-- [verified] **The 5 functions are identical** to those of happy, instruction for instruction (addresses masked): `0x00406C80` (25 instructions), `0x00409010` (31), `0x0040A9A0` (54), `0x0040AB00` (15), `0x0040AC10` (16). The `WinMain` stub of `END_OF_MAIN()` is identical to `0x0040A970` (12).
-- [verified] **`/Zi` + `/DEBUG /INCREMENTAL:NO /OPT:REF` change neither the code nor the addresses**: same bytes, same addresses in both test exes. `/OPT:REF` must be passed explicitly, since `/DEBUG` disables it by default [documentation, not tested without it].
-- [verified] The import library produced by `LIB /DEF` imports **by ordinal** (`dumpbin /imports`: `Ordinal 394` for `load_datafile`, `382` for `key`...), like the game. This settles the open question in `notes/allegro.md`.
-- [verified] Same layout as happy: `KERNEL32.dll` IAT before that of `alleg40.dll`, linker version 6.00, section and file alignments `0x1000`, base `0x00400000`.
-- [verified] The PDB produced is in the "Microsoft C/C++ program database 2.00" format.
-
-### reccmp
-
-reccmp **0.1.7**, installed by the user in the global Python 3.12 (not in `.venv`), with capstone 5.0.9. It also depends on `pyghidra`, used by `reccmp-ghidra-import`, a tool that **writes** to Ghidra: forbidden during the inventory.
-
-Procedure followed, in the test folder:
-1. `reccmp-project create --originals C:\RE\happy-decomp\game\happy.exe --path .`: writes `reccmp-project.yml` (target `HAPPY`, SHA-256 identical to the one in the table below, `source_root: .`) and `reccmp-user.yml` (path of the original).
-2. Link with `/OUT:happy.exe /PDB:happy.pdb`, because detection looks for the target's file name.
-3. `reccmp-project detect --what recompiled --search-path b1`: writes `reccmp-build.yml`.
-4. `reccmp-reccmp --target HAPPY`, then `reccmp-datacmp --target HAPPY`.
-
-Results:
-- [verified] reccmp reads the VC6 PDB 2.00. The `// FUNCTION: HAPPY 0x...` and `// GLOBAL: HAPPY 0x...` annotations are recognised, and source line numbers appear in the diffs.
-- [verified] `0x00406C80`, `0x00409010`, `0x0040A9A0` and `0x0040AC10` are at **100%**. `0x0040AB00` was at first 86.67%, solely because reccmp did not know the callee `0x0040B463`. With `// LIBRARY: HAPPY 0x0040b463` / `// _free`, it goes to **100%**.
-- [verified] `_free` (`0x0040B463`, 21 instructions) and `_malloc` (`0x0040B492`, 6 instructions) differ from LIBC **only** by the CRT symbols they reference, still unknown on the original side (`___sbh_find_block`, `___sbh_free_block`, `__crtheap`, `__newmode`, `__nh_malloc`). The name `free` proposed for `0x0040B463` is therefore confirmed by the code.
-- `_WinMainCRTStartup` (`0x0040B506`) is matched automatically through the entry point. Score: 74.36%, for the same reason (`__except_handler3`, `__winver`, `__heap_init`...).
-- [verified] `reccmp-datacmp`: 6 variables, 0 problems. The `--json` and `--html` reports are produced.
-
-Consequence for the matching phase: `LIBRARY` annotations will be needed for the whole CRT, otherwise every call into the CRT counts as a mismatch. The names come from `notes/data/functions-*.csv`. Those still [hypothesis] can be confirmed the same way.
-
-SHA-256 hashes of the targets (`game/`):
+SHA-256 of the originals in `game/` (checked by `scripts/doctor.py`):
 
 | File | SHA-256 |
 |---|---|
@@ -103,23 +56,14 @@ SHA-256 hashes of the targets (`game/`):
 | `loader.exe` | `4814e49733f8b4c7b7050f0898b824fe58fcaf8d23930d8e96d00410eee74fd4` |
 | `alleg40.dll` | `11ff7d4ce9fb85ca03a15c8a4680fdd467f18daf346bf0c07ecc5933135cbfe3` |
 
-## 7. Compiler choice: decomp.me (2026-10-27)
+## 7. Compiler choice: VC 6.0 without SP, `cl /O2`
 
-Before the local toolchain existed, five small GAME functions of happy were matched on decomp.me (results reported by the user). They are the functions of `scripts/smoke_reccmp.py`.
-
-| Function | Scratch | Other VC6 presets |
-|---|---|---|
-| `0x00406C80` (`wait_or_esc`) | https://decomp.me/scratch/42r3i | all 100% except SP5 + Processor Pack (75%) |
-| `0x0040A9A0` (map module) | https://decomp.me/scratch/72ufv | all 100% except SP5 + Processor Pack |
-| `0x00409010` (`anim_tick`) | https://decomp.me/scratch/8bHPJ | all 100% except SP5 + Processor Pack |
-| `0x0040AB00` (map module) | https://decomp.me/scratch/rtNCI | not tried |
-| `0x0040AC10` (map module) | https://decomp.me/scratch/pJhdK | not tried |
-
-- [verified by the match] **5/5 at 100% with VC 6.0 without SP, `/O2`**. `/Gs`, `/GB` and `/G5` change nothing; **`/G6` does not match** (`0x0040A9A0`: [hypothesis] `movzx` instead of `xor` + `mov r8`). **SP5 + Processor Pack does not match.**
-- [hypothesis] VC 6.0 without SP rather than SP1-SP6 (same code on these functions) rests on the Rich header (cl 12.00.8168). Hence `cl /O2` without a `/G` option (`CLAUDE.md`).
-- Confirmed on the way: `volatile` on the timer counter (`0x00406C80`; Ghidra's pseudo-C loses it), the Allegro declarations (`__declspec(dllimport)`, `volatile char key[]`) give the observed code.
+- [verified] Five GAME functions of happy (`0x00406C80`, `0x00409010`, `0x0040A9A0`, `0x0040AB00`, `0x0040AC10`) match at 100% on decomp.me with **VC 6.0 without SP, `/O2`**, and again locally with the CD 1 toolchain. Scratches: [42r3i](https://decomp.me/scratch/42r3i), [8bHPJ](https://decomp.me/scratch/8bHPJ), [72ufv](https://decomp.me/scratch/72ufv), [rtNCI](https://decomp.me/scratch/rtNCI), [pJhdK](https://decomp.me/scratch/pJhdK).
+- [verified] `/Gs`, `/GB` and `/G5` change nothing on them; **`/G6` does not match** (`0x0040A9A0`); **SP5 + Processor Pack does not match** (`0x00406C80`, `0x00409010`, `0x0040A9A0`).
+- [hypothesis] SP1 to SP6 give the same code on these functions; choosing "no SP" among them rests on the Rich header (cl 12.00.8168, §2).
+- Hence `cl /O2` with no `/G` option. [verified] With it, all 136 game functions match at 100% (`notes/STATUS.md`).
 
 ## 8. Open questions
 
-- Exact build of the game's linker (§3). It does not affect function code. It may affect the order of contributions in `.data`/`.bss` or header details: to watch when reccmp compares the whole exe.
-- Which functions does happy call by an old name? maped and loader: `chdir` [verified, §5]. happy has two aliases, the sources call three (`itoa`, `stricmp`, `strcmpi`; `notes/matching.md` §3).
+- Build of the game's linker (§3). It does not affect function code; it could affect the order of contributions in `.data`/`.bss` or header details.
+- Which of happy's three OLDNAMES calls is spelled differently in the original (§5).

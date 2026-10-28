@@ -1,299 +1,103 @@
-# Game documentation and contents of `game/`
+# The game as a player and modder sees it
 
-Date: 2026-10-27. Sources: text files in `game/`, read without modification
-(`readme.txt`, `loader.txt`, `maped.txt`, `maped.ini`, `maps/rolling_hills/rolling_hills.txt`, plus `happy.url`).
-There are no other `*.txt` or `*.ini` files in `game/`.
-
-Script used (read-only on `game/`): `scripts/inspect_formats.py` → `notes/data/datafiles.csv` (objects contained in each `.dat`) and unpacked copies in `captures/unpacked/`.
-
-The string addresses below are virtual addresses computed from the PE section table (`.data` section, base `0x00400000`).
-
----
+Sources: the text files of `game/` (`readme.txt`, `maped.txt`, `loader.txt`, `maped.ini`, `maps/rolling_hills/rolling_hills.txt`), the datafiles, and the decompiled code (`src/`, cited by address). The objects of each datafile: `notes/data/datafiles.csv`.
 
 ## 1. The game
 
-- [verified] Title: "HAPPYLAND ADVENTURES — X-MAS EDiTiON", version **v1.3** (`readme.txt`, header).
-- [verified] Genre, quoted verbatim: "a classic jump'n'run combined with original puzzle elements, a game full of surprises" (`readme.txt`, DESCRIPTION).
-- [verified] Origin: written for an amateur programming contest on gamedev.net, which it won, with a "best use of SpriteLib" award. The Christmas edition is a sequel (`readme.txt`, GENERAL and FAQ).
-- [verified] The game's launcher offers three choices: "Happyland Adventures - Xmas edition", "Happyland Adventures (the original)" or a custom game ("custom game") (`readme.txt`, INSTALLING AND STARTING).
+- [verified] **Happyland Adventures, X-Mas Edition** v1.3, a freeware platform game by Johan Peitz / Free Lunch Design, 2000-2003 (`readme.txt`), "a classic jump'n'run combined with original puzzle elements". The original game won an amateur contest on gamedev.net; the X-Mas Edition is its sequel.
+- [verified] Goal (`readme.txt`): touch the Happylanders so that they follow you and bring them to a safe zone; when enough are saved, the exit opens. Levels have a time limit, sometimes several or hidden exits; old wise men give hints. Saving all of them turns the enemies into coins; 250 bonuses give a life; 5 blue spheres give a password; all the coins open the bonus room. Pickups: star, diamonds, heart, time glass, coin, blue potion (invulnerability), low-G shoes, blue spheres.
+- [verified] Start menu (`start_menu`, `0x00409870`): three bands, the X-Mas logo (loads `data/xlevels.dat`), "HAPPYLAND ADVENTURES / THE ORIGINAL GAME" (`data/levels.dat`), "CREATE CUSTOM GAME" (§4.3), plus "EXIT" top right. `W` toggles "WIDESCREEN" (`0x00412E24`), 320×200 ↔ 640×480 (the readme's way to get "full screen"). Main menu: PLAY, PASSWORD (X-Mas only), OPTIONS (keys, joystick, volumes), HELP ME, EXIT (`main`, `0x0040A830`).
+- [verified] Default controls (`readme.txt`; `default_settings`, `0x00401EA0`): arrows Left/Right walk, Down slides, Left Alt jumps, Left Ctrl talks (and closes message boxes), F12 screenshot, Pause pauses, Esc quits ("Quit?"). Keys and joystick are redefinable.
+- [verified] Level passwords: 21 strings at `0x00412034`, each character stored + 1 (`"opof"` = `"none"`); the password screen (`0x00408500`) also accepts `HAXE-RESET`.
+- [verified] Requirements (`readme.txt`): Pentium, 8 MB RAM, VGA; joystick and Sound Blaster optional.
 
-### Goal
-- [verified] In each level, you must save "Santa's helpers" (the Happylanders) by touching them so that they follow you, then bring them to a safe zone. When enough of them are saved, the exit opens. The number remaining is shown at the top right, under the time (`readme.txt`, PLAYING; `happy.exe` string at file offset `0x01242C`: "The main object of each level is to bring the inhabitants of Happyland to safety…").
-- [verified] If you save *all* the helpers, the enemies turn into coins (`readme.txt`; string "If you save every single one of the Happylanders, all enemies will be turned into to golden coins!", `happy.exe` file offset `0x0122CC`).
-- [verified] Each level has a time limit. Some levels have several exits, sometimes hidden. The old wise men ("Old wise men") give hints when you talk to them.
-- [verified] 250 bonuses collected give an extra life. 5 "magic spheres" (blue balls) give a password if you finish the level. Collecting all the coins gives access to the bonus room.
+## 2. Files
 
-### Pickups (`readme.txt`, PICKUPS)
-| Item | Effect (quoted) |
-|---|---|
-| STAR | more points |
-| DIAMONDS | even more points |
-| HEART | increases your energy |
-| TIMEGLASS | recieve extra time |
-| COIN | collect all to access bonusroom |
-| BLUE POTION | invunerability for a short while |
-| LOW-G SHOES | jump higher and farther |
-| BLUE SPHERES | find five and you get a password |
+- `happy.exe` (86,016 bytes): the game. `maped.exe` (73,728): the map editor (`maped.txt`). `loader.exe` (32,768): the "CAMPAIGN LOADER" by Eric Love (`loader.txt`), which turns a campaign `.txt` into `happy.clv` (§4.3). `alleg40.dll` (224,768): Allegro 4.0.3 (`notes/allegro.md`).
+- `unins000.exe`/`.dat`: Inno Setup uninstaller [verified: `Inno Setup Uninstall Log (b)`]. `happy.url`: link to `http://www.freelunchdesign.com`. The installer `HAPPY_INSTALL.EXE` named by `readme.txt` is not shipped.
+- `data/`: seven datafiles (§4.1). `maps/examples/`: `bonus_1`, `bonus_2`, `jungle`, `stix`, `winter` `.map`. `maps/rolling_hills/`: `rolling_hills_1`–`3`, `rh_bonus_1`–`2` `.map` and `rolling_hills.txt`.
+- Created at run time, by relative name in the current folder: `happy.sav`, `happy.clv`, `happy.pcx`, `hland.$$$` (a level of a datafile is written there, loaded and deleted, `load_level`, `0x00403170`); maped's `autosave.map`, `maped000.<ext>`... (maped first changes to its exe's folder). loader writes `happy.clv` next to `loader.exe`.
 
-### Menus
-- [verified] Title screen: `PLAY`, `PASSWORD`, `OPTIONS`, `HELP ME`, `EXIT`. You navigate with the arrow keys and confirm with Enter or Space. `PASSWORD` only appears in the Xmas edition (`readme.txt`, THE TITLESCREEN).
-- [verified] Options: redefining keys and controls, sound and music settings. Up and Down to navigate, Left and Right to adjust (`readme.txt`).
+## 3. Command line and configuration
 
-### Default controls (`readme.txt`, CONTROLS)
-| Action | Key |
-|---|---|
-| Left | LEFT ARROW |
-| Right | RIGHT ARROW |
-| Slide | DOWN ARROW |
-| Jump | LEFT ALT |
-| Talk | LEFT CTRL |
-| Screenshot | F12 |
-| Pause | PAUSE / ESC |
-| Quit | ESC |
+### happy.exe
 
-- [verified] Joysticks are supported: while configuring the controls, you press the desired button or direction.
-- [verified] `W` key in the first menu (custom / normal / xmas choice): toggles full screen (`readme.txt`, FAQ). The string "WIDESCREEN IS %s (PRESS 'W' TO TOGGLE)" is in `happy.exe` at `0x00412E24`.
+- [verified] `main` (`0x0040A830`) accepts `-widescreen` and `-fps` (case-insensitive), undocumented and **without effect**: `init_game` then always overwrites `screen_mode`, and nothing reads the `-fps` flag.
+- [verified] F12 writes `happy.pcx` (`play_level`, `0x00404C50`), overwritten each time, although `readme.txt` announces `HAPPY???.PCX`.
+- [verified] **`happy.sav`** (202 bytes, no header), written on exit (`save_settings`, `0x00401DA0`), read at start (`load_settings`, `0x00401E10`), defaults otherwise:
 
-### Hardware requirements (`readme.txt`)
-Pentium, 8 MB RAM, VGA, joystick (optional), SB-compatible sound card (optional).
+| Offset | Size | Contents |
+|---:|---:|---|
+| 0 | 1 | sound volume [hypothesis: digital], default 200 |
+| 1 | 1 | MIDI volume, default 220 |
+| 2 | 28 | 7 `int` Allegro `KEY_*` codes: 0 right, 1 left, 4 jump, 5 talk, 6 slide (2, 3 unused) |
+| 30 | 168 | 7 high scores: `char name[20]`, `unsigned score` (default "Johan Peitz", 10000 down to 2500, 6 entries) |
+| 198 | 4 | `screen_mode`: 1 = 640×480 (frame stretched to 640×400), otherwise reset to 0 = 320×200 |
 
----
+### maped.exe
 
-## 2. Role of each executable (according to the documentation)
+- [verified] `maped.exe <file.map>` (drag and drop) loads the map for editing (`main`, `0x00405AE0`). The image that `maped.txt` describes for this use is made with F7 (`export_map_image`, `0x00402480`), named after the map.
+- [verified] Keys (`editor_loop`, `src/maped/block_07.c`; full list in `maped.txt`): Alt+F menu, Alt+N/L/S/A/R new (50×50, `./maps/unnamed.map`), load, save, save as, revert; Alt+M properties; F5 start position; F7 export; F8 screenshot `maped000`–`maped999` (`0x004018D0`); F12 320×200 ↔ 640×480 (only for maps over 40×30 tiles, after saving `autosave.map`; `0x00401A20`).
+- [verified] **`maped.ini`** (Allegro config file, `key = value`, `#` comments; `init_editor`, `0x00401C20`). Shipped values / defaults when absent: `run_in_a_window` 0/0 (1 = windowed); `output_format` `bmp`/`pcx` (`bmp`, `pcx` or `tga`, for F7 and F8); export layers `show_background`, `show_base_tiles`, `show_cover_tiles`, `show_items`, `show_npcs` 1/1, `hilite_cover_tiles` 1/0, `show_types` and `show_masks` 0/0.
 
-| Executable | Documented role | Source |
-|---|---|---|
-| `happy.exe` | The game: Xmas edition, original game and custom games | `readme.txt` |
-| `maped.exe` | Map editor ("MAPEDITOR"), written by Johan Peitz | `maped.txt` |
-| `loader.exe` | "CAMPAIGN LOADER", written by **Eric Love**. Automatically fills the map list of the "Create Custom Game" screen from a `.txt` campaign file | `loader.txt` |
-| `unins000.exe` / `unins000.dat` | Uninstaller. [verified] `unins000.dat` starts with `Inno Setup Uninstall Log (b)` | file bytes |
-| `happy.url` | Internet shortcut to `http://www.freelunchdesign.com` | file contents |
+### loader.exe
 
-- [verified] `readme.txt` mentions `HAPPY_INSTALL.EXE` as the installer. This file is not in `game/`.
-- [hypothesis] `loader.exe` passes the list to `happy.exe` through a `happy.clv` file. Justification: the string `happy.clv` exists in both programs (`loader.exe` `0x00406074`, `happy.exe` `0x00412F54`), and the loader's message is "%d normal map%s and %d bonus map%s loaded. Ready to play." (`0x00406030`). The format of `happy.clv` is not documented.
+- [verified] `loader.exe <campaign.txt>` (drag and drop), otherwise a file selector in `maps/` (`main`, `0x00401000`). Writes `happy.clv`; exit codes 2 list unreadable, 3 missing map, 4 too many maps, 5 end of file before the closing `#`.
 
----
+## 4. Formats and limits
 
-## 3. Command-line and configuration options
+### 4.1 Datafiles `data/*.dat`
 
-### Command line
-The documentation describes **no options** (no `-xxx`). It only mentions two drag-and-drop uses, which amount to passing a file path as an argument:
-- [verified] `loader.exe <campaign.txt>`: "in Windows you can drag a .txt file onto loader.exe or a shortcut to it" (`loader.txt`). Without an argument, the loader asks you to choose the file.
-- [verified] `maped.exe <map.map>`: "drag and drop the .map file onto the editor executable. This will create an image that you can look at. See the file maped.ini for more details." (`maped.txt`, HINTS & TIPS).
-- For `happy.exe`: nothing is documented.
+[verified] Allegro 4 datafiles, LZSS-packed and encrypted with the packfile password **`happy`**, set by happy (`init_game`, `0x00401F00`) and maped (`init_editor`) before loading, and cleared while saving images (`save_screenshot`, `0x00401900`). First 4 bytes (big-endian): `0x031C0930` = `"slh!"` XOR password, only the LZSS flag bytes encrypted (`misc`, `SPRITES`, `XSPRITES`, `tiles`, `xtiles`); `0x031C091A`, whole stream encrypted (`LEVELS`, `xlevels`) [hypothesis: Allegro's old and new schemes].
 
-### `maped.ini` (full contents, shipped values)
-| Key | Value | Meaning (comment in the file) |
-|---|---|---|
-| `run_in_a_window` | `0` | full screen (0) or window (1) |
-| `output_format` | `bmp` | format of exported images: `bmp`, `pcx` or `tga` |
-| `show_background` | `1` | contents of the exported image (1 = yes, 0 = no) |
-| `show_base_tiles` | `1` | same |
-| `show_cover_tiles` | `1` | same |
-| `hilite_cover_tiles` | `1` | same |
-| `show_npcs` | `1` | same |
-| `show_items` | `1` | same |
-| `show_types` | `0` | same |
-| `show_masks` | `0` | same |
-
-Syntax [verified]: `key = value` lines, comments starting with `#`. The name `maped.ini` appears in `maped.exe` at `0x0040F244`.
-
-### Game configuration
-- [verified] Keys, sound and music are set in the OPTIONS menu. The documentation mentions no configuration file for `happy.exe`.
-- [hypothesis] `happy.sav` (string at `0x004124F0` in `happy.exe`) stores the settings and/or the progress. This file is not present in `game/`.
-
----
-
-## 4. File formats, dimensions, limits
-
-### 4.1 What the documentation says
-
-**`.map` maps** (`maped.txt`, THE MAP-FORMAT) [verified], six layers:
-1. base tiles (ground and background scenery)
-2. cover tiles (drawn over the characters; useful for effects and secret passages)
-3. walkmask (how characters move through the tile)
-4. items (bonuses and special objects)
-5. npcs (happylanders, enemies, old wise men)
-6. tile type (door, spikes, safespot, exit, ICE, SWITCH, SWAP…)
-
-- [verified] "Maps can be in all sizes (except smaller than then screen)". Size set with INS or DEL + arrow.
-- [verified] Tile types mentioned: spike, safespot, exit, DOOR (when it opens, the walkmask and cover layer of DOOR tiles are removed), ICE (slippery), SWITCH (trigger), SWAP (green blocks).
-- [verified] The engine does not by itself place walls on the edges or spikes at the bottom: "The game engine does not fix this by itself".
-- [verified] The old wise men have text that can be edited in the editor (`t` key).
-- [verified] The original game's maps are compatible with the Xmas edition (`readme.txt`, FAQ).
-
-**`.txt` campaign file** (`loader.txt`, THE FORMAT) [verified]:
-- free text, then a line starting with `#`;
-- the normal levels in order, one per line, **18 at most**;
-- a `#` line;
-- the bonus maps, **8 at most**;
-- a `#` line, then free text.
-- The `.txt` goes in the same directory as the `.map` files. Real example: `maps/rolling_hills/rolling_hills.txt` (3 levels, 2 bonus).
-- If you save all the Happylanders and collect all the coins, you go to a randomly chosen bonus room.
-
-**Screenshots** [verified]: `readme.txt` announces `HAPPY???.PCX`, "where ??? is the number of the screenshot taken". `happy.exe` only contains `happy.pcx` (`0x0041267C`). The numbered naming is not visible in that string; to be checked in the code. In `maped.exe`, the template is `maped%03d.%s` (`0x0040F1B8`).
-
-**Editor** [verified]: automatic save `autosave.map` (`0x0040F1DC`), default map `./maps/unnamed.map` (`0x0040F490`).
-
-### 4.2 Observed in the files
-
-#### Datafiles `game/data/*.dat`
-- [verified] The 7 files are **Allegro packfiles, LZSS-compressed and password-encrypted**. The password **`happy`** decrypts and decompresses them all into valid Allegro datafiles: `ALL.` signature, `prop`/`DATE`/`NAME`/`ORIG` properties, typed objects (`scripts/inspect_formats.py`).
-- [verified] Two header variants (first 4 bytes, big-endian):
-  - `0x031C0930` = `"slh!"` XOR mask(`happy`). Only the LZSS flag bytes are XORed with the password: `misc.dat`, `SPRITES.DAT`, `XSPRITES.DAT`, `tiles.DAT`, `xtiles.dat`.
-  - `0x031C091A` = same value XOR `42`. The whole stream after the header is XORed with the password: `LEVELS.DAT`, `xlevels.dat`.
-  - [hypothesis] These are Allegro's "old" and "new" packfile encryption schemes: the two level files would have been re-saved with a more recent version of the grabber.
-- [verified] The string `happy` is in `.data` just before the datafile names, in `happy.exe` (`0x004124B0`, followed by `data/tiles.dat` `0x004124D0`, `data/misc.dat` `0x004124E0`…) and in `maped.exe` (`0x0040F1B0`).
-- [hypothesis] The program passes it to `packfile_password()`. Not yet verified by xref in Ghidra.
-
-| File | Size | Unpacked | Contents (Allegro types) | Loaded by |
-|---|---|---|---|---|
-| `LEVELS.DAT` | 45,528 | 212,055 | 14 `DATA` (maps): BONUS01–04, LEVEL00–06, SECRET00, TITLELEV, X_HELP | `happy.exe` (`data/levels.dat` `0x00412E00`) |
-| `xlevels.dat` | 108,502 | 538,079 | 24 `DATA` (maps): BONUS01–04, LEVEL01, LEVEL11–14, LEVEL21–23, LEVEL2a, LEVEL31–34, LEVEL41–43, SECRET00, TITLELEV, X_HELP, X_OUTRO | `happy.exe` (`0x00412E10`) |
-| `misc.dat` | 416,045 | 854,627 | 7 `BMP `, 6 `RLE `, 2 `FONT`, 14 `MIDI`, 9 `SAMP` | `happy.exe`, `maped.exe` |
-| `SPRITES.DAT` | 16,801 | 70,221 | 152 `BMP ` | `happy.exe`, `maped.exe` |
-| `XSPRITES.DAT` | 19,474 | 81,614 | 158 `BMP ` | `happy.exe`, `maped.exe` |
-| `tiles.DAT` | 17,835 | 55,546 | 1 `PAL `, 130 `RLE ` | `happy.exe`, `maped.exe` |
-| `xtiles.dat` | 18,540 | 55,337 | 1 `PAL `, 130 `RLE ` | `happy.exe`, `maped.exe` |
-
-Each datafile also contains an `info` "GrabberInfo" object. Full list of objects: `notes/data/datafiles.csv`.
-
-- [hypothesis] Prefix `x` = Xmas edition, no prefix = original game. Justification: the dates (`LEVELS.DAT` 2000, `xlevels.dat` 2002–2003), the names (`XSPRITES` contains `SANTA004`) and the presence of `X_OUTRO` only in `xlevels.dat`.
-
-Observed dimensions (header of the bitmap objects: bpp, width, height) [verified]:
-- all images are **8 bpp** (paletted);
-- tiles: **16×16**, 130 per tileset (`TILE000…`);
-- sprites: 16×16 (`HAPPY…`), 16×20 (`BAD…`), 16×23 (`GOOD008`), 64×53 (`SANTA004`, Xmas);
-- backgrounds `BG1`–`BG3` and `FINAL`: **320×200** (64,006 bytes = 6 + 64,000).
-- [hypothesis] The game runs at 320×200 ×256 colours (size of the backgrounds, VGA listed in the hardware requirements; "Possible to stretch the screen for higher resolutions", v1.3).
-
-Origin of the resources (`ORIG` property) [verified]: paths `c:\djgpp\fld\happy\…` (dated 2000), `c:\program\micros~3\myproj~1\happy\…`, `c:\Documents and Settings\Johan\…\happy\maps\xmaps` (2002–2003).
-- [hypothesis] A first version was developed under DJGPP (DOS), then the project moved to Visual C++. `micros~3\myproj~1` would be the short name of `Microsoft Visual Studio\MyProjects`, which is consistent with VC6.
-
-#### `.map` maps
-- [verified] Byte 0 = `0x02` in all maps (`.map` files and `DATA` objects of the datafiles). It is followed by a `\0`-terminated ASCII level name starting at byte 5 (`BONUSROOM!`, `Rumble in the Jungle`, `Stixland!`, `Winterland!`, `Rolling Hills 1`…).
-- [verified by arithmetic] With W = byte 1 and H = byte 2, the size is always **`header + 5·W·H`**, with a fixed header of:
-  - **7,045 bytes**: the 10 `.map` files in `maps/`, all of `xlevels.dat`, `LEVEL05` and `LEVEL06` of `LEVELS.DAT` (dated 2003);
-  - **2,933 bytes**: the 12 other maps of `LEVELS.DAT` (dated 2000).
-- [hypothesis] Byte 0 = format version, bytes 1 and 2 = width and height in tiles, bytes 3 and 4 = start position (`F5 set startpos` in `maped.txt`; the values remain in the map). There would be 5 bytes per tile for layers 1, 2, 3, 4 and 6. The NPCs (layer 5) and the wise men's texts would be in the fixed-size header, which would imply a **maximum number of NPCs**. The 4,112-byte difference between the two header sizes is unexplained, even though the version byte is `2` in both cases.
-- [hypothesis] If W and H fit in one byte, a map is **at most 255×255** tiles. Largest maps observed: 171×32 (`winter.map`), 95×91 (`xlevels.dat` LEVEL33), 160×14 (`LEVELS.DAT` LEVEL00).
-
-### 4.3 Numeric limits
-| Limit | Value | Status / source |
-|---|---|---|
-| Normal levels per campaign | 18 | [verified] `loader.txt` |
-| Bonus maps per campaign | 8 | [verified] `loader.txt` |
-| Minimum map size | screen size | [verified] `maped.txt` |
-| Extra life | 250 bonuses | [verified] `readme.txt` |
-| Spheres for a password | 5 | [verified] `readme.txt` |
-| Maximum map size | 255×255? | [hypothesis] bytes 1 and 2 |
-| Max number of NPCs per map | unknown, bounded by the fixed header? | [hypothesis] |
-
----
-
-## 5. Authors, dates, licence (quoted verbatim)
-
-`readme.txt`:
-> a game written by Johan Peitz
-> brought to you by Free Lunch Design
-> www.freelunchdesign.com
-> (c) 2000 - 2003
-> art by Johan Peitz and from Ari Feldman's SpriteLib
-> v1.3
-
-> This game is completely free. You may play it as much as you like without paying a single buck.
-
-> **DISTRIBUTING**
-> Happyland Adventures is freeware, anybody may (and should) play it. Therefore, you are encouraged to distribute this game (in it's original form) like crazy. Upload to every website and bbs you know, give a copy to all your friends, etc.. However, this game may not be included in a compilation or any other kind of commercial package without the permission from the author. See contact near the end of this document.
-
-> Levels in the XMas Edition were made by Johan Peitz and Mark Hickford.
-
-> Free Lunch Design is an independent game developer from Sweden.
-
-> E-Mail: info (at) freelunchdesign (dot) com
-
-> My SpriteLib license number is: 129.16.30.119-952518357
-
-Acknowledgements (`readme.txt`): Ari Feldman (SpriteLib), Shawn Hargreavers (Allegro), Ivan Baldo (PPCOL), Mark Hickford, Arnon Yaari.
-- [hypothesis] PPCOL is a pixel-perfect collision library for Allegro. It could be statically linked into `happy.exe`. To be looked for during the inventory.
-
-`maped.txt`:
-> written by Johan Peitz (c) 2000 - 2002
-
-`loader.txt`:
-> written by Eric Love
-> The loader was created by me (Eric Love).
-> theloves@chariot.net.au
-> http://www.chariot.net.au/~theloves
-
-`rolling_hills.txt`:
-> The Rolling Hills maps were created by Johan Peitz.
-
-The three `.txt` files contain the same disclaimer: "I do not accept responsibility for any effects, adverse or otherwise, that this software may have on you, your computer, your sanity, your dog, or anything else that you can think of. Use it at your own risk."
-
-Note: the documentation gives **no licence for the source code**. Only redistribution of the game in its original form is permitted.
-
-New in v1.3 (`readme.txt`): level and maped fixes, screenshots "now readable", screen stretching for high resolutions, path remembered in CUSTOM GAME, Rolling Hills levels added in `maps/`.
-
----
-
-## 6. Contents of `game/data/` and `game/maps/`
-
-| File | Size (bytes) | Ext. |
+| File | Packed / unpacked | Contents |
 |---|---:|---|
-| `data/LEVELS.DAT` | 45,528 | .dat |
-| `data/misc.dat` | 416,045 | .dat |
-| `data/SPRITES.DAT` | 16,801 | .dat |
-| `data/tiles.DAT` | 17,835 | .dat |
-| `data/xlevels.dat` | 108,502 | .dat |
-| `data/XSPRITES.DAT` | 19,474 | .dat |
-| `data/xtiles.dat` | 18,540 | .dat |
-| `maps/examples/bonus_1.map` | 9,385 | .map |
-| `maps/examples/bonus_2.map` | 8,345 | .map |
-| `maps/examples/jungle.map` | 27,065 | .map |
-| `maps/examples/stix.map` | 16,945 | .map |
-| `maps/examples/winter.map` | 34,405 | .map |
-| `maps/rolling_hills/rh_bonus_1.map` | 8,345 | .map |
-| `maps/rolling_hills/rh_bonus_2.map` | 9,045 | .map |
-| `maps/rolling_hills/rolling_hills.txt` | 413 | .txt |
-| `maps/rolling_hills/rolling_hills_1.map` | 21,845 | .map |
-| `maps/rolling_hills/rolling_hills_2.map` | 29,920 | .map |
-| `maps/rolling_hills/rolling_hills_3.map` | 27,700 | .map |
+| `LEVELS.DAT` | 45,528 / 212,055 | 14 `DATA` maps of the original game: BONUS01–04, LEVEL00–06, SECRET00, TITLELEV, X_HELP |
+| `xlevels.dat` | 108,502 / 538,079 | 24 `DATA` maps of the X-Mas Edition: BONUS01–04, LEVEL01, LEVEL11–14, 21–23, 2a, 31–34, 41–43, SECRET00, TITLELEV, X_HELP, X_OUTRO |
+| `misc.dat` | 416,045 / 854,627 | 7 `BMP `, 6 `RLE `, 2 `FONT`, 14 `MIDI`, 9 `SAMP` |
+| `SPRITES.DAT`, `XSPRITES.DAT` | 16,801, 19,474 | 152, 158 `BMP ` sprites |
+| `tiles.DAT`, `xtiles.dat` | 17,835, 18,540 | 1 `PAL ` + 130 `RLE ` tiles |
 
-Rest of `game/`: `alleg40.dll` (224,768), `happy.exe` (86,016), `maped.exe` (73,728), `loader.exe` (32,768), `readme.txt` (10,545), `loader.txt` (2,988), `maped.txt` (7,563), `maped.ini` (630), `happy.url` (56), `unins000.exe` (75,922), `unins000.dat` (5,638).
+- [verified] Bit 3 of map byte `0x79` selects the `x` sprite and tile files (happy `load_level`, maped `main`).
+- [verified] All images 8 bpp; tiles 16×16; sprites 16×16, 16×20, 16×23, 64×53 (`SANTA004`); backgrounds `BG1`–`BG3`, `FINAL` 320×200, the size of the game's back buffer (`init_game`).
+- [verified] `ORIG` properties: `c:\djgpp\fld\happy\…` (2000), `c:\program\micros~3\myproj~1\happy\…`, `c:\Documents and Settings\Johan\…` (2002-2003). [hypothesis] Started under DJGPP, moved to Visual C++.
 
-### First 32 bytes (representative examples)
+### 4.2 Maps (`.map` files and the `DATA` objects above)
 
-`.dat`, old scheme:
-```
-misc.dat     03 1c 09 30 87 41 4c 4c 2e eb f0 27 70 72 de 6f 70 44 41 54 45 eb f0 10 8f 34 2d 31 32 2d 32 30  |...0.ALL...'pr.opDATE....4-12-20|
-SPRITES.DAT  03 1c 09 30 87 41 4c 4c 2e eb f0 99 70 72 de 6f 70 44 41 54 45 eb f0 10 8f 33 2d 31 33 2d 32 30  |...0.ALL....pr.opDATE....3-13-20|
-```
-`.dat`, new scheme (fully encrypted stream):
-```
-LEVELS.DAT   03 1c 09 1a 96 29 2d 3c 5e 92 98 6e 00 02 c6 07 11 34 31 2d 2d 8a 80 60 86 5b 4c 41 44 54 5a 51  |.....)-<^..n.....41--..`.[LADTZQ|
-xlevels.dat  03 1c 09 1a 96 29 2d 3c 5e 92 98 78 00 02 c6 07 11 34 31 2d 2d 8a 80 60 86 51 4c 40 49 54 5a 51  |.....)-<^..x.....41--..`.QL@ITZQ|
-```
-`.map`:
-```
-bonus_1.map          02 24 0d 01 03 42 4f 4e 55 53 52 4f 4f 4d 21 00 80 4d f4 43 e9 7b 01 00 00 8d 76 00 8a 45 f8 24  |.$...BONUSROOM!..M.C.{....v..E.$|
-jungle.map           02 8f 1c 87 04 52 75 6d 62 6c 65 20 69 6e 20 74 68 65 20 4a 75 6e 67 6c 65 00 00 00 00 00 00 00  |.....Rumble in the Jungle.......|
-rolling_hills_1.map  02 50 25 02 1c 52 6f 6c 6c 69 6e 67 20 48 69 6c 6c 73 20 31 00 00 00 00 00 00 00 00 00 00 00 00  |.P%..Rolling Hills 1............|
-```
-- [verified] In the bonus maps, the bytes following the name's `\0` (`80 4d f4 43 e9 7b 01 00 00 8d 76 00 8a 45 f8 24`) are identical from one map to the next.
-- [hypothesis] These are leftovers of uninitialised memory: the name field would have a fixed size and be written in full with `fwrite`. These bytes look like x86 code.
+[verified] From `map_load` (`0x0040AB30`), `map_save` (maped `0x004013A0`), `load_level_objects` (`0x00403070`), `save_objects` (maped `0x004039B0`); structures `MAP`, `TILE` (`src/include/map.h`) and `OBJ` (`src/include/block_01.h`), whose comments say which field meanings are hypotheses.
 
-`.txt`:
-```
-rolling_hills.txt    3a 3a 20 52 6f 6c 6c 69 6e 67 20 68 69 6c 6c 73 20 0d 0a 0d 0a 4a 75 73 74 20 64 72 61 67 20 61  |:: Rolling hills ....Just drag a|
-```
-(ASCII, CRLF line endings.)
+| Offset | Size | Contents |
+|---|---:|---|
+| `0x00` | 1 | version, must be 2 |
+| `0x01`, `0x02` | 2 | width, height in tiles |
+| `0x03`, `0x04` | 2 | player start tile (F5) |
+| `0x05` | 80 | level name |
+| `0x55` | 34 | tile datafile name |
+| `0x77` | 14 | properties: `0x77` background (0-2), `0x78` music (0-11), `0x79` flags (bit 3: X-Mas set), `0x7A` time limit (s), `0x7B`/`0x7C` Happylanders to save / in all |
+| `0x85` | 5·W·H | tiles, row-major (`0x0040AC40`): base tile, cover tile, walk mask (collision type 0-10), item, tile type (1 exit, 5 ice...) |
+| then | 2,800 | 100 objects (Happylanders, enemies, wise men) of 28 bytes: `int x, y` in pixels, template index at `+0x18` |
+| then | 4,112 | 16 help texts of 257 bytes (the wise men's) |
 
----
+[verified by the sizes] A map is `7,045 + 5·W·H` bytes; the 12 maps of `LEVELS.DAT` dated 2000 lack the help texts (`2,933 + 5·W·H`), and maped reinitialises them when byte 256 of the first is not `'*'` (`0x00403200`). Largest shipped: 171×32 (`winter.map`), 95×91 (X-Mas LEVEL33).
 
-## 7. Questions of the inventory, answered by the code
+### 4.3 Campaigns: `.txt` and `happy.clv`
 
-- `packfile_password("happy")`: [verified] set in `init_game` (`0x00401F00`) before the datafiles are loaded, cleared and set again around `save_screenshot` (`0x00401900`), `src/happy/block_02.c`.
-- Layout of the map header: `MAP` and `TILE` in `src/include/map.h`; maped appends the objects and help texts after the tiles (`src/maped/`).
-- `happy.sav`: `save_settings` / `load_settings` (`src/happy/block_02.c`, fields in `src/happy/data.c`); `happy.clv`: `notes/layout-loader.md` §3 and §10.
-- PPCol in `happy.exe`: [hypothesis] `0x00403E00` has the structure of PPCol's `check_pp_collision` (`src/happy/block_05.c`).
+- [verified] Campaign `.txt` (`loader.txt`, loader `main`): free text, a `#` line, the levels one per line, a `#` line, the bonus maps, a `#` line, free text. Paths relative to the `.txt`; every map must exist. Example: `rolling_hills.txt` (3 levels, 2 bonus).
+- [verified] **`happy.clv`**, 8,714 bytes, unencrypted (`src/loader/block_01.c`; happy `custom_game`, `0x00409F30`): 18 level slots then 8 bonus slots of 335 bytes (`char file[255]`, path of the map; `char name[80]`, the name shown), then the two counts as 16-bit little-endian. happy's custom game screen edits it (add with `file_select`, right click to remove), requires at least one level and one bonus map, and saves it before playing.
+
+### 4.4 Limits
+
+| Limit | Value |
+|---|---|
+| Map size | not smaller than the screen (`maped.txt`); at most 255×255 tiles (one byte each) [verified] |
+| Objects per map | 100 [verified] |
+| Help texts per map | 16 of 256 characters [verified] |
+| Levels / bonus maps per campaign | 18 / 8 (`loader.txt`; loader and `custom_game`) [verified] |
+| High scores | 7 [verified] |
+
+## 5. Authors and licence
+
+- `readme.txt`: "a game written by Johan Peitz", "brought to you by Free Lunch Design", "(c) 2000 - 2003", art by Johan Peitz and from Ari Feldman's SpriteLib; X-Mas levels by Johan Peitz and Mark Hickford. Thanks to Ari Feldman (SpriteLib), Shawn Hargreaves (Allegro), Ivan Baldo (PPCOL), Mark Hickford, Arnon Yaari.
+- `readme.txt` allows redistributing the game "in it's original form", not in "a compilation or any other kind of commercial package" without permission; no licence for the source code (`notes/legal.md`).
+- `maped.txt`: by Johan Peitz, 2000-2002. `loader.txt`: by Eric Love. Rolling Hills maps: Johan Peitz (`rolling_hills.txt`).
+- [hypothesis] PPCOL is compiled into happy: `0x00403E00` has the structure of the 8-bit case of its `check_pp_collision` (`src/happy/block_05.c`).

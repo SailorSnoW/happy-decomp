@@ -1,5 +1,5 @@
 /* Editing tools and the editor loop: maped block_07
- * (0x00403EB0-0x00405C9F). notes/layout-maped.md §8. Shifting and
+ * (0x00403EB0-0x00405C9F). notes/layout-maped.md §5. Shifting and
  * resizing the map, objects, help texts, walk masks, the tile picker, the
  * editor loop, main and WinMain. maped only. */
 #include <direct.h>

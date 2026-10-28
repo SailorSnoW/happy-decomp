@@ -8,7 +8,7 @@
 #include "block_01.h"
 
 /* [hypothesis] The map being edited: every editing function reads it
- * (notes/data/datarefs-maped.csv, 0x00410110); same role as happy
+ * (xrefs to 0x00410110); same role as happy
  * DAT_00414130. */
 extern MAP *DAT_00410110;
 

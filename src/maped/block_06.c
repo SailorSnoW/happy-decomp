@@ -1,5 +1,5 @@
 /* Map files and dialogs: maped block_06 (0x00403200-0x00403EAF).
- * notes/layout-maped.md §8. Loading a map and its objects, the map
+ * notes/layout-maped.md §5. Loading a map and its objects, the map
  * properties dialog, a new map, the message and yes/no boxes, saving.
  * maped only. */
 #include <stdio.h>
