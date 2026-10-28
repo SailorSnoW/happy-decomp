@@ -422,7 +422,7 @@ def check_ghidra():
             continue
         if got == FRESH[name]:
             report("warn", name, "%d functions (fresh import)" % got,
-                   "%d in the reference project: restore the .gar (SKILL.md §5)" % want)
+                   "%d in the reference project: run scripts/ghidra_sync.py --save (SKILL.md §5)" % want)
             continue
         report("ok" if got == want else "fail", name, "%d functions" % got,
                "%d expected: analysis differs from the reference (SKILL.md §5)" % want)
