@@ -1,13 +1,13 @@
 # Layout of `loader.exe`
 
-Inventory phase, Ghidra read-only (no renaming, typing, comments or function creation). Same method as for `happy.exe` (`notes/layout-happy.md` §1), with the additions described in `notes/layout-maped.md` §1.
+Inventory of 2026-10-27, written before the decompilation (Ghidra read-only at the time). Since then, `src/` holds the names, types and code; the facts below still hold, and the open questions (end of the note) carry their current status. Same method as for `happy.exe` (`notes/layout-happy.md` §1), with the additions described in `notes/layout-maped.md` §1.
 
 Data produced:
 - `notes/data/functions-loader.csv`: one row per function (70), same columns as `functions-happy.csv`.
 - `notes/data/datarefs-loader.csv`: `.rdata`/`.data` addresses referenced by the code.
 - `captures/ghidra-cache/loader_exe_rest.json` (raw Ghidra responses) and `captures/inventory-loader.json` (full graph).
 
-Scripts: `scripts/ghidra_dump_rest.py`, `scripts/inventory.py loader.exe` and `scripts/build_traits.py` (see `layout-maped.md`).
+Scripts: `scripts/ghidra_dump_rest.py` and `scripts/inventory.py loader.exe` (see `layout-maped.md`).
 
 ## 1. Method, and what Ghidra missed
 
@@ -96,7 +96,7 @@ Scripts: `scripts/ghidra_dump_rest.py`, `scripts/inventory.py loader.exe` and `s
 
 ## 4. Compiler, linker, CRT (three exes)
 
-Source: `scripts/build_traits.py` [verified for the values; the comp.id names are hypotheses taken from public tables].
+Source: the bytes of the three exes, measured by a one-off script since removed [verified for the values; the comp.id names are hypotheses taken from public tables].
 
 ### 4.1 PE header
 
@@ -190,6 +190,8 @@ Observations:
 
 ## 7. Functions missing from Ghidra (7)
 
+`main` was created in Ghidra on 2026-10-28 (`scripts/ghidra_sync.py`); the CRT ones are still missing.
+
 | Address | Size | Class | Reason for adding | Role [hypothesis] |
 |---|---:|---|---|---|
 | `0x00401000` | 1,172 | GAME | `push` at `0x004014B4` (argument of `_WinMain`) | `main` |
@@ -220,4 +222,4 @@ Observations:
 
 1. **Contents of a 335-byte slot** of `happy.clv`. `main` fills it between `0x00401110` and `0x004013C0` (`pack_fgets`, `exists`), and happy reads it in `0x00409F30`. Is it a file name followed by other fields? **Answered 2026-10-27** [verified, `src/loader/block_01.c`]: 255 bytes of file name (the line of the list made relative to the folder of the list by `replace_filename`, checked with `exists`), then 80 bytes holding the line itself (`pack_fgets(line, 79, f)`); copies at `0x004011F0`-`0x00401247`. The list: lines skipped up to a first `#`, then regular maps up to the next `#`, then bonus maps up to a third `#`.
 2. **The `""` string at `0x00406708`** (§6): to be explained, together with happy's `"OK"`, by the planned compilation experiment (two .c files containing the same literal, linked with LIBC). **Answered for `""`, 2026-10-27** [verified]: cl 12 emits `""` as a 1-byte COMDAT in `.bss` (uninitialised, all zero; `link /dump /headers` of the object), and the linker places it first in `.bss`, at `0x00406708`, before `errno`. Not a merge with a CRT string. happy's `"OK"` is not empty and stays open.
-3. **Should the 7 missing functions be created in Ghidra**, in particular `main` (`0x00401000`), which Ghidra does not cover at all? Same decision as for happy and maped.
+3. **Should the 7 missing functions be created in Ghidra?** Answered: `main` was created on 2026-10-28 (§7), the CRT ones are not.

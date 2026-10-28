@@ -944,7 +944,7 @@ int play_level(void)
  * 0x00409640.
  * pos is one variable for the x of the first walk and the y of the fall,
  * as in the original: with separate variables, VC6 reloads x and y in the
- * other order after the inner loop of the fall (notes/block05-diffs.md). */
+ * other order after the inner loop of the fall (notes/matching.md §3a). */
 // FUNCTION: HAPPY 0x00405db0
 int bonus_room(void)
 {

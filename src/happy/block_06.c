@@ -250,7 +250,7 @@ void show_logo(void)
 
 /* [hypothesis] Waits ms milliseconds (ms / 15 timer ticks), or less if
  * Escape is pressed; returns 1 in that case. decomp.me: 100%
- * (notes/decompme-candidates.md §10). */
+ * (notes/toolchain-vc6.md §7). */
 // FUNCTION: HAPPY 0x00406c80
 int wait_or_esc(int ms)
 {

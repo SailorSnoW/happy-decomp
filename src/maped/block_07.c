@@ -165,7 +165,7 @@ char select_help_text(void)
  * original zeroes edx there, the summer cover mask), m = MAX(m, old)
  * before the store, the tile indexed in each access. Not at 100%: VC6
  * gives the winter tile address esi instead of edx, then merges the
- * identical heads of the two branches (notes/maped-diffs.md). */
+ * identical heads of the two branches (notes/open-diffs.md). */
 // FUNCTION: MAPED 0x00404500
 void auto_mask(int x, int y)
 {

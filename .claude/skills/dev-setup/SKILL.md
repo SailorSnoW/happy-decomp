@@ -85,7 +85,7 @@ These files are ignored by git and can be regenerated. `PY` = the venv Python. G
 
 1. Unpacked Allegro DLL (a copy, `game/` untouched): `upx -d -o captures/alleg40_unpacked.dll game/alleg40.dll`.
 2. Ghidra cache, one command per exe: `PY -I scripts/ghidra_dump_rest.py happy.exe`, then `maped.exe` and `loader.exe`.
-3. Inventory: `PY scripts/pe_allegro.py`, `PY scripts/inventory.py happy.exe maped.exe loader.exe`, then `PY scripts/shared_code.py`.
+3. Inventory: `PY scripts/pe_allegro.py`, then `PY scripts/inventory.py happy.exe maped.exe loader.exe`.
 4. **Reproducibility check**: `git status --short notes/` must be empty. The CSVs regenerated on this machine are then byte-for-byte identical to those in the repository. Otherwise: `git diff --stat notes/`, show the difference to the user and stop. Do not commit or restore without their approval.
 5. Allegro import library, for the matching phase (`3rdparty/allegro-4.0.3/README.md`). From the repository root, after creating `build/`:
    `python scripts/vc6.py lib /NOLOGO "/DEF:3rdparty\allegro-4.0.3\lib\msvc\allegro.def" /MACHINE:IX86 /NAME:alleg40.dll "/OUT:build\alleg40.lib"`

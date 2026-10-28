@@ -1,17 +1,14 @@
 # Layout of `happy.exe`
 
-Inventory phase, Ghidra read-only (no renaming, typing, comments or function creation).
+Inventory of 2026-10-27, written before the decompilation (Ghidra read-only at the time). Since then, `src/` holds the names, types and code; the facts below still hold, and the open questions (end of the note) carry their current status.
 
 Data produced:
 - `notes/data/functions-happy.csv`: one row per function (239). Columns: address, size, padding, Ghidra name and size, proposed name, block, class, status, callers, callees, Allegro and Win32 imports, CRT calls, strings, copies in `maped.exe`/`loader.exe`, reason.
 - `notes/data/datarefs-happy.csv`: every `.rdata`/`.data` address referenced by the code, with its kind (string, memory, immediate) and the functions that reference it.
-- `captures/ghidra-cache/happy_exe.json`: raw Ghidra responses.
+- `captures/ghidra-cache/happy_exe_rest.json`: raw Ghidra responses (GhidraMCP 7.0.0).
 - `captures/inventory-happy.json`: full graph.
 
-Scripts (in `scripts/`):
-- `ghidra_mcp.py`: minimal HTTP client for the MCP server. It refuses any tool that is not `list_*`, `get_*` or `search_*`.
-- `ghidra_dump.py`: dumps, for each function, `get_function_info`, `get_disassembly`, `get_callers`, `get_callees` and `get_xrefs_to`.
-- `inventory_happy.py`: analysis and classification. It runs with `.venv/Scripts/python` and depends on `capstone` 5.0.7, installed in `.venv/`.
+Scripts: `scripts/ghidra_dump_rest.py happy.exe` (Ghidra cache), then `scripts/inventory.py happy.exe` (analysis and classification, `capstone` in `.venv/`). The first inventory was made with an earlier script for the old GhidrAssistMCP server; `inventory.py` reproduces its CSVs (`layout-maped.md` §1).
 
 ## 1. Method
 
@@ -128,6 +125,8 @@ Observations on strings, which matter for the boundaries:
 - [verified] Anomaly: `"OK"` (`0x004124AC`) lies between the strings of `0x004017C0` and those of `0x00401900`, whereas only `0x00409F30` references it (question 5).
 
 ## 7. Functions missing from Ghidra (19)
+
+The three GAME functions were created in Ghidra on 2026-10-28 (`timer_1s`, `timer_15ms`, `main`, by `scripts/ghidra_sync.py`); the CRT ones are still missing.
 
 | Address | Size | Class | Reason for adding | Role [hypothesis] |
 |---|---:|---|---|---|
@@ -332,13 +331,15 @@ These functions are arranged in the order of the LIBC .obj files pulled in by th
 
 ## 9. The 10 most important open questions
 
-1. **One .c file or several for `0x00401000`–`0x0040A99F`?** The static clues do not decide: globals all at the head of `.data`, pooled strings, the game's `.bss` in one piece. I propose an experiment with cl 12.00.8168 and link 8447: compile two or three test .c files (globals, literals, statics, non-inlined `__inline`), then observe the order in `.data`/`.bss` and the placement of the out-of-line copy. These clues would then become decisive.
-2. **Exact compiler options.** Hypotheses: `/O2` or `/O1`; `/Gf` (strings in `.data`, pooled); `/Gy` and `/OPT:REF` (a `maped` function absent from `happy`); inlining enabled; no `DEBUGMODE`. To be confirmed by recompilation, since all matching depends on it.
-3. **Order of the .obj files at link time.** The map module is the first .obj of `maped.exe` and the last of `happy.exe` (just before the CRT). The exact order of the other files depends on question 1.
-4. **Code shared with `maped.exe`.** `0x00401160` and `0x004017C0` are adjacent in `maped.exe`, but separated in `happy.exe` by `0x004012A0`–`0x004014F0`. Is this a common file trimmed by `/OPT:REF`, or copy-paste? Do the same inventory on `maped.exe` and compare the orders.
-5. **`"OK"` (`0x004124AC`)** lies between the strings of `0x004017C0` and `0x00401900`, but only `0x00409F30` references it. Did a fully inlined or removed function exist at this point in the source?
-6. **Placement of `_set_errno_erange` (`0x00402110`)**, right after `0x00401F00`, its first user. Does VC6 emit the out-of-line copy of an `__inline` after the first function that uses it, or at the end of the obj? In the latter case, `0x00401F00` would be the last function of an .obj and `0x00402120` would start a new file.
-7. **Nature of the game's two `.bss` areas** (`0x00413B10`–`0x00413B37`, then `0x00413D3C`–`0x004468BF`): statics or `= 0` on one side, COMMON on the other? This must be known to reproduce the addresses of the globals (`static` declarations, initialised or not).
-8. **CRT identification.** Function ID recognised only 15 functions. Signatures from the LIBC.LIB matching compiler 8168 would move the 138 [hypothesis] CRT functions to [verified], along with the stdio names. We also need to know why `__aulldiv` and `__aullrem` are linked even though nothing references them.
-9. **Functions missing from Ghidra** (19) and truncated bodies (8). Should they be created and fixed in Ghidra? That would be a write, forbidden during this phase without an explicit request; it must be decided before the decompilation phase, since reccmp and the annotations depend on it.
-10. **Map module shared by `happy` and `maped`**: should a single source file be shared by both matching targets? This affects how the repository is organised for the next phase, and `maped` contains one more function.
+Status on 2026-10-28.
+
+1. **One .c file or several for `0x00401000`–`0x0040A99F`?** Still open, and not observable in the code: `src/` has one file per block (`build.py` links them in the order of the blocks) and every function matches. The globals are all in `happy/data.c` (`notes/matching.md` §1).
+2. **Exact compiler options.** Answered: VC 6.0 without SP, `cl /O2` without a `/G` option, which implies `/Gy` (`notes/toolchain-vc6.md` §5, §7); `/OPT:REF` at link time [hypothesis].
+3. **Order of the .obj files at link time.** Answered for what the code needs: the order of the blocks (`build.py`); with `--final`, the game code ends at `0x0040AD50` as in the original (`notes/matching.md` §5).
+4. **Code shared with `maped.exe`.** Answered: a shared source trimmed by `/OPT:REF` for the map module and the utilities (`src/common/`, with `#ifdef HAPPY`, `notes/matching.md` §2); copied then rewritten for the initialisation group (`layout-maped.md` §9).
+5. **`"OK"` (`0x004124AC`)** between the strings of `0x004017C0` and `0x00401900`, used only by `0x00409F30`: still open. loader's `""` turned out to be a `.bss` COMDAT (`layout-loader.md` §10), which does not apply to a non-empty string.
+6. **Placement of `_set_errno_erange` (`0x00402110`)**: not re-examined. It is annotated as library code and matches (`notes/matching.md` §3).
+7. **Nature of the game's two `.bss` areas.** Answered [verified with test programs]: `0x00413B10`–`0x00413B34` are the `.bss` of game objects (globals initialised to 0 or `static`), the rest is COMMON, whose order depends on the names, which are unknown (`notes/matching.md` §3).
+8. **CRT identification.** Answered for the names: `scripts/crt_names.py`, by byte identity with `LIBC.LIB` (`notes/matching.md` §4). Why `__aulldiv` and `__aullrem` are linked although unreferenced: open ([hypothesis] CRT members pulled in by game code that `/OPT:REF` then discarded, `notes/matching.md` §3).
+9. **Functions missing from Ghidra.** The GAME ones were created on 2026-10-28 (§7); the 16 CRT ones are not.
+10. **Map module shared by `happy` and `maped`**: answered, a single source, `src/common/block_09.c`.

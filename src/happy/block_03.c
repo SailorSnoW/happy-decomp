@@ -112,7 +112,7 @@ void draw_objects(int ox, int oy)
  * items left, time (MAX(time, 0)) and Happylanders left, unless
  * DAT_00442080 is set, then the scrolling message. show: copies the
  * buffer to the screen (blit_to_screen). 12 callers.
- * Shapes that decide the code (notes/block03-diffs.md): the tile
+ * Shapes that decide the code (notes/matching.md §3a): the tile
  * coordinates are written i * 16 - sx and j * 16 - sy in the calls (VC6
  * makes the induction variables, tests them instead of i and j, and gives
  * the original stack slots); the front tile loop has its index in k like

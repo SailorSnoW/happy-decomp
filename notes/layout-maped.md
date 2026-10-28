@@ -1,6 +1,6 @@
 # Map of `maped.exe`
 
-Inventory phase, Ghidra read-only (no renaming, no types, no comments, no function creation). Same method as for `happy.exe` (`notes/layout-happy.md` §1).
+Inventory of 2026-10-27, written before the decompilation (Ghidra read-only at the time). Since then, `src/` holds the names, types and code; the facts below still hold, and the open questions (end of the note) carry their current status. Same method as for `happy.exe` (`notes/layout-happy.md` §1).
 
 Data produced:
 - `notes/data/functions-maped.csv`: one row per function (223), same columns as `functions-happy.csv`. The `also_in` column cites the copies in `happy.exe` and `loader.exe`.
@@ -9,9 +9,9 @@ Data produced:
 - `captures/inventory-maped.json`: full graph, plus `same_as_happy` (identical function in happy) and `in_dll`.
 
 Scripts (in `scripts/`):
-- `ghidra_dump_rest.py`: JSON copy of the GhidraMCP 7.0.0 server, through `ghidra_rest.py` (`read_only` GETs only). Replaces `ghidra_dump.py`, which targeted the old server.
-- `inventory.py`: generalisation of `inventory_happy.py` to the three exes (`.venv/Scripts/python scripts/inventory.py maped.exe`).
-- `build_traits.py`: PE and Rich headers, CRT type tests, code-generation traits of the three exes (§4).
+- `ghidra_dump_rest.py`: JSON copy of the GhidraMCP 7.0.0 server, through `ghidra_rest.py` (`read_only` GETs only).
+- `inventory.py`: the happy method generalised to the three exes (`.venv/Scripts/python scripts/inventory.py maped.exe`).
+- The PE and Rich headers and the code traits of §4 were measured by a one-off script, since removed (the values are in the tables).
 
 ## 1. Method
 
@@ -93,7 +93,7 @@ All points are [verified] (disassembly, imports). The structure is the same as i
 
 ## 4. Compiler, linker, CRT
 
-Source: `scripts/build_traits.py` (bytes of `game/*.exe`, `captures/inventory-*.json`). Full table for the three exes in `notes/layout-loader.md` §4.
+Source: the bytes of `game/*.exe` and `captures/inventory-*.json`. Full table for the three exes in `notes/layout-loader.md` §4.
 
 ### 4.1 PE header
 - [verified] Linker 6.00, `OSVersion` and `SubsystemVersion` 4.0, subsystem 2 (GUI). Section and file alignment `0x1000`. Stack and heap: `0x100000` reserved and `0x1000` committed. `Characteristics` `0x10F`: relocations, line numbers and local symbols stripped, 32-bit exe. `CheckSum` 0.
@@ -180,6 +180,8 @@ What maped contributes to happy question 1 (a single .c or several):
 - [hypothesis] If each .obj contributes "globals, then strings", a second game .obj with initialised globals would place them between two groups of strings. No such break is seen either in maped (game code after `0x00401400`) or in happy (before the map module, `0x00401000`–`0x0040A99F`). So there is a single .obj for all this code, or else only the first .obj contains initialised globals. The planned compilation experiment is still needed to decide.
 
 ## 7. Functions missing from Ghidra (23)
+
+The GAME ones were created in Ghidra on 2026-10-28 (`slider_changed`, `main` and the 7 `d_*_proc` thunks, by `scripts/ghidra_sync.py`); the CRT ones are still missing.
 
 | Address | Size | Class | Reason for adding | Role [hypothesis] |
 |---|---:|---|---|---|
@@ -342,9 +344,10 @@ Provisional answers:
 
 ## 10. Open questions specific to maped
 
-1. **A single .obj or several for `0x00401400`–`0x00405C9F`?** Same problem as happy question 1. The `.data` layout (§6) favours a single .obj after the map module, without proving it. The Rich header counts, compared with the list of `LIBC.LIB` members actually linked, could settle it (§4.2).
-2. **End of the file shared with happy block_01.** Where in maped does the file that contains `0x004016A0`/`0x004017E0` end? Is block_02, specific to maped, at the start of that file?
-3. **`0x00403140`**: empty function (`ret`) called by the editor loop. Is it leftover code, or a function whose body depends on a compiler option?
-   - [verified 2026-10-27, `src/maped/block_05.c`] The editor loop calls it when F1 is held (`key[KEY_F1]`, `0x004059AD`); an empty `void f(void) {}` compiles to the same single `ret` with the project options. [hypothesis] A help screen left empty.
-4. **`AliasObj60`: 1 in maped, 2 in happy.** Which library object accounts for this difference?
-5. **Should the 23 missing functions be created in Ghidra and the 9 truncated bodies fixed?** Same decision as for happy: it is a write, to be authorised explicitly.
+Status on 2026-10-28.
+
+1. **A single .obj or several for `0x00401400`–`0x00405C9F`?** Still open, as happy question 1; `src/` has one file per block and every function but two matches.
+2. **End of the file shared with happy block_01.** Not observable: `src/` compiles maped block_02 and `common/block_01.c` (maped block_03) as two files, in that order (`build.py`), and both match.
+3. **`0x00403140`**: answered [verified, `src/maped/block_05.c`]: called when F1 is held (`key[KEY_F1]`, `0x004059AD`); an empty `void f(void) {}` gives the same `ret`. [hypothesis] A help screen left empty.
+4. **`AliasObj60`: 1 in maped, 2 in happy.** maped's is `chdir` [verified, `notes/toolchain-vc6.md` §5]; happy's two are still open.
+5. **Missing functions in Ghidra**: the GAME ones were created on 2026-10-28 (§7); the 14 CRT ones are not.

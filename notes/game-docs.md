@@ -4,9 +4,7 @@ Date: 2026-10-27. Sources: text files in `game/`, read without modification
 (`readme.txt`, `loader.txt`, `maped.txt`, `maped.ini`, `maps/rolling_hills/rolling_hills.txt`, plus `happy.url`).
 There are no other `*.txt` or `*.ini` files in `game/`.
 
-Scripts used (read-only on `game/`):
-- `scripts/list_game_files.py` → `notes/data/game-files.csv` (size, extension, first 32 bytes of each file in `data/` and `maps/`);
-- `scripts/inspect_formats.py` → `notes/data/datafiles.csv` (objects contained in each `.dat`) and unpacked copies in `captures/unpacked/`.
+Script used (read-only on `game/`): `scripts/inspect_formats.py` → `notes/data/datafiles.csv` (objects contained in each `.dat`) and unpacked copies in `captures/unpacked/`.
 
 The string addresses below are virtual addresses computed from the PE section table (`.data` section, base `0x00400000`).
 
@@ -264,7 +262,7 @@ New in v1.3 (`readme.txt`): level and maped fixes, screenshots "now readable", s
 
 Rest of `game/`: `alleg40.dll` (224,768), `happy.exe` (86,016), `maped.exe` (73,728), `loader.exe` (32,768), `readme.txt` (10,545), `loader.txt` (2,988), `maped.txt` (7,563), `maped.ini` (630), `happy.url` (56), `unins000.exe` (75,922), `unins000.dat` (5,638).
 
-### First 32 bytes (representative examples; all files are in `notes/data/game-files.csv`)
+### First 32 bytes (representative examples)
 
 `.dat`, old scheme:
 ```
@@ -293,8 +291,9 @@ rolling_hills.txt    3a 3a 20 52 6f 6c 6c 69 6e 67 20 68 69 6c 6c 73 20 0d 0a 0d
 
 ---
 
-## 7. Questions and leads for the code inventory
-- Confirm in Ghidra the `packfile_password("happy")` call (xrefs to `0x004124B0` and `0x0040F1B0`).
-- Exact layout of the map header (2,933 and 7,045 bytes): NPCs, wise men's texts, other fields? To be read in the load and save functions of `maped.exe` and `happy.exe`.
-- Formats of `happy.sav` and `happy.clv`.
-- Presence of PPCOL in `happy.exe`.
+## 7. Questions of the inventory, answered by the code
+
+- `packfile_password("happy")`: [verified] set in `init_game` (`0x00401F00`) before the datafiles are loaded, cleared and set again around `save_screenshot` (`0x00401900`), `src/happy/block_02.c`.
+- Layout of the map header: `MAP` and `TILE` in `src/include/map.h`; maped appends the objects and help texts after the tiles (`src/maped/`).
+- `happy.sav`: `save_settings` / `load_settings` (`src/happy/block_02.c`, fields in `src/happy/data.c`); `happy.clv`: `notes/layout-loader.md` §3 and §10.
+- PPCol in `happy.exe`: [hypothesis] `0x00403E00` has the structure of PPCol's `check_pp_collision` (`src/happy/block_05.c`).

@@ -5,8 +5,6 @@ GET endpoints marked read_only (which excludes save_program,
 save_all_programs and switch_program). Any other call is refused, to
 comply with the "Ghidra is read-only" rule of CLAUDE.md.
 
-Replaces ghidra_mcp.py, written for the old GhidrAssistMCP server (port 8080).
-
 Usage:
     from ghidra_rest import Ghidra
     g = Ghidra("happy.exe")

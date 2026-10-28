@@ -1,6 +1,5 @@
 """JSON copy of GhidraMCP 7.0.0's responses for one program (read-only).
 
-Replaces ghidra_dump.py (old GhidrAssistMCP server, text responses).
 Goes only through ghidra_rest.Ghidra, which only allows read_only GETs.
 
 Cache contents:

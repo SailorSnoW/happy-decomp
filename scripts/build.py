@@ -5,11 +5,11 @@ link /DEBUG /INCREMENTAL:NO in the order of SOURCES, which is the order of the
 .obj files in the original (notes/layout-*.md §8). Output:
 build/<exe>/<exe>.exe and .pdb, the names reccmp-project detect looks for.
 
-/OPT:NOREF by default: as long as their callers are stubs, most decompiled
-functions are referenced by nothing, and /OPT:REF would drop them from the
-exe. --final links with /OPT:REF, as the original was [hypothesis,
-notes/shared-code.md]; the linker option does not change the code
-(notes/toolchain-vc6.md §6).
+/OPT:NOREF by default: a decompiled function whose callers are still stubs is
+referenced by nothing, and /OPT:REF would drop it from the exe. --final links
+with /OPT:REF, as the original was [hypothesis: the shared source files keep
+only a subset of their functions in each exe, notes/layout-maped.md §9]; the
+linker option does not change the code (notes/toolchain-vc6.md §6).
 
 Each exe is compiled with its name defined (/DHAPPY, /DMAPED, /DLOADER):
 src/common/ leaves out the functions of the other exe with #ifdef

@@ -318,7 +318,7 @@ int custom_game(void)
  * instructions, 2 quits [verified].
  * The start menu loop is a while (!done) on a flag, as in custom_game:
  * written as a do/while or a for (;;) on the calls, VC6 rotates it (the
- * head copied at the bottom), the original does not (notes/block08-diffs.md). */
+ * head copied at the bottom), the original does not (notes/matching.md §3a). */
 // FUNCTION: HAPPY 0x0040a830
 int main(int argc, char *argv[])
 {

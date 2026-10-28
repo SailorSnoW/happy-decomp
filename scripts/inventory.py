@@ -1,7 +1,6 @@
 """Function inventory of one game exe (read-only).
 
-Generalisation of inventory_happy.py to the three exes, same method
-(see notes/layout-happy.md §1):
+Method (notes/layout-happy.md §1, additions in notes/layout-maped.md §1):
 1. Entry points = Ghidra functions + added entries: code never reached
    by the flow of a known function but called, jumped to or referenced
    (immediate or pointer in .data/.rdata), then dead code placed after a
@@ -16,7 +15,7 @@ Generalisation of inventory_happy.py to the three exes, same method
 6. Cross-check against Ghidra's callees.
 7. Comparison between exes (instruction bytes, addresses masked).
 
-Differences from inventory_happy.py:
+Details:
 - the Ghidra cache comes from ghidra_dump_rest.py (GhidraMCP 7.0.0, JSON);
   the union of the Ghidra bodies is the complement of find_code_gaps;
 - WinMain, main and _except_handler3 are found from the PE entry point
