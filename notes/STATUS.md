@@ -4,11 +4,11 @@ Last updated: 2026-10-28. The detailed log of each step is in the git history (c
 
 ## Current state
 
-Matching decompilation: **the three exes are fully annotated and build without stubs**; 133 of 136 GAME functions match at 100% (`scripts/progress.py`, `notes/matching.md` §5).
+Matching decompilation: **the three exes are fully annotated and build without stubs**; 134 of 136 GAME functions match at 100% (`scripts/progress.py`, `notes/matching.md` §5).
 
 | exe | GAME functions | at 100% | bytes at 100% | below 100% |
 |---|---:|---:|---:|---|
-| happy | 84 | 83 | 88.8% | `play_level` 99.84% ("effective match") |
+| happy | 84 | 84 | 100% | — |
 | maped | 50 | 48 | 92.4% | `set_screen_mode` 85.94%, `auto_mask` 96.86% |
 | loader | 2 | 2 | 100% | — |
 
@@ -19,13 +19,12 @@ Matching decompilation: **the three exes are fully annotated and build without s
 
 ## Remaining
 
-- The three functions below 100%: `notes/open-diffs.md` (shapes already tried).
+- The two functions below 100% (maped): `notes/open-diffs.md` (shapes already tried).
 - Next phase per `CLAUDE.md`: the C17 port, verified by comparing its behaviour with the matching build.
 
 ## Open questions
 
 Matching:
-- `play_level`: which C shape makes VC6 keep `player.f0c` in `ecx` at `0x004050D4` and add into the `fixmul` result?
 - `set_screen_mode`: which construct makes VC6 drop the partial redundancy between the branch's and the clamps' loads of `DAT_00410110` without emitting code?
 - `auto_mask`: which shape gives the winter tile pointer `edx` while the summer cover mask, zeroed at the top, also lives in `edx`?
 
@@ -48,3 +47,4 @@ Behaviour found in the code, worth keeping in mind for the C17 port (details in 
 | 2026-10-27 | Matching steps 1-17: infrastructure (`build.py`, `progress.py`, `crt_names.py`), happy block by block (map module and utilities in `src/common/`), `PLAYER` structure, maped, loader, Ghidra sync, end-of-array operands compared by offset. |
 | 2026-10-28 | Steps 18-19: `bonus_room` and `pick_tile` at 100%, `auto_mask` 96.86%; the missing GAME functions created in Ghidra; `ghidra_sync.py` rebuilds the Ghidra project from git; `compile_commands.py` for clangd. |
 | 2026-10-28 | Repository cleanup: removed the one-off inventory scripts and notes (decomp.me candidates, shared-code analysis, the resolved diff notes); the remaining diffs are in `notes/open-diffs.md`. |
+| 2026-10-28 | `play_level` at 100% (the products through Allegro 3.x's `fmul` alias): happy 84/84. |

@@ -49,7 +49,7 @@ address,size,block,name,matching
 0x00404920,327,block_05,FUN_00404920,100.00
 0x00404A70,267,block_05,drop_item,100.00
 0x00404B80,194,block_05,pause_game,100.00
-0x00404C50,4443,block_05,play_level,99.84
+0x00404C50,4443,block_05,play_level,100.00
 0x00405DB0,1508,block_05,bonus_room,100.00
 0x004063A0,443,block_06,draw_title,100.00
 0x00406560,740,block_06,set_controls,100.00

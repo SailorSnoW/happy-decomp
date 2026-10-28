@@ -699,7 +699,7 @@ void pause_game(void)
  * reaches 0: kill_player), 3 when Escape is confirmed ("Quit?"). Each
  * frame: copies key[] to keys, "HURRY UP!" at 30 seconds left and a tick
  * (sample 33) each second below, draws the frame (draw_level), moves the
- * objects, then the player: acceleration fixmul(player.f18, f) up to the
+ * objects, then the player: acceleration fmul(player.f18, f) up to the
  * top speed player.f18 (2.0), with f = 1.0, 0.04 on a slide (bit 3 of
  * MAP.f79 and the slide key) or 0.01 on ice (map_t4_at == 5); slopes
  * (collision types 7-10) push by DAT_0042f59c; walls (types 4-6) and
@@ -710,7 +710,14 @@ void pause_game(void)
  * positions (DAT_00414cc0/DAT_004154c0), the countdowns f14, f4d, f4e,
  * the items (take_item), the snow switches (types 8 and 9), deadly tiles
  * (type 4, unless DAT_00413b30), the time limit, Pause and F12
- * (happy.pcx). Callers bonus_room and play_game. */
+ * (happy.pcx). Callers bonus_room and play_game.
+ * The products go through fmul, the Allegro 3.x name kept by alcompat.h
+ * (static inline, `return fixmul(x, y);`) [verified by the match]: with
+ * fixmul in two or more of the four, the deceleration towards 0 from the
+ * left adds into player.f0c's register (add ecx, eax) instead of the
+ * product's (add eax, ecx at 0x004050DA); any three fmul give the
+ * original. [hypothesis] The return turns the asm result into an
+ * ordinary value, as with a real call. */
 // FUNCTION: HAPPY 0x00404c50
 int play_level(void)
 {
@@ -754,21 +761,21 @@ int play_level(void)
         if (!player.f4e) {
             if (keys[controls[0]] && !keys[controls[6]]) {
                 if (player.f0c < player.f18)
-                    player.f0c = MIN(player.f18, player.f0c + fixmul(player.f18, f));
+                    player.f0c = MIN(player.f18, player.f0c + fmul(player.f18, f));
                 player.f08 = 0;
                 FUN_00403a40();
             }
             if (keys[controls[1]] && !keys[controls[6]]) {
                 if (player.f0c > -player.f18)
-                    player.f0c = MAX(-player.f18, player.f0c - fixmul(player.f18, f));
+                    player.f0c = MAX(-player.f18, player.f0c - fmul(player.f18, f));
                 player.f08 = 1;
                 FUN_00403a40();
             }
             if ((!keys[controls[0]] && !keys[controls[1]]) || keys[controls[6]]) {
                 if (player.f0c > 0)
-                    player.f0c = MAX(0, player.f0c - fixmul(player.f18, f));
+                    player.f0c = MAX(0, player.f0c - fmul(player.f18, f));
                 if (player.f0c < 0)
-                    player.f0c = MIN(0, player.f0c + fixmul(player.f18, f));
+                    player.f0c = MIN(0, player.f0c + fmul(player.f18, f));
                 player.f2c = 0;
             }
             if (keys[controls[6]] && player.f0c && (DAT_00414130->f79 & 8))

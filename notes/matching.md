@@ -86,6 +86,7 @@ Code-generation clues met so far, to try first when a function is close:
   - a loop controlled by an index whose coordinate is derived from it (`for (j = 0; j < 14; j++) { y = j * 16; ...`) is compiled with the test on the coordinate (`cmp edi, 0xe0`) and keeps the index when it is used elsewhere; written with two counters in the header and the test on the coordinate, VC6 can drop the index instead (`draw_level`; the final form has no `y` at all, see below);
   - a function that calls `fixtoi` has an `ebp` frame: `fixfloor` is inline asm in `al386vc.h` (`draw_level`);
   - in `play_level` (2026-10-27): initialisers (`int done = 0; int last = time_left;`) instead of assignments change the order of the first loads; the arguments of `MIN`/`MAX` in the original order (the limit first); `abs()` is inlined as `cdq` / `xor` / `sub`, Allegro's `ABS` as a compare and `neg`; `x <= -1` gives `cmp eax, -1` / `jg` where `x < 0` gives `test` / `jge`; Allegro's `TRUE` is -1 (`c ? FALSE : TRUE` gives `neg` / `sbb` / `neg` / `dec`);
+  - `fmul`, the Allegro 3.x alias that `alcompat.h` keeps (`static INLINE fixed fmul(x, y) { return fixmul(x, y); }`), rather than `fixmul` (2026-10-28, `play_level` 99.84% -> 100%): the code of each product is the same, but in `MIN(0, player.f0c + fmul(...))` VC6 adds into the product's register (`add eax, ecx`, `0x004050DA`) where `fixmul` adds into `player.f0c`'s (`add ecx, eax`). Any three of the four products as `fmul` give the original, two or fewer do not. A real call (`ext()`) also adds into `eax`: [hypothesis] the `return` turns the asm result into an ordinary return value. Found by testing a real call in place of the inline asm. `fdiv`, `fcos`, `fsin` in the other functions change nothing (84/84 either way), so those keep the 4.0 names;
   - a small loop whose first block is a conditional exit (`call` / `test` / `jcc`) is rotated by VC6 `/O2`: the head is copied at the bottom and the exit block placed after the loop, whatever the C shape on the calls (`do`/`while`, `for (;;)`, `goto`). Written as `while (!done)` on a flag set in the body, it is not rotated: that is the original `main` (100%; tried before and all rotated: `do`/`while`, `for (;;)` with `break`, a backward `goto`, `/O1`, which matches this loop but not the rest of `main`). The same author's `custom_game` uses the same flag loop;
   - a coordinate derived from a loop index written in the expression (`i * 16 - sx`) rather than kept in a variable (`x`): VC6's own induction variable gets a stack slot after the user variables, which a variable never gets, and the test moves to it (`cmp eax, 0x150`) as in the original (`draw_level` 94.37% -> 100%; with an `x` variable, wherever it is assigned, `x` kept another slot);
   - one variable reused for two unrelated loops (the x of a first walk, then the y of a fall) decides the order in which VC6 reloads spilled variables after an inner loop: `bonus_room` 99.78% -> 100%; try renaming the variable of an earlier loop to each later local;
@@ -154,11 +155,11 @@ Named = annotated in `src/crt/<exe>.h` (aliases included): 152 + 163 + 66 = 381 
 
 | exe | GAME functions | at 100% | bytes at 100% | below 100% |
 |---|---:|---:|---:|---|
-| happy | 84 | 83 | 88.8% | `play_level` 99.84% ("effective match") |
+| happy | 84 | 84 | 100% | — |
 | maped | 50 | 48 | 92.4% | `set_screen_mode` 85.94%, `auto_mask` 96.86% |
 | loader | 2 | 2 | 100% | — |
 
-- The three functions left: `notes/open-diffs.md`.
+- The two functions left: `notes/open-diffs.md`.
 - `reccmp-datacmp`: happy 72, maped 37, loader 1 variables, 0 issues. reccmp reports no `[ERROR]` on the 381 `LIBRARY` annotations.
 - `build.py --final happy maped loader` links the three exes without stubs (happy 81,977 bytes, original 86,016; maped 69,689, original 73,728). happy's game code ends at `0x0040AD50`, as in the original. loader linked again without `/DEBUG`: `.text`, `.rdata`, `.data` byte-identical (§3).
 - Ghidra is in sync with `src/` (`scripts/ghidra_sync.py`, 0 differences in the three programs).

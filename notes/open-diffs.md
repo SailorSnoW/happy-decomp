@@ -1,20 +1,6 @@
 # Functions below 100%
 
-State on 2026-10-28 (`scripts/progress.py`): happy 83/84, maped 48/50, loader 2/2. The three functions left differ by register allocation only; the shapes already tried are listed so that they are not tried again. The shapes that did work elsewhere are in `notes/matching.md` §3a.
-
-## happy `play_level` (`0x00404C50`, 4,443 bytes), 99.84% ("100% effective match")
-
-One instruction differs [verified 2026-10-27]: in the deceleration towards 0 from the left (`player.f0c = MIN(0, player.f0c + fixmul(player.f18, f))`), the original adds into the register that holds the `fixmul` result (`add eax, ecx` / `test eax, eax`, `0x004050DA`), the recompiled code into the one that holds `player.f0c` (`add ecx, eax`). reccmp counts it as an effective match.
-
-Tried without effect (2026-10-27):
-- the operands in either order, `MIN(a, 0)` (2 instructions fewer), an `if`/`else`, `a - -b`;
-- the two evaluations written differently in a `?:` (`fixmul(...) + f0c` for the test, `f0c + fixmul(...)` for the value, and the reverse), `x > 0` instead of `0 < x`, `itofix(0)`, `0L`, `(fixed)0`, casts of the sum or of `fixmul`, `-(-f0c - fixmul(...))`, `if (f0c + fixmul(...) > 0) f0c = 0; else f0c += fixmul(...);`: all give the same instruction; `fixadd`, `MID`, `fixmul(-f18, f)` are worse.
-
-Tried without effect (2026-10-28):
-- in the whole function: every merge of two locals among `last`, `py`, `t4`, `px`, `c`, `i` (the `bonus_room` fix), `PLAYER.f0c` / `f18` typed `fixed`, `fixmul(f, player.f18)`, the `if` inverted (`<= 0`, `< 1`), `-MAX(0, -f0c - ...)`, `MIN(e, 0)`: same instruction or worse;
-- in a reduced test (the movement block alone in a function, scratch): it gives the same `add ecx, eax` as the full function, so the cause is local. Moving or removing the rest of the block (the slopes, the acceleration, the `f2c = 8` test, `else if`, the two `if`s swapped), casts of either operand, unary `+`, `* 1`, `- -`: always `add ecx, eax`.
-
-The only form that adds into the `fixmul` result is a `player.f0c` held in a register variable (`v = player.f0c; ... MIN(0, v + fixmul(...))` gives `add eax, esi`), which does not match the stores of the original. [hypothesis] The original compiler kept `player.f0c` as a live common subexpression in `ecx` at that point, for a reason not found in the C.
+State on 2026-10-28 (`scripts/progress.py`): happy 84/84, maped 48/50, loader 2/2. The two functions left differ by register allocation only; the shapes already tried are listed so that they are not tried again. The shapes that did work elsewhere are in `notes/matching.md` §3a.
 
 ## maped `set_screen_mode` (`0x00401A20`), 85.94%
 
