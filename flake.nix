@@ -1,5 +1,5 @@
 {
-  description = "happy-decomp: development shell for macOS (uv, upx, Python 3.12, Wine for VC6 and reccmp)";
+  description = "happy-decomp: development shell for macOS (uv, upx, Python 3.12, Wine for VC6 and reccmp, clangd)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -45,6 +45,8 @@
             pkgs.python312
             pkgs.uv
             pkgs.upx
+            # clangd for editors, on compile_commands.json (scripts/compile_commands.py)
+            pkgs.clang-tools
           ];
 
           # Python 3.12 from nixpkgs for the .venv and reccmp, never one downloaded by uv.

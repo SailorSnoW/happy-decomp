@@ -80,6 +80,7 @@ Details of the setup: `notes/matching.md`.
   - `progress.py [exe...]`: runs reccmp (through `reccmp_run.py`) on each built target, writes `notes/data/progress-<exe>.csv` and prints the progress per block;
   - `reccmp_run.py`: reccmp-reccmp 0.1.7 patched at run time (package unchanged), to be run with the Python where reccmp is installed; same arguments. Operands at the same offset of one matched variable (pointers past the end of an array) compare equal (decided with the user on 2026-10-27, `notes/matching.md` §3); `--audit` lists every line concerned;
   - `ghidra_sync.py [--apply | --save] [exe...]`: carries `src/` into Ghidra (dry run by default; `--save` waits for the auto-analysis before saving): structures, missing functions, names, prototypes, global types. From a fresh import of the three exes, `--save happy maped loader` rebuilds the reference project (`notes/matching.md` §3b);
+  - `compile_commands.py`: writes `compile_commands.json` (per machine, ignored by git) for clangd: 32-bit MSVC target, VC6 headers, the `/I` and `/D` of `build.py`. Editing only, matching is still checked with VC6. Rerun after adding a source file;
   - `crt_names.py [exe...]`: names the CRT functions by byte identity with the objects of `LIBC.LIB`; writes `notes/data/crt-<exe>.csv` and the `LIBRARY` annotations `src/crt/<exe>.h`.
 
 

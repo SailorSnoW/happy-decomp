@@ -53,6 +53,9 @@ __pycache__/
 .claude/settings.local.json
 
 # --- Editors and OS -----------------------------------------------------------
+# clangd: per-machine database (scripts/compile_commands.py) and index
+/compile_commands.json
+/.cache/
 .vs/
 .vscode/
 *.swp
